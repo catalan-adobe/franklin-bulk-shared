@@ -16,35 +16,33 @@ import { buildPathAndFilenameWithPathFromUrl } from '../../url.js';
 type CollectWebconsoleStepOptions = {
   outputFolder?: string;
 };
+/* eslint-disable-next-line import/prefer-default-export */
+export function webConsoleMessages({ outputFolder = `${process.cwd()}/webconsole` }: CollectWebconsoleStepOptions = {}) {
+  return (action) => async (params) => {
+    const messages = [];
 
-export function webConsoleMessages({ outputFolder = process.cwd() + '/webconsole'}: CollectWebconsoleStepOptions = {}) {
-  return function(action) {
-    return async (params) => {
-      const messages = [];
-  
-      params.page.on('console', (message) => {
-        messages.push({
-          args: message.args(),
-          location: message.location(),
-          stackTrace: message.stackTrace(),
-          text: message.text(),
-          type: message.type(),
-        });
+    params.page.on('console', (message) => {
+      messages.push({
+        args: message.args(),
+        location: message.location(),
+        stackTrace: message.stackTrace(),
+        text: message.text(),
+        type: message.type(),
       });
-  
-      await action(params);
-  
-      let [path, filename] = buildPathAndFilenameWithPathFromUrl(params.url, 'webconsole', 'json');
-      path = pUtils.join(outputFolder, path);
-  
-      if (!fs.existsSync(path)){
-        fs.mkdirSync(path, { recursive: true });
-      }
-  
-      const data = JSON.stringify(messages, null, 2);
-      fs.writeFileSync(pUtils.join(path, filename), data);
-  
-      return params;
-    };
-  }
+    });
+
+    await action(params);
+
+    const [p, filename] = buildPathAndFilenameWithPathFromUrl(params.url, 'webconsole', 'json');
+    const path = pUtils.join(outputFolder, p);
+
+    if (!fs.existsSync(path)) {
+      fs.mkdirSync(path, { recursive: true });
+    }
+
+    const data = JSON.stringify(messages, null, 2);
+    fs.writeFileSync(pUtils.join(path, filename), data);
+
+    return params;
+  };
 }

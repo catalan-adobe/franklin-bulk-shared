@@ -1,17 +1,15 @@
-
 import path from 'path';
 
 export function buildPathAndFilenameWithPathFromUrl(url, suffix = '', extension = 'html') {
-  let u = new URL(url);
-  let p = path.parse(u.pathname); // path
-  let f = ''; // filename
+  const u = new URL(url);
+  const p = path.parse(u.pathname); // path
 
   if (u.pathname.lastIndexOf('/') === u.pathname.length - 1) {
     p.name = '___';
   }
 
   if (suffix) {
-    p.name += '.' + suffix;
+    p.name += `.${suffix}`;
   }
 
   const matches = /.*\.?htm.*$/.exec(p.base);
@@ -21,14 +19,14 @@ export function buildPathAndFilenameWithPathFromUrl(url, suffix = '', extension 
   }
 
   if (extension !== 'html') {
-    p.ext = '.' + extension;
+    p.ext = `.${extension}`;
   }
 
-  return [p.dir, p.name+p.ext];
+  return [p.dir, p.name + p.ext];
 }
 
 export function buildFilenameWithPathFromUrl(url, suffix = '', extension = 'html') {
-  const res = buildPathAndFilenameWithPathFromUrl(url, suffix, extension)
+  const res = buildPathAndFilenameWithPathFromUrl(url, suffix, extension);
   return path.join(...res);
 }
 
@@ -36,9 +34,9 @@ export function sanitizeURL(url) {
   try {
     const u = new URL(url);
     let s = u.origin + u.pathname;
-    s = s.replaceAll(/[\/.,:]/g, '_');
+    s = s.replaceAll(/[/.,:]/g, '_');
     return s;
-  } catch(e) {
+  } catch (e) {
     throw new Error(`: ${e}`);
   }
 }

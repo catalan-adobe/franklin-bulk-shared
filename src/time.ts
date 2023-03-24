@@ -19,7 +19,7 @@
  * @param {number} [time=1000] - The duration to wait, in milliseconds
  * @returns {Promise<void>} null or an error in case the duration could not get parsed
  */
-export function sleep(time: number = 1000): Promise<void> {
+export function sleep(time = 1000): Promise<void> {
   return new Promise((resolve) => {
     setTimeout(resolve, time);
   });
@@ -32,8 +32,8 @@ export function sleep(time: number = 1000): Promise<void> {
  * @returns {Promise<void>} null or an error in case a duration could not get parsed
  */
 export function randomSleep(
-  min: number = 1000,
-  max: number = 2000,
+  min = 1000,
+  max = 2000,
 ): Promise<void> {
   if ((min === 0 && max === 0) || max < min) {
     return Promise.reject(new Error('min/max range not supported (min > 0 AND max > 0 AND AND min < max)'));
