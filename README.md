@@ -47,4 +47,3 @@ await browser.close();
 
 * Puppeteer (_`initBrowserAgent`_, _`scrollDown`_, _`scrollUp`_)
 * Time (_`sleep`_, _`randomSleep`_)
-
