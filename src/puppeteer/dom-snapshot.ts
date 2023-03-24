@@ -20,7 +20,7 @@ function getRectfromArray(a) {
   return r;
 }
 
-export function getMostBottomElement(snapshot) {
+export default function getMostBottomElement(snapshot) {
   const docs = snapshot.documents;
   const { strings } = snapshot;
   const mostBottomNode = {
@@ -29,7 +29,9 @@ export function getMostBottomElement(snapshot) {
     backendNodeId: null,
   };
 
-  for (const doc of docs) {
+  for (let j = 0; j < docs.length; j += 1) {
+    const doc = docs[j];
+
     const { layout } = doc;
 
     for (let i = 0; i < doc.nodes.nodeType.length; i += 1) {

@@ -11,26 +11,25 @@
  */
 import { sleep } from '../../time.js';
 
+/* eslint-disable-next-line import/prefer-default-export */
 export function postLoadWait(ms) {
-  return function(action) {
-    return async (params) => {
-      try {
-        console.info('do post load wait');
-  
-        // main action
-        await action(params);
-  
-        await sleep(ms);
-      } catch(e) {
-        console.error('post load wait catch', e);
-        params.result = {
-          passed: false,
-          error: e,
-        };
-      } finally {
-        console.info('post load wait finally');
-        return params;
-      }
-    };
+  return (action) => async (params) => {
+    try {
+      params.logger.info('do post load wait');
+
+      // main action
+      await action(params);
+
+      await sleep(ms);
+    } catch (e) {
+      params.logger.error('post load wait catch', e);
+      params.result = {
+        passed: false,
+        error: e,
+      };
+    }
+
+    params.logger.info('post load wait finally');
+    return params;
   };
 }

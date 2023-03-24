@@ -11,32 +11,29 @@
  */
 import lighthouse from 'lighthouse';
 
+/* eslint-disable-next-line import/prefer-default-export */
 export function runLighthouseCheck() {
-  return function(action) {
-    return async (params) => {
-      try {
-        // console.info('lighthouse check start');
-  
-        // main action
-        await action(params);
+  return (action) => async (params) => {
+    try {
+      // main action
+      await action(params);
 
-        // run lighthouse
-        const {lhr} = await lighthouse(params.url, undefined, undefined, params.page);
- 
-        params.lighthouse = {
-          version: lhr.lighthouseVersion,
-          scores: lhr.categories,
-        };
-      } catch(e) {
-        console.error('lighthouse check catch', e);
-        params.result = {
-          passed: false,
-          error: e,
-        };
-      } finally {
-        // console.info('lighthouse check finally');
-        return params;
-      }
-    };
+      // run lighthouse
+      const { lhr } = await lighthouse(params.url, undefined, undefined, params.page);
+
+      params.lighthouse = {
+        version: lhr.lighthouseVersion,
+        scores: lhr.categories,
+      };
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      params.logger.error('lighthouse check catch', e);
+      params.result = {
+        passed: false,
+        error: e,
+      };
+    }
+
+    return params;
   };
 }

@@ -18,28 +18,27 @@ type FullPageScreenshotStepOptions = {
   outputFolder?: string;
 };
 
-export function fullPageScreenshot({ outputFolder = process.cwd() + '/screenshots' }: FullPageScreenshotStepOptions = {}) {
-  return function(action) {
-    return async (params) => {
-      params.logger.info('start fullpage screenshot');
-  
-      await action(params);
-  
-      let [path, filename] = buildPathAndFilenameWithPathFromUrl(params.url, 'screenshot', 'png');
-      path = pUtils.join(outputFolder, path);
-  
-      if (!fs.existsSync(path)){
-        fs.mkdirSync(path, { recursive: true });
-      }
-  
-      await params.page.screenshot({
-        path: pUtils.join(path, filename),
-        fullPage: true,
-      });
-  
-      params.logger.info('stop fullpage screenshot');
-  
-      return params;
-    };
-  }
+/* eslint-disable-next-line import/prefer-default-export */
+export function fullPageScreenshot({ outputFolder = `${process.cwd()}/screenshots` }: FullPageScreenshotStepOptions = {}) {
+  return (action) => async (params) => {
+    params.logger.info('start fullpage screenshot');
+
+    await action(params);
+
+    const [p, filename] = buildPathAndFilenameWithPathFromUrl(params.url, 'screenshot', 'png');
+    const path = pUtils.join(outputFolder, p);
+
+    if (!fs.existsSync(path)) {
+      fs.mkdirSync(path, { recursive: true });
+    }
+
+    await params.page.screenshot({
+      path: pUtils.join(path, filename),
+      fullPage: true,
+    });
+
+    params.logger.info('stop fullpage screenshot');
+
+    return params;
+  };
 }

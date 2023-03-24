@@ -12,18 +12,17 @@
 import { PuppeteerBlocker } from '@cliqz/adblocker-puppeteer';
 import fetch from 'cross-fetch';
 
+/* eslint-disable-next-line import/prefer-default-export */
 export function GDPRAutoConsent() {
-  return function(action) {
-    return async (params) => {
-      const blocker = await PuppeteerBlocker.fromLists(fetch, [
-        'https://secure.fanboy.co.nz/fanboy-cookiemonster.txt'
-      ]);
-  
-      await blocker.enableBlockingInPage(params.page);
-  
-      await action(params);
-  
-      return params;
-    };
-  }
+  return (action) => async (params) => {
+    const blocker = await PuppeteerBlocker.fromLists(fetch, [
+      'https://secure.fanboy.co.nz/fanboy-cookiemonster.txt',
+    ]);
+
+    await blocker.enableBlockingInPage(params.page);
+
+    await action(params);
+
+    return params;
+  };
 }

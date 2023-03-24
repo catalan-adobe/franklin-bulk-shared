@@ -10,26 +10,25 @@
  * governing permissions and limitations under the License.
  */
 
+/* eslint-disable-next-line import/prefer-default-export */
 export function execAsync(fn) {
-  return function(action) {
-    return async (params) => {
-      try {
-        console.info('do execute script');
-        
-        // main action
-        await action(params);
-        
-        await fn(params.page);
-      } catch(e) {
-        console.error('execute script catch', e);
-        params.result = {
-          passed: false,
-          error: e,
-        };
-      } finally {
-        console.info('execute script finally');
-        return params;
-      }
-    };
+  return (action) => async (params) => {
+    try {
+      params.logger.info('do execute script');
+
+      // main action
+      await action(params);
+
+      await fn(params.page);
+    } catch (e) {
+      params.logger.error('execute script catch', e);
+      params.result = {
+        passed: false,
+        error: e,
+      };
+    }
+
+    params.logger.info('execute script finally');
+    return params;
   };
 }

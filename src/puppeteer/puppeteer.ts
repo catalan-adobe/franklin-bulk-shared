@@ -21,13 +21,14 @@ export type BrowserOptions = {
   headless?: boolean;
   width?: number;
   height?: number;
-}
+};
 
 /*
  * Functions
  */
 
-export async function initBrowser(options?: BrowserOptions): Promise<[puppeteer.Browser, puppeteer.Page]> {
+export async function initBrowser(options?: BrowserOptions):
+Promise<[puppeteer.Browser, puppeteer.Page]> {
   // defaults
   const headless = options?.headless !== false;
   const width = options?.width || 1200;
@@ -60,7 +61,6 @@ export async function initBrowser(options?: BrowserOptions): Promise<[puppeteer.
   return [browser, page];
 }
 
-
 /**
  * Scrolls down the current page
  * @param {puppeteer.Page} page - An existing Puppeteer page object
@@ -87,10 +87,10 @@ export async function scrollUp(page: puppeteer.Page): Promise<void> {
  */
 export async function runStepsSequence(page: puppeteer.Page, url, steps): Promise<void> {
   function wrapBrowserAction(action, ...middlewares) {
-    /* eslint-disable-next-line no-shadow */
-    return middlewares/*.reverse()*/.reduce((action, middleware) => middleware(action), action);
+    /* eslint-disable-next-line @typescript-eslint/no-shadow */
+    return middlewares/* .reverse() */.reduce((action, middleware) => middleware(action), action);
   }
-  
+
   async function mainBrowserAction(params) {
     try {
       // console.info('mainBrowserAction - navigate to page');
@@ -99,20 +99,20 @@ export async function runStepsSequence(page: puppeteer.Page, url, steps): Promis
       if (resp.status() >= 400) {
         throw new Error(`harvest::NON_BLOCKING_ERROR navigation failure for ${params.url}, got ${resp.status()}`);
       } else if (resp.headers()['content-length'] === '0') {
-        throw new Error(`harvest::NON_BLOCKING_ERROR empty page for url ${params.url}`);      
+        throw new Error(`harvest::NON_BLOCKING_ERROR empty page for url ${params.url}`);
       }
       return params;
-    } catch(e) {
+    } catch (e) {
+      // eslint-disable-next-line no-console
       console.error('mainBrowserAction - navigate to page catch', e);
       params.result = {
         passed: false,
         error: e,
       };
-    } finally {
-      // params.logger.info('mainBrowserAction - navigate to page finally');
-      return params;
     }
-  };
+
+    return params;
+  }
 
   const browserScriptParameters = {
     outputFolder: process.cwd(),
@@ -123,11 +123,11 @@ export async function runStepsSequence(page: puppeteer.Page, url, steps): Promis
     logger: console,
     result: {
       passed: true,
-      error: null
-    }
+      error: null,
+    },
   };
 
-  try {    
+  try {
     const browserScript = wrapBrowserAction(mainBrowserAction, ...steps);
     const res = await browserScript(browserScriptParameters);
     // console.log('Browser Script Result:');
@@ -138,22 +138,21 @@ export async function runStepsSequence(page: puppeteer.Page, url, steps): Promis
     }
 
     return res;
-  } catch(e) {
+  } catch (e) {
+    // eslint-disable-next-line no-console
     console.error('main error:', e);
     if (e.message.indexOf('net::ERR_NAME_NOT_RESOLVED') > -1) {
+      // eslint-disable-next-line no-console
       console.error(`url ${url} not reachable!`);
     } else if (e.message.indexOf('harvest::NON_BLOCKING_ERROR') > -1) {
+      // eslint-disable-next-line no-console
       console.error(`non blocking error (do not retry) for ${url}: ${e}`);
     } else {
       throw e;
     }
 
     return null;
-  } finally {
-    // ensure browser gets closed
-    // console.info('done browser sequence');
   }
-
 }
 
 export * as Steps from './steps/steps.js';
