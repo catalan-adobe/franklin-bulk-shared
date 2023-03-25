@@ -40,9 +40,9 @@
     "finalhandler": "^1.2.0",
     "jsdom": "^21.1.0",
     "lighthouse": "^10.0.2",
-    "puppeteer-core": "19.7.5",
+    "puppeteer-core": "19.8.0",
     "serve-static": "^1.15.0",
-    "sharp": "^0.31.3"
+    "sharp": "^0.32.0"
   },
   "devDependencies": {
     "@adobe/eslint-config-helix": "^2.0.2",
