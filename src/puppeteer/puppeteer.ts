@@ -39,6 +39,8 @@ Promise<[puppeteer.Browser, puppeteer.Page]> {
     executablePath: chromium.path,
     defaultViewport: null,
     args: [
+      '--remote-allow-origins=*',
+      '--remote-debugging-port=9222', // force port to avoid issues loading some pages
       '--no-sandbox',
       '--no-default-browser-check',
     ],
