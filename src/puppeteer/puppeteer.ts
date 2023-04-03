@@ -12,6 +12,7 @@
 
 import chromium from 'chromium';
 import puppeteer from 'puppeteer-core';
+import fp from 'find-free-port';
 
 /*
  * Types
@@ -33,6 +34,7 @@ Promise<[puppeteer.Browser, puppeteer.Page]> {
   const headless = options?.headless !== false;
   const width = options?.width || 1200;
   const height = options?.height ? options.height + 79 : 1079;
+  const port = await fp(9222);
 
   const browserLaunchOptions = {
     headless,
@@ -40,7 +42,7 @@ Promise<[puppeteer.Browser, puppeteer.Page]> {
     defaultViewport: null,
     args: [
       '--remote-allow-origins=*',
-      '--remote-debugging-port=9222', // force port to avoid issues loading some pages
+      `--remote-debugging-port=${port}`, // force port to avoid issues loading some pages
       '--no-sandbox',
       '--no-default-browser-check',
     ],
