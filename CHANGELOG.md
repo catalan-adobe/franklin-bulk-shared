@@ -1,3 +1,11 @@
+## [1.0.4](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.0.3...v1.0.4) (2023-04-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-importer to v2.8.9 ([883a6f5](https://github.com/catalan-adobe/franklin-bulk-shared/commit/883a6f508f98c5147af0d731ba33223d936f7d98))
+* use specific port for each new puppeteer browser ([ac5af35](https://github.com/catalan-adobe/franklin-bulk-shared/commit/ac5af35f7808918fdc4ca85c5978c7126733b562))
+
 ## [1.0.3](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.0.2...v1.0.3) (2023-04-01)
 
 
