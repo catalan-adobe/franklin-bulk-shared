@@ -1,3 +1,10 @@
+## [1.0.6](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.0.5...v1.0.6) (2023-04-14)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-importer to v2.8.11 ([b6a7973](https://github.com/catalan-adobe/franklin-bulk-shared/commit/b6a797332373f20f1f2c1f4f52e03909e54c54ab))
+
 ## [1.0.5](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.0.4...v1.0.5) (2023-04-08)
 
 
