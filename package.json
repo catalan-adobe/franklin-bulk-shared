@@ -33,7 +33,7 @@
   },
   "homepage": "https://github.com/catalan-adobe/franklin-bulk-shared#readme",
   "dependencies": {
-    "@adobe/helix-importer": "2.8.9",
+    "@adobe/helix-importer": "2.8.11",
     "@cliqz/adblocker-puppeteer": "^1.26.2",
     "chromium": "3.0.3",
     "cross-fetch": "^3.1.5",
