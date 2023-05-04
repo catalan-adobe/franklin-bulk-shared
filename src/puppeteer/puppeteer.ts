@@ -20,6 +20,7 @@ import fp from 'find-free-port';
 
 export type BrowserOptions = {
   headless?: string;
+  port?: number;
   width?: number;
   height?: number;
 };
@@ -35,7 +36,7 @@ Promise<[puppeteer.Browser, puppeteer.Page]> {
   const headless = options?.headless !== false ? 'new' : false;
   const width = options?.width || 1200;
   const height = options?.height ? options.height + 79 : 1079;
-  const port = await fp(9222);
+  const port = options?.port || await fp(9222);
 
   const browserLaunchOptions = {
     headless,
