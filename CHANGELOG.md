@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.1.1...v1.2.0) (2023-05-04)
+
+
+### Features
+
+* add option to force remote debugging port on puppeteer ([d562a75](https://github.com/catalan-adobe/franklin-bulk-shared/commit/d562a754046b9f1999ff6b943067b18e4c637bf5))
+
 ## [1.1.1](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.1.0...v1.1.1) (2023-05-04)
 
 
