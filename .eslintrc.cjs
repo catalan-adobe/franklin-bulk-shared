@@ -21,7 +21,8 @@ module.exports = {
     'linebreak-style': ['error', 'unix'],
     'import/extensions': ['error', {
       js: 'always',
-    }]
+    }],
+    "@typescript-eslint/ban-ts-comment": "warn"
   },
   plugins: [
     '@typescript-eslint',
