@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.1.0...v1.1.1) (2023-05-04)
+
+
+### Bug Fixes
+
+* implement chrome new headless feature ([dd56c3b](https://github.com/catalan-adobe/franklin-bulk-shared/commit/dd56c3b7dfd9836023b9778ee7d35c6ffeabae73))
+
 # [1.1.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.0.9...v1.1.0) (2023-05-04)
 
 
