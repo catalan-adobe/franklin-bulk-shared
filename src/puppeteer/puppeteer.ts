@@ -19,7 +19,7 @@ import fp from 'find-free-port';
  */
 
 export type BrowserOptions = {
-  headless?: boolean;
+  headless?: string;
   width?: number;
   height?: number;
 };
@@ -31,7 +31,8 @@ export type BrowserOptions = {
 export async function initBrowser(options?: BrowserOptions):
 Promise<[puppeteer.Browser, puppeteer.Page]> {
   // defaults
-  const headless = options?.headless !== false;
+  // @ts-ignore
+  const headless = options?.headless !== false ? 'new' : false;
   const width = options?.width || 1200;
   const height = options?.height ? options.height + 79 : 1079;
   const port = await fp(9222);
@@ -51,6 +52,7 @@ Promise<[puppeteer.Browser, puppeteer.Page]> {
   browserLaunchOptions.args.push(`--window-size=${width},${height}`);
 
   // init browser
+  // @ts-ignore
   const browser = await puppeteer.launch(browserLaunchOptions);
   const page = await browser.newPage();
 
