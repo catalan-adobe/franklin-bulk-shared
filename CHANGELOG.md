@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.0.9...v1.1.0) (2023-05-04)
+
+
+### Features
+
+* add puppeteer step to cache webpage resources locally ([df6f920](https://github.com/catalan-adobe/franklin-bulk-shared/commit/df6f920fac5f4f561589eb94d775952ee6015186))
+
 ## [1.0.9](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.0.8...v1.0.9) (2023-04-29)
 
 
