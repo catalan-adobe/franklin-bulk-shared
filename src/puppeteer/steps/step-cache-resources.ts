@@ -139,10 +139,10 @@ export function cacheResources({ outputFolder = `${process.cwd()}/cache` }: Cach
       */
 
       const newParams = await action(params);
-      // if (newParams.result && !newParams.result.passed) {
-      //   params.logger.warn('cache web resources - previous action failed, do not continue!');
-      //   return newParams;
-      // }
+      if (newParams.result && !newParams.result.passed) {
+        params.logger.warn('cache web resources - previous action failed, do not continue!');
+        return newParams;
+      }
 
       /*
       post browser action

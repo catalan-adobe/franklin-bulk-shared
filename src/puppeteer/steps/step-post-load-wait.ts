@@ -18,7 +18,11 @@ export function postLoadWait(ms) {
       params.logger.info('do post load wait');
 
       // main action
-      await action(params);
+      const newParams = await action(params);
+      if (newParams.result && !newParams.result.passed) {
+        params.logger.warn('smart scroll - previous action failed, do not continue!');
+        return newParams;
+      }
 
       await sleep(ms);
     } catch (e) {

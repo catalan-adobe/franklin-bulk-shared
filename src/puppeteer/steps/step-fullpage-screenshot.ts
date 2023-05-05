@@ -23,7 +23,11 @@ export function fullPageScreenshot({ outputFolder = `${process.cwd()}/screenshot
   return (action) => async (params) => {
     params.logger.info('start fullpage screenshot');
 
-    await action(params);
+    const newParams = await action(params);
+    if (newParams.result && !newParams.result.passed) {
+      params.logger.warn('smart scroll - previous action failed, do not continue!');
+      return newParams;
+    }
 
     const [p, filename] = buildPathAndFilenameWithPathFromUrl(params.url, 'screenshot', 'png');
     const path = pUtils.join(outputFolder, p);
