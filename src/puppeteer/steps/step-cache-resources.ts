@@ -190,7 +190,7 @@ export function cacheResources({ outputFolder = `${process.cwd()}/cache` }: Cach
       const path = pUtils.join(cacheFolder, p);
 
       if (!fs.existsSync(path)) {
-        fs.mkdirSync(pUtils.dirname(path), { recursive: true });
+        fs.mkdirSync(path, { recursive: true });
       }
       fs.writeFileSync(pUtils.join(path, filename), content);
       params.dom = content;
