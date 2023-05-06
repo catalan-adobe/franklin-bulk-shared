@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.2.0...v1.2.1) (2023-05-06)
+
+
+### Bug Fixes
+
+* **deps:** update dependency puppeteer-core to v20.1.1 ([1b7357a](https://github.com/catalan-adobe/franklin-bulk-shared/commit/1b7357a03331d8ccac1a0ebd69db904db5433511))
+
 # [1.2.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.1.1...v1.2.0) (2023-05-04)
 
 
