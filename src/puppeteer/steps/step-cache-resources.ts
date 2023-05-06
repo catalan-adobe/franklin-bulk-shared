@@ -12,7 +12,7 @@
 
 import fs from 'fs';
 import pUtils from 'path';
-import { buildFilenameWithPathFromUrl } from '../../url.js';
+import { buildPathAndFilenameWithPathFromUrl } from '../../url.js';
 
 type CacheResroucesStepOptions = {
   outputFolder?: string;
@@ -185,12 +185,14 @@ export function cacheResources({ outputFolder = `${process.cwd()}/cache` }: Cach
         }
       });
 
-      const path = buildFilenameWithPathFromUrl(params.url);
-      const filename = `${cacheFolder}${path}`;
-      if (!fs.existsSync(pUtils.dirname(filename))) {
-        fs.mkdirSync(pUtils.dirname(filename), { recursive: true });
+
+      const [p, filename] = buildPathAndFilenameWithPathFromUrl(params.url);
+      const path = pUtils.join(cacheFolder, p);
+
+      if (!fs.existsSync(path)) {
+        fs.mkdirSync(pUtils.dirname(path), { recursive: true });
       }
-      fs.writeFileSync(filename, content);
+      fs.writeFileSync(pUtils.join(path, filename), content);
       params.dom = content;
 
       // dump page headers
