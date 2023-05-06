@@ -70,7 +70,7 @@ export function cacheResources({ outputFolder = `${process.cwd()}/cache` }: Cach
         }
       } catch (e) {
         params.logger.error(`page request handler ${request.url()} ${e}`);
-        throw new Error(`error in pageRequestHandler: ${e}`);
+        // throw new Error(`error in pageRequestHandler: ${e}`);
       }
     }
 
