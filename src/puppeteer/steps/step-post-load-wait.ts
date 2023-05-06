@@ -20,7 +20,7 @@ export function postLoadWait(ms) {
       // main action
       const newParams = await action(params);
       if (newParams.result && !newParams.result.passed) {
-        params.logger.warn('smart scroll - previous action failed, do not continue!');
+        params.logger.warn('post load wait - previous action failed, do not continue!');
         return newParams;
       }
 

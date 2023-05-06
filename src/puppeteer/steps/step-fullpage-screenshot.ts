@@ -25,7 +25,7 @@ export function fullPageScreenshot({ outputFolder = `${process.cwd()}/screenshot
 
     const newParams = await action(params);
     if (newParams.result && !newParams.result.passed) {
-      params.logger.warn('smart scroll - previous action failed, do not continue!');
+      params.logger.warn('fullpage screenshot - previous action failed, do not continue!');
       return newParams;
     }
 
