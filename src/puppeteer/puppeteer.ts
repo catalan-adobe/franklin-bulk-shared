@@ -49,6 +49,8 @@ Promise<[puppeteer.Browser, puppeteer.Page]> {
       '--no-default-browser-check',
     ],
     ignoreDefaultArgs: ['--enable-automation'],
+    dumpio: true,
+    timeout: 60000,
   };
   browserLaunchOptions.args.push(`--window-size=${width},${height}`);
 
