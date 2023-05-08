@@ -92,7 +92,12 @@ export async function scrollUp(page: puppeteer.Page): Promise<void> {
  * Scrolls up the current page
  * @param {puppeteer.Page} page - An existing Puppeteer page object
  */
-export async function runStepsSequence(page: puppeteer.Page, url, steps): Promise<void> {
+export async function runStepsSequence(
+  page: puppeteer.Page,
+  url,
+  steps,
+  logger = null,
+): Promise<void> {
   function wrapBrowserAction(action, ...middlewares) {
     /* eslint-disable-next-line @typescript-eslint/no-shadow */
     return middlewares/* .reverse() */.reduce((action, middleware) => middleware(action), action);
@@ -127,7 +132,7 @@ export async function runStepsSequence(page: puppeteer.Page, url, steps): Promis
     done: false,
     postLoadDelay: 5000,
     url,
-    logger: console,
+    logger: logger || console,
     result: {
       passed: true,
       error: null,
@@ -154,11 +159,8 @@ export async function runStepsSequence(page: puppeteer.Page, url, steps): Promis
     } else if (e.message.indexOf('harvest::NON_BLOCKING_ERROR') > -1) {
       // eslint-disable-next-line no-console
       console.error(`non blocking error (do not retry) for ${url}: ${e}`);
-    } else {
-      throw e;
     }
-
-    return null;
+    throw e;
   }
 }
 

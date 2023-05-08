@@ -12,22 +12,22 @@
 
 import fs from 'fs';
 import pUtils from 'path';
-import { buildFilenameWithPathFromUrl } from '../../url.js';
+import { buildPathAndFilenameWithPathFromUrl } from '../../url.js';
 
 type CacheResroucesStepOptions = {
   outputFolder?: string;
 };
 
 class Deferred {
-  logger: any;
+  logger;
 
-  promise: Promise<any>;
+  promise;
 
-  reject: any;
+  reject;
 
-  resolve: any;
+  resolve;
 
-  constructor(logger: any) {
+  constructor(logger) {
     this.logger = logger;
     this.promise = new Promise((resolve, reject) => {
       this.reject = reject;
@@ -56,10 +56,10 @@ export function cacheResources({ outputFolder = `${process.cwd()}/cache` }: Cach
         const url = request.url(); // decodeURIComponent(request.url());
         const u = new URL(url);
         if (urlsToCache.find((el) => el.reqId === request._requestId)) {
-          params.logger.info('url already in caching flow ...');
+          // params.logger.info('url already in caching flow ...');
           return;
         }
-        params.logger.info(`request ${request.resourceType()} ${url}`);
+        // params.logger.info(`request ${request.resourceType()} ${url}`);
         if (['image', 'stylesheet'].includes(request.resourceType()) && pUtils.extname(u.pathname) !== '' && !u.pathname.endsWith('/') && !url.startsWith('data:image/svg+xml')) {
           const req = {
             reqId: request._requestId,
@@ -70,7 +70,7 @@ export function cacheResources({ outputFolder = `${process.cwd()}/cache` }: Cach
         }
       } catch (e) {
         params.logger.error(`page request handler ${request.url()} ${e}`);
-        throw new Error(`error in pageRequestHandler: ${e}`);
+        // throw new Error(`error in pageRequestHandler: ${e}`);
       }
     }
 
@@ -91,10 +91,10 @@ export function cacheResources({ outputFolder = `${process.cwd()}/cache` }: Cach
         if (urlToCache) {
           const status = response.status();
           if (status >= 300 && status <= 399) {
-            params.logger.info(`redirect from ${url} to ${response.headers().location}`);
+            // params.logger.info(`redirect from ${url} to ${response.headers().location}`);
             urlToCache.isDone.resolve('redirection');
           } else {
-            params.logger.info(`let's cache url ${url}`);
+            // params.logger.info(`let's cache url ${url}`);
             try {
               const u = new URL(url);
               const path = u.pathname.substr(0, u.pathname.lastIndexOf('/'));
@@ -113,8 +113,8 @@ export function cacheResources({ outputFolder = `${process.cwd()}/cache` }: Cach
               urlToCache.isDone.reject('cache-resources error trying to cache image', e);
             }
           }
-        } else {
-          params.logger.info(`skip caching url ${url}`);
+        // } else {
+        //   params.logger.info(`skip caching url ${url}`);
         }
       } catch (e) {
         params.logger.error(`page response handler ${response.url()} ${e}`);
@@ -152,7 +152,7 @@ export function cacheResources({ outputFolder = `${process.cwd()}/cache` }: Cach
         params.logger.info('all requests promises timeout!');
         urlsToCache.forEach((el) => {
           el.isDone.reject('timeout');
-          params.logger.info(`${el.url} ${el.reqId}`);
+          // params.logger.info(`${el.url} ${el.reqId}`);
         });
       }, 30000);
 
@@ -179,18 +179,19 @@ export function cacheResources({ outputFolder = `${process.cwd()}/cache` }: Cach
           const u = new URL(el.url);
           const cachedUrl = u.pathname + u.hash;
           content = content.replaceAll(`"${el.url}"`, `"${cachedUrl}"`);
-          params.logger.info(`rewriting url ${el.url} to cached version ${cachedUrl}`);
+          // params.logger.info(`rewriting url ${el.url} to cached version ${cachedUrl}`);
         } catch (e) {
           throw new Error(`rewrite DOM URL to cache version: ${e}`);
         }
       });
 
-      const path = buildFilenameWithPathFromUrl(params.url);
-      const filename = `${cacheFolder}${path}`;
-      if (!fs.existsSync(pUtils.dirname(filename))) {
-        fs.mkdirSync(pUtils.dirname(filename), { recursive: true });
+      const [p, filename] = buildPathAndFilenameWithPathFromUrl(params.url);
+      const path = pUtils.join(cacheFolder, p);
+
+      if (!fs.existsSync(path)) {
+        fs.mkdirSync(path, { recursive: true });
       }
-      fs.writeFileSync(filename, content);
+      fs.writeFileSync(pUtils.join(path, filename), content);
       params.dom = content;
 
       // dump page headers

@@ -21,7 +21,11 @@ export function GDPRAutoConsent() {
 
     await blocker.enableBlockingInPage(params.page);
 
-    await action(params);
+    const newParams = await action(params);
+    if (newParams.result && !newParams.result.passed) {
+      params.logger.warn('gdpr autoconsent - previous action failed, do not continue!');
+      return newParams;
+    }
 
     return params;
   };
