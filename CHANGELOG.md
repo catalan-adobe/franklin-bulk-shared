@@ -1,3 +1,10 @@
+## [1.2.2](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.2.1...v1.2.2) (2023-05-08)
+
+
+### Bug Fixes
+
+* puppeteer step cache resources ([#14](https://github.com/catalan-adobe/franklin-bulk-shared/issues/14)) ([5481701](https://github.com/catalan-adobe/franklin-bulk-shared/commit/54817016bc6606818fde5c53ca76e8193600ef7f))
+
 ## [1.2.1](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.2.0...v1.2.1) (2023-05-06)
 
 
