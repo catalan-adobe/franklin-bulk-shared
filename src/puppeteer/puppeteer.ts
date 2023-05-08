@@ -49,8 +49,6 @@ Promise<[puppeteer.Browser, puppeteer.Page]> {
       '--no-default-browser-check',
     ],
     ignoreDefaultArgs: ['--enable-automation'],
-    // dumpio: true,
-    // timeout: 60000,
   };
   browserLaunchOptions.args.push(`--window-size=${width},${height}`);
 
@@ -94,7 +92,12 @@ export async function scrollUp(page: puppeteer.Page): Promise<void> {
  * Scrolls up the current page
  * @param {puppeteer.Page} page - An existing Puppeteer page object
  */
-export async function runStepsSequence(page: puppeteer.Page, url, steps, logger = null): Promise<void> {
+export async function runStepsSequence(
+  page: puppeteer.Page,
+  url,
+  steps,
+  logger = null,
+): Promise<void> {
   function wrapBrowserAction(action, ...middlewares) {
     /* eslint-disable-next-line @typescript-eslint/no-shadow */
     return middlewares/* .reverse() */.reduce((action, middleware) => middleware(action), action);
@@ -156,12 +159,8 @@ export async function runStepsSequence(page: puppeteer.Page, url, steps, logger 
     } else if (e.message.indexOf('harvest::NON_BLOCKING_ERROR') > -1) {
       // eslint-disable-next-line no-console
       console.error(`non blocking error (do not retry) for ${url}: ${e}`);
-    // } else {
-    //   throw e;
     }
     throw e;
-
-    return null;
   }
 }
 

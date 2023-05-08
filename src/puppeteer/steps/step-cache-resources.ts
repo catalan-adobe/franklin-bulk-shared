@@ -19,15 +19,15 @@ type CacheResroucesStepOptions = {
 };
 
 class Deferred {
-  logger: any;
+  logger;
 
-  promise: Promise<any>;
+  promise;
 
-  reject: any;
+  reject;
 
-  resolve: any;
+  resolve;
 
-  constructor(logger: any) {
+  constructor(logger) {
     this.logger = logger;
     this.promise = new Promise((resolve, reject) => {
       this.reject = reject;
@@ -184,7 +184,6 @@ export function cacheResources({ outputFolder = `${process.cwd()}/cache` }: Cach
           throw new Error(`rewrite DOM URL to cache version: ${e}`);
         }
       });
-
 
       const [p, filename] = buildPathAndFilenameWithPathFromUrl(params.url);
       const path = pUtils.join(cacheFolder, p);
