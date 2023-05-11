@@ -161,8 +161,9 @@ export async function runStepsSequence(
     } else if (e.message.indexOf('harvest::NON_BLOCKING_ERROR') > -1) {
       // eslint-disable-next-line no-console
       console.error(`non blocking error (do not retry) for ${url}: ${e}`);
+    } else {
+      throw e;
     }
-    throw e;
   }
 }
 
