@@ -55,7 +55,9 @@ Promise<[puppeteer.Browser, puppeteer.Page]> {
   // init browser
   // @ts-ignore
   const browser = await puppeteer.launch(browserLaunchOptions);
-  const page = await browser.newPage();
+
+  // get existing tab/page (first item in the array)
+  const [page] = await browser.pages();
 
   // clean up user agent
   if (headless) {
