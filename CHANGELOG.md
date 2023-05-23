@@ -1,3 +1,10 @@
+## [1.3.5](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.3.4...v1.3.5) (2023-05-23)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-importer to v2.9.7 ([#17](https://github.com/catalan-adobe/franklin-bulk-shared/issues/17)) ([ad25eaa](https://github.com/catalan-adobe/franklin-bulk-shared/commit/ad25eaaa0fd8c6dd90c70c1b55db77d838c70c0b))
+
 ## [1.3.4](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.3.3...v1.3.4) (2023-05-23)
 
 
