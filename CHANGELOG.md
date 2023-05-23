@@ -1,3 +1,10 @@
+## [1.3.4](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.3.3...v1.3.4) (2023-05-23)
+
+
+### Bug Fixes
+
+* **deps:** update dependency jsdom to v22 ([#16](https://github.com/catalan-adobe/franklin-bulk-shared/issues/16)) ([e28a9fd](https://github.com/catalan-adobe/franklin-bulk-shared/commit/e28a9fd68cbe1ddff411c5f1095224d32ad9aae1))
+
 ## [1.3.3](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.3.2...v1.3.3) (2023-05-20)
 
 
