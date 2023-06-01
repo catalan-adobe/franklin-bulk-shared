@@ -22,7 +22,8 @@ module.exports = {
     'import/extensions': ['error', {
       js: 'always',
     }],
-    "@typescript-eslint/ban-ts-comment": "warn"
+    'import/prefer-default-export': 'off',
+    '@typescript-eslint/ban-ts-comment': 'warn'
   },
   plugins: [
     '@typescript-eslint',
