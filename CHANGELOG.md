@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.3.6...v1.4.0) (2023-06-01)
+
+
+### Features
+
+* add web functions to download and parse robots.txt and sitemaps ([#21](https://github.com/catalan-adobe/franklin-bulk-shared/issues/21)) ([0cc62fa](https://github.com/catalan-adobe/franklin-bulk-shared/commit/0cc62faf51d13ec6172ae92e85924d0a1d12316d))
+
 ## [1.3.6](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.3.5...v1.3.6) (2023-05-27)
 
 
