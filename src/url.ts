@@ -6,6 +6,7 @@ export function buildPathAndFilenameWithPathFromUrl(url, suffix = '', extension 
 
   if (u.pathname.lastIndexOf('/') === u.pathname.length - 1) {
     p.name = '___';
+    p.dir = path.join(p.dir, p.base);
   }
 
   if (suffix) {
