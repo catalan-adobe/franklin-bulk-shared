@@ -1,3 +1,10 @@
+## [1.4.2](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.4.1...v1.4.2) (2023-06-12)
+
+
+### Bug Fixes
+
+* path and filename returned for root path urls ([3c383a2](https://github.com/catalan-adobe/franklin-bulk-shared/commit/3c383a20ae1a6dcc3bf39fb8884f0bda583a08ec))
+
 ## [1.4.1](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.4.0...v1.4.1) (2023-06-03)
 
 
