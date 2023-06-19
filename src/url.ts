@@ -41,3 +41,19 @@ export function sanitizeURL(url) {
     throw new Error(`: ${e}`);
   }
 }
+
+export function getPlainHtmlUrl(url) {
+  if (url.endsWith('/')) {
+    return `${url}index.plain.html`;
+  }
+
+  const u = new URL(url);
+
+  const p = path.parse(u.pathname);
+  p.base = '';
+  p.ext = '.plain.html';
+
+  u.pathname = path.format(p);
+
+  return u.toString();
+}

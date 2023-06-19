@@ -34,4 +34,5 @@ module.exports = {
       exports: {},
     },
   },
+  ignorePatterns: ['xp/']
 };

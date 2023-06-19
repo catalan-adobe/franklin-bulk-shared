@@ -11,6 +11,7 @@
  */
 
 export * as Puppeteer from './src/puppeteer/puppeteer.js';
+export * as Stats from './src/stats.js';
 export * as Time from './src/time.js';
 export * as Url from './src/url.js';
 export * as Web from './src/web/web.js';
