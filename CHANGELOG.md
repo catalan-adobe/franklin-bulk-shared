@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.4.2...v1.5.0) (2023-06-19)
+
+
+### Features
+
+* add function to collect basic blocks stats for a franklin url ([9f1e713](https://github.com/catalan-adobe/franklin-bulk-shared/commit/9f1e7135c6f1dc42f9a6e4b622aa12da2adb2529))
+
 ## [1.4.2](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.4.1...v1.4.2) (2023-06-12)
 
 
