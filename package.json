@@ -44,7 +44,7 @@
     "jsdom": "^22.1.0",
     "lighthouse": "^10.0.2",
     "p-queue": "^7.3.4",
-    "puppeteer-core": "20.5.0",
+    "puppeteer-core": "20.7.3",
     "robots-parser": "^3.0.1",
     "serve-static": "^1.15.0",
     "sharp": "^0.32.0"
