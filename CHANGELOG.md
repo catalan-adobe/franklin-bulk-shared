@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.5.0...v1.6.0) (2023-06-27)
+
+
+### Features
+
+* add puppeteer full scenario to take a full page screenshot ([e9c8fbd](https://github.com/catalan-adobe/franklin-bulk-shared/commit/e9c8fbd6e0b83c369bbfa1d9c3ab36e92d1cadbf))
+
 # [1.5.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.4.2...v1.5.0) (2023-06-19)
 
 
