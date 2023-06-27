@@ -165,3 +165,4 @@ export async function runStepsSequence(
 }
 
 export * as Steps from './steps/steps.js';
+export * as Scenarios from './scenarios/scenarios.js';

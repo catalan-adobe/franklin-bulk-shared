@@ -33,7 +33,7 @@
   },
   "homepage": "https://github.com/catalan-adobe/franklin-bulk-shared#readme",
   "dependencies": {
-    "@cliqz/adblocker-puppeteer": "1.26.6",
+    "@cliqz/adblocker-puppeteer": "^1.26.6",
     "chromium": "3.0.3",
     "cross-fetch": "3.1.6",
     "fast-xml-parser": "4.2.5",
@@ -42,7 +42,10 @@
     "jsdom": "22.1.0",
     "lighthouse": "10.3.0",
     "p-queue": "7.3.4",
-    "puppeteer-core": "20.7.3",
+    "puppeteer": "^20.7.3",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-adblocker": "^2.13.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2",
     "robots-parser": "3.0.1"
   },
   "devDependencies": {
