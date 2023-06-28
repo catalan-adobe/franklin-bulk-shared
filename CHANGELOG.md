@@ -1,3 +1,16 @@
+# [1.8.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.7.0...v1.8.0) (2023-06-28)
+
+
+### Bug Fixes
+
+* use index instead of "___" as url filename for root path ([cb87f6c](https://github.com/catalan-adobe/franklin-bulk-shared/commit/cb87f6c9bf7514033ad73427520eccb5a8003ec9))
+* use puppeteer networkidle0 strategy when loading the page in fullpage screenshot scenario function ([7666fd6](https://github.com/catalan-adobe/franklin-bulk-shared/commit/7666fd6b1f1e9d8c2d1fd268dd1a3dda74b80bb2))
+
+
+### Features
+
+* add new function to extract details of an url ([ec9ccfe](https://github.com/catalan-adobe/franklin-bulk-shared/commit/ec9ccfedda3c2f60d97f94aeb04a8e6ed3c826d6))
+
 # [1.7.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.6.0...v1.7.0) (2023-06-28)
 
 
