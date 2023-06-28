@@ -57,3 +57,20 @@ export function getPlainHtmlUrl(url) {
 
   return u.toString();
 }
+
+export function extractDetailsFromUrl(url) {
+  const u = new URL(url);
+  const p = path.parse(u.pathname); // path
+
+  if (u.pathname.lastIndexOf('/') === u.pathname.length - 1) {
+    p.name = 'index';
+    p.dir = path.join(p.dir, p.base);
+  }
+
+  return {
+    host: u.host.replaceAll(/[:\.]/g, '_'),
+    path: p.dir,
+    filename: p.name,
+    extension: p.ext,
+  };
+}
