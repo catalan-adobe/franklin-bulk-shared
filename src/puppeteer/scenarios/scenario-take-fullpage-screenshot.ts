@@ -70,15 +70,17 @@ export async function takeFullPageScreenshot(options: FullPageScreenshotScenario
     }
 
     console.log('Testing adblocker plugin..');
-    await page.goto(opts.url);
+    await page.goto(opts.url, { waitUntil: 'networkidle0' });
 
     // scroll to bottom
+    console.log('Scroll down ...');
     await page.evaluate(() => {
       window.scrollTo({ left: 0, top: window.document.body.scrollHeight, behavior: 'smooth' });
     });
     await sleep(2000);
 
-    // scroll bsck up
+    // scroll back up
+    console.log('Scroll up ...');
     await page.evaluate(() => {
       window.scrollTo(0, 0);
     });
