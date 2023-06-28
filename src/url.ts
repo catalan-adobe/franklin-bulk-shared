@@ -5,7 +5,7 @@ export function buildPathAndFilenameWithPathFromUrl(url, suffix = '', extension 
   const p = path.parse(u.pathname); // path
 
   if (u.pathname.lastIndexOf('/') === u.pathname.length - 1) {
-    p.name = '___';
+    p.name = 'index';
     p.dir = path.join(p.dir, p.base);
   }
 
