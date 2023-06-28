@@ -1,4 +1,5 @@
 import chromium from 'chromium';
+import pptr from 'puppeteer';
 import _puppeteer from 'puppeteer-extra';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 import { fullLists, PuppeteerBlocker } from '@cliqz/adblocker-puppeteer';
@@ -9,6 +10,7 @@ const puppeteer = _puppeteer.default;
 
 export type FullPageScreenshotScenarionOptions = {
   url: string;
+  page?: pptr.Page;
   width?: number;
   postLoadWait?: number;
   adblocker?: boolean;
@@ -16,6 +18,7 @@ export type FullPageScreenshotScenarionOptions = {
   headless?: boolean;
 };
 const defaultFullPageScreenshotScenarionOptions = {
+  page: null,
   width: 1280,
   postLoadWait: 1000,
   adblocker: true,
@@ -24,13 +27,13 @@ const defaultFullPageScreenshotScenarionOptions = {
 };
 
 export async function takeFullPageScreenshot(options: FullPageScreenshotScenarionOptions) {
-
-  options = {
+  const opts = {
     ...defaultFullPageScreenshotScenarionOptions,
     ...options,
   };
 
-  console.log('options', options);
+  console.log('options', opts);
+
   let browser;
   let screenshotBuffer;
 
@@ -38,20 +41,22 @@ export async function takeFullPageScreenshot(options: FullPageScreenshotScenario
     // // Add stealth plugin and use defaults (all tricks to hide puppeteer usage)
     puppeteer.use(StealthPlugin());
 
-    browser = await puppeteer.launch({
-      executablePath: chromium.path,
-      headless: options.headless,
-      args: [
-        '--remote-allow-origins=*',
-        '--no-sandbox',
-        '--no-default-browser-check',
-      ],
-      ignoreDefaultArgs: ['--enable-automation'],
-    });
+    if (!opts.page) {
+      browser = await puppeteer.launch({
+        executablePath: chromium.path,
+        headless: opts.headless,
+        args: [
+          '--remote-allow-origins=*',
+          '--no-sandbox',
+          '--no-default-browser-check',
+        ],
+        ignoreDefaultArgs: ['--enable-automation'],
+      });
+    }
 
-    const page = await browser.newPage();
+    const page = opts.page || await browser.newPage();
 
-    await page.setViewport({ width: options.width, height: 1000 });
+    await page.setViewport({ width: opts.width, height: 1000 });
 
     const blocker = await PuppeteerBlocker.fromLists(fetch, [
       ...fullLists,
@@ -60,12 +65,12 @@ export async function takeFullPageScreenshot(options: FullPageScreenshotScenario
 
     await blocker.enableBlockingInPage(page);
 
-    if (!options.adblocker) {
+    if (!opts.adblocker) {
       await blocker.disableBlockingInPage(page);
     }
 
     console.log('Testing adblocker plugin..');
-    await page.goto(options.url);
+    await page.goto(opts.url);
 
     // scroll to bottom
     await page.evaluate(() => {
@@ -79,10 +84,10 @@ export async function takeFullPageScreenshot(options: FullPageScreenshotScenario
     });
     await sleep(250);
 
-    if (options.selectorAllToRemove) {
+    if (opts.selectorAllToRemove) {
       await page.evaluate((selector) => {
         document.querySelectorAll(selector).forEach((el) => el.remove());
-      }, options.selectorAllToRemove);
+      }, opts.selectorAllToRemove);
     }
 
     // Evaluate JavaScript
@@ -90,12 +95,12 @@ export async function takeFullPageScreenshot(options: FullPageScreenshotScenario
     const pageHeight = await page.evaluate(() => window.document.body.offsetHeight || window.document.body.scrollHeight);
 
     await page.setViewport({
-      width: options.width,
+      width: opts.width,
       height: pageHeight,
       deviceScaleFactor: 1,
     });
 
-    await sleep(options.postLoadWait);
+    await sleep(opts.postLoadWait);
 
     screenshotBuffer = await page.screenshot({ fullPage: true });
 
