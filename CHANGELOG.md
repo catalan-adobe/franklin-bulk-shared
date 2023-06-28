@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.6.0...v1.7.0) (2023-06-28)
+
+
+### Features
+
+* pass existing pptr page to fullpage screenshot scenario function ([c1e6a3a](https://github.com/catalan-adobe/franklin-bulk-shared/commit/c1e6a3a8112c1ee9bf810b3522f90b1086363b30))
+
 # [1.6.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.5.0...v1.6.0) (2023-06-27)
 
 
