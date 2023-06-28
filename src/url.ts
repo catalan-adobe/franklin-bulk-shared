@@ -68,7 +68,7 @@ export function extractDetailsFromUrl(url) {
   }
 
   return {
-    host: u.host.replaceAll(/[:\.]/g, '_'),
+    host: u.host.replaceAll(/[:.]/g, '_'),
     path: p.dir,
     filename: p.name,
     extension: p.ext,
