@@ -136,7 +136,7 @@ export async function runStepsSequence(
   async function mainBrowserAction(params) {
     try {
       // console.info('mainBrowserAction - navigate to page');
-      const resp = await params.page.goto(params.url);
+      const resp = await params.page.goto(params.url, { waitUntil: 'networkidle0' });
       // fail early in case page is unreachable for some reason
       if (resp.status() >= 400) {
         throw new Error(`harvest::NON_BLOCKING_ERROR navigation failure for ${params.url}, got ${resp.status()}`);
