@@ -172,8 +172,6 @@ export async function runStepsSequence(
   try {
     const browserScript = wrapBrowserAction(mainBrowserAction, ...steps);
     const res = await browserScript(browserScriptParameters);
-    // console.log('Browser Script Result:');
-    // console.log(res);
 
     if (!res.result.passed) {
       throw new Error(`browser script failed: ${res.result.error}`);
