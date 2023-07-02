@@ -11,8 +11,13 @@
  */
 
 import chromium from 'chromium';
-import puppeteer from 'puppeteer-core';
+import _puppeteer from 'puppeteer-extra';
+import pptr from 'puppeteer';
 import fp from 'find-free-port';
+import StealthPlugin from 'puppeteer-extra-plugin-stealth';
+import { fullLists, PuppeteerBlocker } from '@cliqz/adblocker-puppeteer';
+
+const puppeteer = _puppeteer.default;
 
 /*
  * Types
@@ -23,46 +28,71 @@ export type BrowserOptions = {
   port?: number;
   width?: number;
   height?: number;
+  adBlocker?: boolean;
+  gdprAutoConsent?: boolean;
+};
+
+const defaultBrowserOptions = {
+  headless: true,
+  port: null,
+  width: 1280,
+  height: 1000,
+  adBlocker: true,
+  gdprAutoConsent: true,
 };
 
 /*
  * Functions
  */
 
-export async function initBrowser(options?: BrowserOptions):
-Promise<[puppeteer.Browser, puppeteer.Page]> {
-  // defaults
-  // @ts-ignore
-  const headless = options?.headless !== false ? 'new' : false;
-  const width = options?.width || 1200;
-  const height = options?.height ? options.height + 79 : 1079;
-  const port = options?.port || await fp(9222);
+puppeteer.use(StealthPlugin());
+
+export async function initBrowser(options?: BrowserOptions) {
+  const opts = {
+    ...defaultBrowserOptions,
+    ...options,
+  };
+
+  if (!opts.port) {
+    opts.port = await fp(9222);
+  }
 
   const browserLaunchOptions = {
-    headless,
+    headless: opts.headless,
     executablePath: chromium.path,
     defaultViewport: null,
     args: [
       '--remote-allow-origins=*',
-      `--remote-debugging-port=${port}`, // force port to avoid issues loading some pages
+      `--remote-debugging-port=${opts.port}`, // force port to avoid issues loading some pages
       '--no-sandbox',
       '--no-default-browser-check',
     ],
     ignoreDefaultArgs: ['--enable-automation'],
   };
-  browserLaunchOptions.args.push(`--window-size=${width},${height}`);
+  browserLaunchOptions.args.push(`--window-size=${opts.width},${opts.height}`);
 
   // init browser
   // @ts-ignore
   const browser = await puppeteer.launch(browserLaunchOptions);
-  const page = await browser.newPage();
+  const pages = await browser.pages();
+  const page = pages[0] || await browser.newPage();
 
-  // clean up user agent
-  if (headless) {
-    let ua = await browser.userAgent();
-    ua = ua.replace(/headless/gi, '');
+  // blockers
+  const blockerList = [];
+  if (options?.adBlocker) {
+    blockerList.push(...fullLists);
+  }
+  if (options?.gdprAutoConsent) {
+    blockerList.push('https://secure.fanboy.co.nz/fanboy-cookiemonster.txt');
+  }
 
-    await page.setUserAgent(ua);
+  if (blockerList.length > 0) {
+    const blocker = await PuppeteerBlocker.fromLists(fetch, [
+      ...fullLists,
+      'https://secure.fanboy.co.nz/fanboy-cookiemonster.txt',
+    ]);
+
+    await blocker.enableBlockingInPage(page);
   }
 
   return [browser, page];
@@ -70,9 +100,9 @@ Promise<[puppeteer.Browser, puppeteer.Page]> {
 
 /**
  * Scrolls down the current page
- * @param {puppeteer.Page} page - An existing Puppeteer page object
+ * @param {pptr.Page} page - An existing Puppeteer page object
  */
-export async function scrollDown(page: puppeteer.Page): Promise<void> {
+export async function scrollDown(page: pptr.Page): Promise<void> {
   return page.evaluate(() => {
     window.scrollTo({ left: 0, top: window.document.body.scrollHeight, behavior: 'smooth' });
   });
@@ -80,9 +110,9 @@ export async function scrollDown(page: puppeteer.Page): Promise<void> {
 
 /**
  * Scrolls up the current page
- * @param {puppeteer.Page} page - An existing Puppeteer page object
+ * @param {pptr.Page} page - An existing Puppeteer page object
  */
-export async function scrollUp(page: puppeteer.Page): Promise<void> {
+export async function scrollUp(page: pptr.Page): Promise<void> {
   return page.evaluate(() => {
     window.scrollTo({ left: 0, top: 0 });
   });
@@ -90,10 +120,10 @@ export async function scrollUp(page: puppeteer.Page): Promise<void> {
 
 /**
  * Scrolls up the current page
- * @param {puppeteer.Page} page - An existing Puppeteer page object
+ * @param {pptr.Page} page - An existing Puppeteer page object
  */
 export async function runStepsSequence(
-  page: puppeteer.Page,
+  page: pptr.Page,
   url,
   steps,
   logger = null,
