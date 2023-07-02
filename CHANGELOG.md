@@ -1,3 +1,16 @@
+# [1.9.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.8.0...v1.9.0) (2023-07-02)
+
+
+### Bug Fixes
+
+* improve smart scroll puppeteer step ([0a40e51](https://github.com/catalan-adobe/franklin-bulk-shared/commit/0a40e5166957652eaf5d2295152c282ba18f10c4))
+* use network idle strategy in puppeteer sequence run main action ([74505b8](https://github.com/catalan-adobe/franklin-bulk-shared/commit/74505b8445fdc3f7aa1ff5e1ea0c59a0fb646df8))
+
+
+### Features
+
+* use puppeteer extra stack ([e229982](https://github.com/catalan-adobe/franklin-bulk-shared/commit/e229982a922cf69cb1d60a03023cb00a8e28132f))
+
 # [1.8.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.7.0...v1.8.0) (2023-06-28)
 
 
