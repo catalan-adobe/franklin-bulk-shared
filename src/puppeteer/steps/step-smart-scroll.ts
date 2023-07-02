@@ -15,6 +15,24 @@ type SmartScrollStepOptions = {
   postReset?: boolean;
 };
 
+async function autoScroll(page) {
+  await page.evaluate(async () => {
+    await new Promise((resolve) => {
+      let totalHeight = 0;
+      const distance = 500;
+      const timer = setInterval(() => {
+        const { scrollHeight } = window.document.scrollingElement;
+        totalHeight += distance;
+        window.document.scrollingElement.scrollTo({ top: totalHeight, left: 0, behavior: 'instant' });
+        if (totalHeight >= scrollHeight) {
+          clearInterval(timer);
+          resolve(true);
+        }
+      }, 100);
+    });
+  });
+}
+
 /* eslint-disable-next-line import/prefer-default-export */
 export function smartScroll({ postReset = true }: SmartScrollStepOptions = {}) {
   return (action) => async (params) => {
@@ -31,19 +49,17 @@ export function smartScroll({ postReset = true }: SmartScrollStepOptions = {}) {
        * scroll
        */
 
-      for (let i = 0; i < 10; i += 1) {
-        /* eslint no-await-in-loop: "off" */
-        await params.page.evaluate(() => {
-          window.scrollTo({ left: 0, top: window.document.body.scrollHeight, behavior: 'smooth' });
-        });
-        await sleep(500);
-      }
+      // scroll to bottom
+      params.logger.log('Scrolling down ...');
+      await autoScroll(params.page);
 
+      // scroll back up
       if (postReset) {
+        params.logger.log('Scrolling up ...');
         await params.page.evaluate(() => {
-          window.scrollTo(0, 0);
+          window.document.scrollingElement.scrollTo({ left: 0, top: 0, behavior: 'instant' });
         });
-        await sleep(1000);
+        await sleep(250);
       }
 
       params.logger.info('stop smart scroll');
