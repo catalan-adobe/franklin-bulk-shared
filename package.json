@@ -40,7 +40,7 @@
     "find-free-port": "2.0.0",
     "got": "13.0.0",
     "jsdom": "22.1.0",
-    "lighthouse": "10.3.0",
+    "lighthouse": "10.4.0",
     "p-queue": "7.3.4",
     "puppeteer": "^20.7.3",
     "puppeteer-extra": "^3.3.6",
