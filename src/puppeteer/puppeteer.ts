@@ -84,7 +84,11 @@ export async function initBrowser(options?: BrowserOptions) {
   // @ts-ignore
   const browser = await puppeteer.launch(browserLaunchOptions);
   const pages = await browser.pages();
-  const page = pages[0] || await browser.newPage();
+  if (pages[0]) {
+    await pages[0].close();
+  }
+  // const page = pages[0] || await browser.newPage();
+  const page = await browser.newPage();
 
   // blockers
   const blockerList = [];
