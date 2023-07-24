@@ -1,3 +1,15 @@
+# [1.10.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.9.0...v1.10.0) (2023-07-24)
+
+
+### Bug Fixes
+
+* puppeteer extra stealthplugin not working ootb ([e7c4b30](https://github.com/catalan-adobe/franklin-bulk-shared/commit/e7c4b30d421c0e1b3deb9137f42b11e21a87816f))
+
+
+### Features
+
+* add options for browser startup (devtools, maximized) ([48eeb72](https://github.com/catalan-adobe/franklin-bulk-shared/commit/48eeb721fab1f2a789c3060cf6313f4f20482850))
+
 # [1.9.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.8.0...v1.9.0) (2023-07-02)
 
 
