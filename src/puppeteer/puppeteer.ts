@@ -30,6 +30,8 @@ export type BrowserOptions = {
   height?: number;
   adBlocker?: boolean;
   gdprAutoConsent?: boolean;
+  devTools?: boolean;
+  maximized?: boolean;
 };
 
 const defaultBrowserOptions = {
@@ -39,6 +41,8 @@ const defaultBrowserOptions = {
   height: 1000,
   adBlocker: true,
   gdprAutoConsent: true,
+  devTools: false,
+  maximized: false,
 };
 
 /*
@@ -58,7 +62,8 @@ export async function initBrowser(options?: BrowserOptions) {
   }
 
   const browserLaunchOptions = {
-    headless: opts.headless,
+    devtools: opts.devTools,
+    headless: opts.headless, // === true ? 'new' : false,
     executablePath: chromium.path,
     defaultViewport: null,
     args: [
@@ -69,7 +74,11 @@ export async function initBrowser(options?: BrowserOptions) {
     ],
     ignoreDefaultArgs: ['--enable-automation'],
   };
-  browserLaunchOptions.args.push(`--window-size=${opts.width},${opts.height}`);
+  if (opts.maximized) {
+    browserLaunchOptions.args.push(`--start-maximized`);
+  } else {
+    browserLaunchOptions.args.push(`--window-size=${opts.width},${opts.height}`);
+  }
 
   // init browser
   // @ts-ignore
