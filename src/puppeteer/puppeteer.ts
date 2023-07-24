@@ -75,7 +75,7 @@ export async function initBrowser(options?: BrowserOptions) {
     ignoreDefaultArgs: ['--enable-automation'],
   };
   if (opts.maximized) {
-    browserLaunchOptions.args.push(`--start-maximized`);
+    browserLaunchOptions.args.push('--start-maximized');
   } else {
     browserLaunchOptions.args.push(`--window-size=${opts.width},${opts.height}`);
   }
