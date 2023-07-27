@@ -15,7 +15,7 @@ import { sleep } from '../../time.js';
 export function postLoadWait(ms) {
   return (action) => async (params) => {
     try {
-      params.logger.info('do post load wait');
+      params.logger.info(`do post load wait (${ms}ms)`);
 
       // main action
       const newParams = await action(params);
