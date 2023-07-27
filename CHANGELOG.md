@@ -1,3 +1,10 @@
+# [1.11.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.10.1...v1.11.0) (2023-07-27)
+
+
+### Features
+
+* add option to use local chrome when starting puppeteer browser ([88d65ff](https://github.com/catalan-adobe/franklin-bulk-shared/commit/88d65ff5b13cd3a4d5882c64e0c1bdf388d2936b))
+
 ## [1.10.1](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.10.0...v1.10.1) (2023-07-27)
 
 
