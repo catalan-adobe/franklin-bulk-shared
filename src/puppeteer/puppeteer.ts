@@ -16,6 +16,7 @@ import pptr from 'puppeteer';
 import fp from 'find-free-port';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 import { fullLists, PuppeteerBlocker } from '@cliqz/adblocker-puppeteer';
+import chromePaths from 'chrome-paths';
 
 const puppeteer = _puppeteer.default;
 
@@ -32,6 +33,7 @@ export type BrowserOptions = {
   gdprBlocker?: boolean;
   devTools?: boolean;
   maximized?: boolean;
+  useLocalChrome?: boolean;
 };
 
 const defaultBrowserOptions = {
@@ -43,6 +45,7 @@ const defaultBrowserOptions = {
   gdprBlocker: true,
   devTools: false,
   maximized: false,
+  useLocalChrome: false,
 };
 
 /*
@@ -61,10 +64,20 @@ export async function initBrowser(options?: BrowserOptions) {
     opts.port = await fp(9222);
   }
 
+  let chromePath = chromium.path;
+  if (opts.useLocalChrome) {
+    if (chromePaths.chrome) {
+      chromePath = chromePaths.chrome;
+    } else {
+      // eslint-disable-next-line no-console
+      console.error('chrome not found on this machine, fallback to chromium');
+    }
+  }
+
   const browserLaunchOptions = {
     devtools: opts.devTools,
     headless: opts.headless, // === true ? 'new' : false,
-    executablePath: chromium.path,
+    executablePath: chromePath,
     defaultViewport: null,
     args: [
       '--remote-allow-origins=*',
