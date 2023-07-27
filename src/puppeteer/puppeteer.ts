@@ -101,8 +101,7 @@ export async function initBrowser(options?: BrowserOptions) {
 
   if (blockerList.length > 0) {
     const blocker = await PuppeteerBlocker.fromLists(fetch, [
-      ...fullLists,
-      'https://secure.fanboy.co.nz/fanboy-cookiemonster.txt',
+      ...blockerList,
     ]);
 
     await blocker.enableBlockingInPage(page);
