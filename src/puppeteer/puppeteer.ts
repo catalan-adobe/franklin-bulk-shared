@@ -29,7 +29,7 @@ export type BrowserOptions = {
   width?: number;
   height?: number;
   adBlocker?: boolean;
-  gdprAutoConsent?: boolean;
+  gdprBlocker?: boolean;
   devTools?: boolean;
   maximized?: boolean;
 };
@@ -40,7 +40,7 @@ const defaultBrowserOptions = {
   width: 1280,
   height: 1000,
   adBlocker: true,
-  gdprAutoConsent: true,
+  gdprBlocker: true,
   devTools: false,
   maximized: false,
 };
@@ -95,7 +95,7 @@ export async function initBrowser(options?: BrowserOptions) {
   if (options?.adBlocker) {
     blockerList.push(...fullLists);
   }
-  if (options?.gdprAutoConsent) {
+  if (options?.gdprBlocker) {
     blockerList.push('https://secure.fanboy.co.nz/fanboy-cookiemonster.txt');
   }
 
