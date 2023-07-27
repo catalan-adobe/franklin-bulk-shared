@@ -1,3 +1,10 @@
+## [1.10.1](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.10.0...v1.10.1) (2023-07-27)
+
+
+### Bug Fixes
+
+* list of blockers used at browser startup ([d0711f7](https://github.com/catalan-adobe/franklin-bulk-shared/commit/d0711f74669bc8e49b938ab38776cf00aeff5cdd))
+
 # [1.10.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.9.0...v1.10.0) (2023-07-24)
 
 
