@@ -53,6 +53,9 @@ export function smartScroll({ postReset = true }: SmartScrollStepOptions = {}) {
       params.logger.log('Scrolling down ...');
       await autoScroll(params.page);
 
+      // pace
+      await sleep(250);
+
       // scroll back up
       if (postReset) {
         params.logger.log('Scrolling up ...');
