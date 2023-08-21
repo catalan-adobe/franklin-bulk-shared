@@ -34,6 +34,7 @@ export type BrowserOptions = {
   devTools?: boolean;
   maximized?: boolean;
   useLocalChrome?: boolean;
+  userDataDir?: string;
 };
 
 const defaultBrowserOptions = {
@@ -74,7 +75,7 @@ export async function initBrowser(options?: BrowserOptions) {
     }
   }
 
-  const browserLaunchOptions = {
+  const browserLaunchOptions: any = {
     devtools: opts.devTools,
     headless: opts.headless, // === true ? 'new' : false,
     executablePath: chromePath,
@@ -91,6 +92,9 @@ export async function initBrowser(options?: BrowserOptions) {
     browserLaunchOptions.args.push('--start-maximized');
   } else {
     browserLaunchOptions.args.push(`--window-size=${opts.width},${opts.height}`);
+  }
+  if (opts.userDataDir) {
+    browserLaunchOptions.userDataDir = opts.userDataDir;
   }
 
   // init browser
