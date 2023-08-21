@@ -1,3 +1,10 @@
+# [1.12.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.11.0...v1.12.0) (2023-08-21)
+
+
+### Features
+
+* expose puppeteer userDataDir property in generic init browser function ([4aaeaa5](https://github.com/catalan-adobe/franklin-bulk-shared/commit/4aaeaa5b63a10eaa0264f10c0b6c87d94b18296e))
+
 # [1.11.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.10.1...v1.11.0) (2023-07-27)
 
 
