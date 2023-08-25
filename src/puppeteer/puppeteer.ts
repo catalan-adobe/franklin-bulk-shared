@@ -35,6 +35,7 @@ export type BrowserOptions = {
   maximized?: boolean;
   useLocalChrome?: boolean;
   userDataDir?: string;
+  extraArgs?: string[];
 };
 
 const defaultBrowserOptions = {
@@ -47,7 +48,14 @@ const defaultBrowserOptions = {
   devTools: false,
   maximized: false,
   useLocalChrome: false,
+  extraArgs: [],
 };
+
+const defaultBrowserArgs = [
+  '--remote-allow-origins=*',
+  '--no-sandbox',
+  '--no-default-browser-check',
+];
 
 /*
  * Functions
@@ -75,17 +83,18 @@ export async function initBrowser(options?: BrowserOptions) {
     }
   }
 
+  const browserArgs = [
+    ...defaultBrowserArgs,
+    ...[`--remote-debugging-port=${opts.port}`],
+    ...opts.extraArgs,
+  ];
+
   const browserLaunchOptions: any = {
     devtools: opts.devTools,
     headless: opts.headless, // === true ? 'new' : false,
     executablePath: chromePath,
     defaultViewport: null,
-    args: [
-      '--remote-allow-origins=*',
-      `--remote-debugging-port=${opts.port}`, // force port to avoid issues loading some pages
-      '--no-sandbox',
-      '--no-default-browser-check',
-    ],
+    args: browserArgs,
     ignoreDefaultArgs: ['--enable-automation'],
   };
   if (opts.maximized) {
