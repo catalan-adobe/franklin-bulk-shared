@@ -1,3 +1,11 @@
+# [1.13.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.12.0...v1.13.0) (2023-08-25)
+
+
+### Features
+
+* add extra startup argument for browser init function ([d36a743](https://github.com/catalan-adobe/franklin-bulk-shared/commit/d36a743cc7aeeda8819fd53442ce374e5b26071d))
+* add smart scroll function to puppeteer domain ([bd32fc2](https://github.com/catalan-adobe/franklin-bulk-shared/commit/bd32fc2317436125d0d4573ee77f64098586132a))
+
 # [1.12.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.11.0...v1.12.0) (2023-08-21)
 
 
