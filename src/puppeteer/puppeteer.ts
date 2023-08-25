@@ -17,6 +17,7 @@ import fp from 'find-free-port';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 import { fullLists, PuppeteerBlocker } from '@cliqz/adblocker-puppeteer';
 import chromePaths from 'chrome-paths';
+import { sleep } from '../time.js';
 
 const puppeteer = _puppeteer.default;
 
@@ -227,6 +228,44 @@ export async function runStepsSequence(
       console.error(`non blocking error (do not retry) for ${url}: ${e}`);
     }
     throw e;
+  }
+}
+
+async function autoScroll(page) {
+  await page.evaluate(async () => {
+    await new Promise((resolve) => {
+      let totalHeight = 0;
+      const distance = 500;
+      const timer = setInterval(() => {
+        const { scrollHeight } = window.document.scrollingElement;
+        totalHeight += distance;
+        window.document.scrollingElement.scrollTo({ top: totalHeight, left: 0, behavior: 'instant' });
+        if (totalHeight >= scrollHeight) {
+          clearInterval(timer);
+          resolve(true);
+        }
+      }, 100);
+    });
+  });
+}
+
+export async function smartScroll(page, options = { postReset: true }) {
+  try {
+    // scroll to bottom
+    await autoScroll(page);
+
+    // pace
+    await sleep(250);
+
+    // scroll back up
+    if (options.postReset) {
+      await page.evaluate(() => {
+        window.document.scrollingElement.scrollTo({ left: 0, top: 0, behavior: 'instant' });
+      });
+      await sleep(250);
+    }
+  } catch (e) {
+    throw new Error(`smart scroll failed: ${e}`);
   }
 }
 
