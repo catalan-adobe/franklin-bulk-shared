@@ -1,3 +1,10 @@
+## [1.13.1](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.13.0...v1.13.1) (2023-08-28)
+
+
+### Bug Fixes
+
+* puppeteer types usage in browser init function ([178528d](https://github.com/catalan-adobe/franklin-bulk-shared/commit/178528d3313d23222c71ac08e3287bda83582815))
+
 # [1.13.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.12.0...v1.13.0) (2023-08-25)
 
 
