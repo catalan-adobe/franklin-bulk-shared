@@ -12,7 +12,7 @@
 
 import chromium from 'chromium';
 import _puppeteer from 'puppeteer-extra';
-import pptr from 'puppeteer';
+import pptr, { PuppeteerLaunchOptions } from 'puppeteer';
 import fp from 'find-free-port';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 import { fullLists, PuppeteerBlocker } from '@cliqz/adblocker-puppeteer';
@@ -26,7 +26,7 @@ const puppeteer = _puppeteer.default;
  */
 
 export type BrowserOptions = {
-  headless?: string;
+  headless?: 'new' | boolean;
   port?: number;
   width?: number;
   height?: number;
@@ -65,7 +65,7 @@ const defaultBrowserArgs = [
 puppeteer.use(StealthPlugin());
 
 export async function initBrowser(options?: BrowserOptions) {
-  const opts = {
+  const opts: BrowserOptions = {
     ...defaultBrowserOptions,
     ...options,
   };
@@ -90,7 +90,7 @@ export async function initBrowser(options?: BrowserOptions) {
     ...opts.extraArgs,
   ];
 
-  const browserLaunchOptions: any = {
+  const browserLaunchOptions: PuppeteerLaunchOptions = {
     devtools: opts.devTools,
     headless: opts.headless, // === true ? 'new' : false,
     executablePath: chromePath,
