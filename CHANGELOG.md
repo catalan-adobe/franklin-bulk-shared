@@ -1,3 +1,10 @@
+## [1.13.6](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.13.5...v1.13.6) (2023-12-01)
+
+
+### Bug Fixes
+
+* puppeteer steps logger functions ([a1e2ffb](https://github.com/catalan-adobe/franklin-bulk-shared/commit/a1e2ffbfc5e3536b91ee03f2c08b4ed622790858))
+
 ## [1.13.5](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.13.4...v1.13.5) (2023-11-04)
 
 
