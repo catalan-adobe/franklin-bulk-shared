@@ -50,7 +50,7 @@ export function smartScroll({ postReset = true }: SmartScrollStepOptions = {}) {
        */
 
       // scroll to bottom
-      params.logger.log('Scrolling down ...');
+      params.logger.info('Scrolling down ...');
       await autoScroll(params.page);
 
       // pace
@@ -58,7 +58,7 @@ export function smartScroll({ postReset = true }: SmartScrollStepOptions = {}) {
 
       // scroll back up
       if (postReset) {
-        params.logger.log('Scrolling up ...');
+        params.logger.info('Scrolling up ...');
         await params.page.evaluate(() => {
           window.document.scrollingElement.scrollTo({ left: 0, top: 0, behavior: 'instant' });
         });
