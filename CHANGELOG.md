@@ -1,3 +1,10 @@
+# [1.14.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.13.7...v1.14.0) (2023-12-11)
+
+
+### Features
+
+* add option to disable javascript when starting a browser instance ([96830e1](https://github.com/catalan-adobe/franklin-bulk-shared/commit/96830e1b48be5f713858ca991858f9f6c9e6cf7c))
+
 ## [1.13.7](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.13.6...v1.13.7) (2023-12-04)
 
 
