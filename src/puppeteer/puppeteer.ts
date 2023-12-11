@@ -37,6 +37,7 @@ export type BrowserOptions = {
   useLocalChrome?: boolean;
   userDataDir?: string;
   extraArgs?: string[];
+  disableJS?: boolean;
 };
 
 const defaultBrowserOptions = {
@@ -50,6 +51,7 @@ const defaultBrowserOptions = {
   maximized: false,
   useLocalChrome: false,
   extraArgs: [],
+  disableJS: false,
 };
 
 const defaultBrowserArgs = [
@@ -116,6 +118,10 @@ export async function initBrowser(options?: BrowserOptions) {
   }
   // const page = pages[0] || await browser.newPage();
   const page = await browser.newPage();
+
+  if (opts.disableJS) {
+    await page.setJavaScriptEnabled(false);
+  }
 
   // blockers
   const blockerList = [];
