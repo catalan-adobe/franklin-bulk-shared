@@ -37,20 +37,14 @@ async function autoScroll(page) {
 export function smartScroll({ postReset = true }: SmartScrollStepOptions = {}) {
   return (action) => async (params) => {
     try {
-      params.logger.info('start smart scroll');
-
       const newParams = await action(params);
       if (newParams.result && !newParams.result.passed) {
         params.logger.warn('smart scroll - previous action failed, do not continue!');
         return newParams;
       }
 
-      /*
-       * scroll
-       */
-
       // scroll to bottom
-      params.logger.info('Scrolling down ...');
+      params.logger.debug('scrolling down ...');
       await autoScroll(params.page);
 
       // pace
@@ -58,14 +52,14 @@ export function smartScroll({ postReset = true }: SmartScrollStepOptions = {}) {
 
       // scroll back up
       if (postReset) {
-        params.logger.info('Scrolling up ...');
+        params.logger.debug('scrolling up ...');
         await params.page.evaluate(() => {
           window.document.scrollingElement.scrollTo({ left: 0, top: 0, behavior: 'instant' });
         });
         await sleep(250);
       }
 
-      params.logger.info('stop smart scroll');
+      params.logger.debug('smart scroll done');
     } catch (e) {
       params.logger.error('smart scroll catch', e);
       params.result = {
@@ -73,8 +67,8 @@ export function smartScroll({ postReset = true }: SmartScrollStepOptions = {}) {
         error: e,
       };
     } finally {
-      params.logger.info('smart scroll finally');
+      // eslint-disable-next-line no-unsafe-finally
+      return params;
     }
-    return params;
   };
 }

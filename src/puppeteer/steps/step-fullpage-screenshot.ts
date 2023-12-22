@@ -21,29 +21,38 @@ type FullPageScreenshotStepOptions = {
 /* eslint-disable-next-line import/prefer-default-export */
 export function fullPageScreenshot({ outputFolder = `${process.cwd()}/screenshots` }: FullPageScreenshotStepOptions = {}) {
   return (action) => async (params) => {
-    params.logger.info('start fullpage screenshot');
+    try {
+      const newParams = await action(params);
+      if (newParams.result && !newParams.result.passed) {
+        params.logger.warn('fullpage screenshot - previous action failed, do not continue!');
+        return newParams;
+      }
 
-    const newParams = await action(params);
-    if (newParams.result && !newParams.result.passed) {
-      params.logger.warn('fullpage screenshot - previous action failed, do not continue!');
-      return newParams;
+      params.logger.debug('taking fullpage screenshot...');
+
+      const [p, filename] = buildPathAndFilenameWithPathFromUrl(params.url, 'screenshot', 'png');
+      const path = pUtils.join(outputFolder, p);
+      if (!fs.existsSync(path)) {
+        fs.mkdirSync(path, { recursive: true });
+      }
+
+      await params.page.screenshot({
+        path: pUtils.join(path, filename),
+        fullPage: true,
+      });
+
+      params.logger.debug(`took fullpage screenshot for ${params.url}`);
+
+      params.screenshotPath = pUtils.join(path, filename);
+    } catch (e) {
+      params.logger.error(`full page screenshotsmart scroll catch: ${e.stack}`);
+      params.result = {
+        passed: false,
+        error: e,
+      };
+    } finally {
+      // eslint-disable-next-line no-unsafe-finally
+      return params;
     }
-
-    const [p, filename] = buildPathAndFilenameWithPathFromUrl(params.url, 'screenshot', 'png');
-    const path = pUtils.join(outputFolder, p);
-
-    if (!fs.existsSync(path)) {
-      fs.mkdirSync(path, { recursive: true });
-    }
-
-    await params.page.screenshot({
-      path: pUtils.join(path, filename),
-      fullPage: true,
-    });
-
-    params.screenshotPath = pUtils.join(path, filename);
-    params.logger.info('stop fullpage screenshot');
-
-    return params;
   };
 }

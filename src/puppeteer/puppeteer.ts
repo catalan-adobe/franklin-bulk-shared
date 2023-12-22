@@ -192,9 +192,12 @@ export async function runStepsSequence(
     return middlewares/* .reverse() */.reduce((action, middleware) => middleware(action), action);
   }
 
+  const bLogger = logger || console;
+
+  bLogger.debug(`running steps sequence for ${url}`);
+
   async function mainBrowserAction(params) {
     try {
-      // console.info('mainBrowserAction - navigate to page');
       const resp = await params.page.goto(params.url, { waitUntil: 'networkidle2' });
       // fail early in case page is unreachable for some reason
       if (resp.status() >= 400) {
@@ -221,7 +224,7 @@ export async function runStepsSequence(
     done: false,
     postLoadDelay: 5000,
     url,
-    logger: logger || console,
+    logger: bLogger,
     result: {
       passed: true,
       error: null,
@@ -236,16 +239,18 @@ export async function runStepsSequence(
       throw new Error(`browser script failed: ${res.result.error}`);
     }
 
+    bLogger.debug(`steps sequence done for ${url}`);
+
     return res;
   } catch (e) {
     // eslint-disable-next-line no-console
-    console.error('main error:', e);
+    bLogger.error('main error:', e);
     if (e.message.indexOf('net::ERR_NAME_NOT_RESOLVED') > -1) {
       // eslint-disable-next-line no-console
-      console.error(`url ${url} not reachable!`);
+      bLogger.error(`url ${url} not reachable!`);
     } else if (e.message.indexOf('harvest::NON_BLOCKING_ERROR') > -1) {
       // eslint-disable-next-line no-console
-      console.error(`non blocking error (do not retry) for ${url}: ${e}`);
+      bLogger.error(`non blocking error (do not retry) for ${url}: ${e}`);
     }
     throw e;
   }

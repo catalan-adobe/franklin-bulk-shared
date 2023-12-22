@@ -23,6 +23,8 @@ export function runLighthouseCheck() {
       // main action
       await action(params);
 
+      params.logger.debug('running lighthouse check ...');
+
       const lhOptions: Flags = {
         logLevel: 'error',
         output: 'json',
@@ -51,15 +53,17 @@ export function runLighthouseCheck() {
         scores: resp.lhr.categories,
         reportFull: resp,
       };
+
+      params.logger.debug('lighthouse check executed');
     } catch (e) {
-      // eslint-disable-next-line no-console
       params.logger.error('lighthouse check catch', e);
       params.result = {
         passed: false,
         error: e,
       };
+    } finally {
+      // eslint-disable-next-line no-unsafe-finally
+      return params;
     }
-
-    return params;
   };
 }

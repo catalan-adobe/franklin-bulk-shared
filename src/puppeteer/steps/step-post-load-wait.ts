@@ -15,8 +15,6 @@ import { sleep } from '../../time.js';
 export function postLoadWait(ms) {
   return (action) => async (params) => {
     try {
-      params.logger.info(`do post load wait (${ms}ms)`);
-
       // main action
       const newParams = await action(params);
       if (newParams.result && !newParams.result.passed) {
@@ -24,16 +22,20 @@ export function postLoadWait(ms) {
         return newParams;
       }
 
+      params.logger.debug('waiting post page load...');
+
       await sleep(ms);
+
+      params.logger.debug(`waited ${ms}ms. post page load`);
     } catch (e) {
-      params.logger.error('post load wait catch', e);
+      params.logger.error(`post load wait: ${e.catch}`);
       params.result = {
         passed: false,
         error: e,
       };
+    } finally {
+      // eslint-disable-next-line no-unsafe-finally
+      return params;
     }
-
-    params.logger.info('post load wait finally');
-    return params;
   };
 }

@@ -14,21 +14,23 @@
 export function execAsync(fn) {
   return (action) => async (params) => {
     try {
-      params.logger.info('do execute script');
-
       // main action
       await action(params);
 
+      params.logger.debug('executing custom script ...');
+
       await fn(params.page);
+
+      params.logger.debug('custom script executed');
     } catch (e) {
       params.logger.error('execute script catch', e);
       params.result = {
         passed: false,
         error: e,
       };
+    } finally {
+      // eslint-disable-next-line no-unsafe-finally
+      return params;
     }
-
-    params.logger.info('execute script finally');
-    return params;
   };
 }
