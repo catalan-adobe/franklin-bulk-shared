@@ -1,6 +1,5 @@
 /* eslint import/no-unresolved: "off" */
 /* TODO - eslint is complaining even though the import works at runtime */
-import got from 'got';
 import { XMLParser } from 'fast-xml-parser';
 import path from 'path';
 import zlib from 'zlib';
@@ -45,16 +44,16 @@ export async function parseSitemapFromUrl(
       try {
         reqOptions.responseType = 'buffer';
         // @ts-expect-error - got options type is not correct
-        response = await got(url, reqOptions);
+        response = await fetch(url, reqOptions);
 
-        sitemapRaw = zlib.gunzipSync(response.body).toString();
+        sitemapRaw = zlib.gunzipSync((await response.text())).toString();
       } catch (e) {
         sitemapRaw = response.body;
       }
     } else {
       // @ts-expect-error - got options type is not correct
-      const response = await got(url, reqOptions);
-      sitemapRaw = response.body;
+      const response = await fetch(url, reqOptions);
+      sitemapRaw = await response.text();
     }
 
     const sitemapObject = parseXMLSitemap(sitemapRaw);
