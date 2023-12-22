@@ -1,3 +1,10 @@
+## [1.15.1](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.15.0...v1.15.1) (2023-12-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency p-queue to v8 ([#57](https://github.com/catalan-adobe/franklin-bulk-shared/issues/57)) ([3a494bc](https://github.com/catalan-adobe/franklin-bulk-shared/commit/3a494bc1aad8256b3d07befc336f832d5bccc0c3))
+
 # [1.15.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.14.0...v1.15.0) (2023-12-22)
 
 
