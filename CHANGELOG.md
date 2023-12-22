@@ -1,3 +1,20 @@
+# [1.15.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.14.0...v1.15.0) (2023-12-22)
+
+
+### Bug Fixes
+
+* fix javascript disablement feature ([3d450ba](https://github.com/catalan-adobe/franklin-bulk-shared/commit/3d450ba39534bb4e8cfc0aef91dc0e4826c4499a))
+* robots.txt/sitemap fetching and parsing ([a8514ac](https://github.com/catalan-adobe/franklin-bulk-shared/commit/a8514ac50b17511cc1d295d5ddd1f90d73fc3e05))
+* use networkidle2 strategy for puppeteer page load ([ac952c8](https://github.com/catalan-adobe/franklin-bulk-shared/commit/ac952c800ce49688b518dcf15fb843b5be6465a6))
+
+
+### Features
+
+* add full report in response of lighthouse browser step ([555a90a](https://github.com/catalan-adobe/franklin-bulk-shared/commit/555a90ab491bb349f6d327f29951b570cb329888))
+* add screenshot path in the browser sequence response ([b97e2db](https://github.com/catalan-adobe/franklin-bulk-shared/commit/b97e2dbd85e10ddf0170cc6d715d7d1cf17891a9))
+* use existing project configuration for lighthouse execution ([43669e8](https://github.com/catalan-adobe/franklin-bulk-shared/commit/43669e8112c03982d4244466674270df76fa4102))
+* use new chrome headless ([704736d](https://github.com/catalan-adobe/franklin-bulk-shared/commit/704736d3815bf94baf7673325c82cc95a4afb610))
+
 # [1.14.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.13.7...v1.14.0) (2023-12-11)
 
 
