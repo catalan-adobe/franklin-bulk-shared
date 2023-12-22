@@ -41,6 +41,7 @@ export function fullPageScreenshot({ outputFolder = `${process.cwd()}/screenshot
       fullPage: true,
     });
 
+    params.screenshotPath = pUtils.join(path, filename);
     params.logger.info('stop fullpage screenshot');
 
     return params;
