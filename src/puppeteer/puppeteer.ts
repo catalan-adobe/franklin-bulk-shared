@@ -116,12 +116,26 @@ export async function initBrowser(options?: BrowserOptions) {
   if (pages[0]) {
     await pages[0].close();
   }
+
+  // force disable javascript on all new pages
+  if (opts.disableJS) {
+    browser.on('targetcreated', async (target) => {
+      const page = await target.page();
+      if (page) {
+        await page.setRequestInterception(true);
+        page.on('request', (request) => {
+          if (request.resourceType() === 'script') {
+            request.abort();
+          } else {
+            request.continue();
+          }
+        });
+      }
+    });
+  }
+
   // const page = pages[0] || await browser.newPage();
   const page = await browser.newPage();
-
-  if (opts.disableJS) {
-    await page.setJavaScriptEnabled(false);
-  }
 
   // blockers
   const blockerList = [];
