@@ -94,7 +94,7 @@ export async function initBrowser(options?: BrowserOptions) {
 
   const browserLaunchOptions: PuppeteerLaunchOptions = {
     devtools: opts.devTools,
-    headless: opts.headless, // === true ? 'new' : false,
+    headless: opts.headless === true ? 'new' : false,
     executablePath: chromePath,
     defaultViewport: null,
     args: browserArgs,
