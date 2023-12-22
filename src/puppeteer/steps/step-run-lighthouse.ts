@@ -47,8 +47,9 @@ export function runLighthouseCheck() {
       const resp = await lighthouse(params.url, lhOptions, lhConfig, params.page);
 
       params.lighthouse = {
-        version: lhr.lighthouseVersion,
-        scores: lhr.categories,
+        version: resp.lhr.lighthouseVersion,
+        scores: resp.lhr.categories,
+        reportFull: resp,
       };
     } catch (e) {
       // eslint-disable-next-line no-console
