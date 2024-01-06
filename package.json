@@ -40,7 +40,7 @@
     "fast-xml-parser": "4.3.2",
     "find-free-port": "2.0.0",
     "got": "14.0.0",
-    "jsdom": "23.0.1",
+    "jsdom": "23.1.0",
     "lighthouse": "11.4.0",
     "p-queue": "8.0.1",
     "puppeteer": "^21.0.0",
