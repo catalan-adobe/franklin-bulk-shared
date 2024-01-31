@@ -1,3 +1,10 @@
+# [1.16.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.15.2...v1.16.0) (2024-01-31)
+
+
+### Features
+
+* improve javascript disablement in puppeteer ([26dcab2](https://github.com/catalan-adobe/franklin-bulk-shared/commit/26dcab2b835024df3506c3667fcfb3208ce585a3))
+
 ## [1.15.2](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.15.1...v1.15.2) (2024-01-13)
 
 
