@@ -122,14 +122,7 @@ export async function initBrowser(options?: BrowserOptions) {
     browser.on('targetcreated', async (target) => {
       const page = await target.page();
       if (page) {
-        await page.setRequestInterception(true);
-        page.on('request', (request) => {
-          if (request.resourceType() === 'script') {
-            request.abort();
-          } else {
-            request.continue();
-          }
-        });
+        await page.setJavaScriptEnabled(false);
       }
     });
   }
