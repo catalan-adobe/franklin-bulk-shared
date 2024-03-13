@@ -33,7 +33,7 @@
   },
   "homepage": "https://github.com/catalan-adobe/franklin-bulk-shared#readme",
   "dependencies": {
-    "@cliqz/adblocker-puppeteer": "^1.26.6",
+    "@cliqz/adblocker-puppeteer": "^1.26.16",
     "chrome-paths": "^1.0.1",
     "chromium": "3.0.3",
     "cross-fetch": "4.0.0",
@@ -43,7 +43,7 @@
     "jsdom": "24.0.0",
     "lighthouse": "11.5.0",
     "p-queue": "8.0.1",
-    "puppeteer": "^21.0.0",
+    "puppeteer": "^22.4.1",
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-adblocker": "^2.13.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2",
@@ -58,14 +58,14 @@
     "@semantic-release/github": "^9.0.0",
     "@semantic-release/npm": "^11.0.0",
     "@types/node": "^20.0.0",
-    "@typescript-eslint/eslint-plugin": "^6.0.0",
-    "@typescript-eslint/parser": "^6.0.0",
-    "eslint": "^8.35.0",
+    "@typescript-eslint/eslint-plugin": "^7.2.0",
+    "@typescript-eslint/parser": "^7.2.0",
+    "eslint": "^8.57.0",
     "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-config-airbnb-typescript": "^17.0.0",
+    "eslint-config-airbnb-typescript": "^18.0.0",
     "eslint-plugin-header": "^3.1.1",
-    "eslint-plugin-import": "^2.27.5",
-    "semantic-release": "^23.0.0",
-    "typescript": "^5.0.0"
+    "eslint-plugin-import": "^2.29.1",
+    "semantic-release": "^23.0.2",
+    "typescript": "^5.4.2"
   }
 }
