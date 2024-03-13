@@ -8,6 +8,7 @@
     "strict": false,
     "declaration": true,
     "skipLibCheck": true,
+    "allowJs": true,
     "types": [
       "node",
     ],
@@ -34,7 +35,8 @@
     "./node_modules/lighthouse/core/config/*.d.ts", // Optional, if any `Lighthouse` types are missing...
     "./src/**/*.tsx",
     "./src/**/*.ts",
-    "index.ts"
+    "index.ts",
+    ".eslintrc.cjs",
   ],
   "exclude": ["node_modules", "dist"]
 }

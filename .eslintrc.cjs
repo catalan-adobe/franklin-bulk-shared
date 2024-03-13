@@ -6,7 +6,7 @@ module.exports = {
     'airbnb-typescript/base',
     'eslint:recommended',
     'plugin:@typescript-eslint/eslint-recommended',
-    'plugin:@typescript-eslint/recommended'
+    'plugin:@typescript-eslint/recommended',
   ],
   env: {
     browser: true,
@@ -14,6 +14,7 @@ module.exports = {
   },
   parserOptions: {
     project: './tsconfig.json',
+    tsconfigRootDir: __dirname,
   },
   rules: {
     // allow reassigning param
@@ -23,16 +24,16 @@ module.exports = {
       js: 'always',
     }],
     'import/prefer-default-export': 'off',
-    '@typescript-eslint/ban-ts-comment': 'warn'
+    '@typescript-eslint/ban-ts-comment': 'warn',
   },
   plugins: [
     '@typescript-eslint',
-    'import'
+    'import',
   ],
   settings: {
     'import/resolver': {
       exports: {},
     },
   },
-  ignorePatterns: ['xp/']
+  ignorePatterns: ['xp/'],
 };
