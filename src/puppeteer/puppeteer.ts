@@ -26,7 +26,7 @@ const puppeteer = _puppeteer.default;
  */
 
 export type BrowserOptions = {
-  headless?: 'new' | boolean;
+  headless?: boolean;
   port?: number;
   width?: number;
   height?: number;
@@ -94,7 +94,7 @@ export async function initBrowser(options?: BrowserOptions) {
 
   const browserLaunchOptions: PuppeteerLaunchOptions = {
     devtools: opts.devTools,
-    headless: opts.headless === true ? 'new' : false,
+    headless: opts.headless,
     executablePath: chromePath,
     defaultViewport: null,
     args: browserArgs,
