@@ -1,3 +1,10 @@
+## [1.16.2](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.16.1...v1.16.2) (2024-03-13)
+
+
+### Bug Fixes
+
+* dependencies + pptr new headless values ([#72](https://github.com/catalan-adobe/franklin-bulk-shared/issues/72)) ([6f03d90](https://github.com/catalan-adobe/franklin-bulk-shared/commit/6f03d901972ea7c35f7f43bdad03643a080978bc))
+
 ## [1.16.1](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.16.0...v1.16.1) (2024-01-31)
 
 
