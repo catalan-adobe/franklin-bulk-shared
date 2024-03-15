@@ -1,6 +1,6 @@
 {
   "name": "franklin-bulk-shared",
-  "version": "1.16.2",
+  "version": "1.16.3",
   "description": "Node.js shared library for Franklin bulk operations",
   "type": "module",
   "main": "dist/index.js",

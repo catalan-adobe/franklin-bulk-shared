@@ -1,3 +1,10 @@
+## [1.16.3](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.16.2...v1.16.3) (2024-03-15)
+
+
+### Bug Fixes
+
+* fix parser/lint issues at project level ([0f248e2](https://github.com/catalan-adobe/franklin-bulk-shared/commit/0f248e2f9b7a143e18100269837aa8f96c56f9a3))
+
 ## [1.16.2](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.16.1...v1.16.2) (2024-03-13)
 
 
