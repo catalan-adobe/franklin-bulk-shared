@@ -74,3 +74,35 @@ export function extractDetailsFromUrl(url) {
     extension: p.ext,
   };
 }
+
+/**
+ * Checks if a given URL is valid.
+ *
+ * @param url - The URL to validate.
+ * @param protocols - An optional array of allowed protocols. If provided, the URL's protocol must
+ *                    be included in this array to be considered valid.
+ * @returns The valid URL object if the URL is valid and matches the allowed protocols, or `null`
+ *          otherwise.
+ */
+export function isValid(url: string, protocols:Array<string> | null = null): URL | null {
+  try {
+    const u = new URL(url);
+    if (protocols && !protocols.includes(u.protocol)) {
+      return null;
+    }
+    return u;
+  } catch (err) {
+    return null;
+  }
+}
+
+/**
+ * Checks if a given URL is a valid HTTP or HTTPS URL.
+ *
+ * @param url - The URL to check.
+ * @returns The valid URL object if the URL is valid and matches the http protocols, or `null`
+ *          otherwise.
+ */
+export function isValidHTTP(url: string): URL | null {
+  return isValid(url, ['http:', 'https:']);
+}
