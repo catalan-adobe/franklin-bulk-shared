@@ -9,6 +9,7 @@
     "declaration": true,
     "skipLibCheck": true,
     "allowJs": true,
+    "esModuleInterop": true,
     "types": [
       "node",
     ],
@@ -33,10 +34,10 @@
     "./node_modules/@types/puppeteer/index.d.ts", // Generally shouldn't be needed if added to `devDependencies`...
     "./node_modules/lighthouse/types/**/*.d.ts", // Optional, if any `Lighthouse` types are missing...
     "./node_modules/lighthouse/core/config/*.d.ts", // Optional, if any `Lighthouse` types are missing...
-    "./src/**/*.tsx",
-    "./src/**/*.ts",
+    "src/**/*.ts",
     "index.ts",
     ".eslintrc.cjs",
+    "test/**/*.js",
   ],
-  "exclude": ["node_modules", "dist"]
+  "exclude": ["node_modules"]
 }
