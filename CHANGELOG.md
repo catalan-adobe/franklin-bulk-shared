@@ -1,3 +1,11 @@
+# [1.17.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.16.3...v1.17.0) (2024-03-19)
+
+
+### Features
+
+* implement functions to check if url is valid ([0155282](https://github.com/catalan-adobe/franklin-bulk-shared/commit/01552822babcf66147e4ad7f29b33d82fc235fcf))
+* implement test stack with coverage ([301121c](https://github.com/catalan-adobe/franklin-bulk-shared/commit/301121c3ac88826b5295a2f6767d458befb65288))
+
 ## [1.16.3](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.16.2...v1.16.3) (2024-03-15)
 
 
