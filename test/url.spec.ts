@@ -1,7 +1,7 @@
 /* global describe, it */
 
-import { isValid, isValidHTTP } from '../src/url.js';
 import { expect } from 'chai';
+import { isValid, isValidHTTP } from '../src/url.js';
 
 describe('isValid', () => {
   it('should return a URL object for valid URLs', () => {

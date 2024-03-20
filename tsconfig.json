@@ -12,6 +12,7 @@
     "esModuleInterop": true,
     "types": [
       "node",
+      "mocha",
     ],
   },
   // NEW: Options for file/directory watching
@@ -37,7 +38,7 @@
     "src/**/*.ts",
     "index.ts",
     ".eslintrc.cjs",
-    "test/**/*.js",
+    "test/**/*.ts",
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "dist"]
 }
