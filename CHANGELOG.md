@@ -1,3 +1,10 @@
+## [1.17.2](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.17.1...v1.17.2) (2024-04-10)
+
+
+### Bug Fixes
+
+* eslint dependency conflict ([5bf2044](https://github.com/catalan-adobe/franklin-bulk-shared/commit/5bf2044cf2d0c9a739c037adc0cba75615221c08))
+
 ## [1.17.1](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.17.0...v1.17.1) (2024-03-30)
 
 
