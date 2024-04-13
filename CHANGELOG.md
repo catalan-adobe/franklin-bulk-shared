@@ -1,3 +1,10 @@
+## [1.17.3](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.17.2...v1.17.3) (2024-04-13)
+
+
+### Bug Fixes
+
+* **deps:** update external fixes ([e890a81](https://github.com/catalan-adobe/franklin-bulk-shared/commit/e890a8149278a1a658645e9b78a63e860f802156))
+
 ## [1.17.2](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.17.1...v1.17.2) (2024-04-10)
 
 
