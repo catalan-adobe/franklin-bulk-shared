@@ -1,6 +1,6 @@
 {
   "name": "franklin-bulk-shared",
-  "version": "1.17.3",
+  "version": "1.17.5",
   "description": "Node.js shared library for Franklin bulk operations",
   "type": "module",
   "main": "dist/index.js",
@@ -42,7 +42,7 @@
     "fast-xml-parser": "4.3.6",
     "fastq": "^1.17.1",
     "find-free-port": "2.0.0",
-    "got": "14.2.1",
+    "got": "14.3.0",
     "jsdom": "24.0.0",
     "lighthouse": "11.7.1",
     "matcher": "^5.0.0",
