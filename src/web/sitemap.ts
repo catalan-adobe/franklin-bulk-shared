@@ -4,7 +4,7 @@ import { XMLParser } from 'fast-xml-parser';
 import path from 'path';
 import zlib from 'zlib';
 
-type Sitemap = {
+export type Sitemap = {
   url: string;
   sitemaps?: Sitemap[];
   lastMod?: string;
@@ -63,13 +63,21 @@ export async function parseSitemapFromUrl(
       lastMod: element.lastmod,
     }));
 
-    const urls = sitemapObject.urlset?.url ? sitemapObject.urlset?.url?.map((element) => ({
+    let urls = [];
+    if (sitemapObject.urlset?.url) {
+      if (Array.isArray(sitemapObject.urlset.url)) {
+        urls = sitemapObject.urlset.url;
+      } else {
+        urls = [sitemapObject.urlset.url];
+      }
+    }
+    urls = urls.map((element) => ({
       url: element.loc,
       lastMod: element.lastmod,
-    })) : [];
+    }));
 
     return { url, sitemaps, urls };
   } catch (e) {
-    throw new Error(`parseSitemapFromUrl: ${e}`);
+    throw new Error(`parseSitemapFromUrl (${url}): ${e}`);
   }
 }

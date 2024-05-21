@@ -26,6 +26,8 @@ export async function parseRobotsTxt(
     const robotsTxtRaw = await response.text();
     // @ts-expect-error - unknown not callable error
     const robots: Robot = robotsParser(url, robotsTxtRaw);
+    /* eslint-disable @typescript-eslint/dot-notation */
+    robots['raw'] = robotsTxtRaw;
     return robots;
   } catch (e) {
     throw new Error(`parse ${url}: ${e}`);
