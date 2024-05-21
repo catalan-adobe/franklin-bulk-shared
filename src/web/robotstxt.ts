@@ -23,6 +23,11 @@ export async function parseRobotsTxt(
 
   try {
     const response = await fetch(url, reqOptions);
+
+    if (!response.ok) {
+      throw new Error(`parseRobotsTxt (${url}): ${response.status} ${response.statusText}`);
+    }
+
     const robotsTxtRaw = await response.text();
     // @ts-expect-error - unknown not callable error
     const robots: Robot = robotsParser(url, robotsTxtRaw);

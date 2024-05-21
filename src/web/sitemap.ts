@@ -46,6 +46,10 @@ export async function parseSitemapFromUrl(
         // @ts-expect-error - got options type is not correct
         response = await fetch(url, reqOptions);
 
+        if (!response.ok) {
+          throw new Error(`parseSitemapFromUrl (${url}): ${response.status} ${response.statusText}`);
+        }
+
         sitemapRaw = zlib.gunzipSync((await response.text())).toString();
       } catch (e) {
         sitemapRaw = response.body;
@@ -53,6 +57,11 @@ export async function parseSitemapFromUrl(
     } else {
       // @ts-expect-error - got options type is not correct
       const response = await fetch(url, reqOptions);
+
+      if (!response.ok) {
+        throw new Error(`parseSitemapFromUrl (${url}): ${response.status} ${response.statusText}`);
+      }
+
       sitemapRaw = await response.text();
     }
 
