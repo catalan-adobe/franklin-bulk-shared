@@ -1,3 +1,10 @@
+# [1.18.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.17.5...v1.18.0) (2024-05-21)
+
+
+### Features
+
+* add crawl function to web namespace ([e5f3e45](https://github.com/catalan-adobe/franklin-bulk-shared/commit/e5f3e456eef0b29c851acebd27845a877627cab3))
+
 ## [1.17.5](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.17.4...v1.17.5) (2024-05-11)
 
 
