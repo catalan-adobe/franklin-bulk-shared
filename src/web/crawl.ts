@@ -33,7 +33,7 @@ type CrawlOptions = {
 type CrawlResult = {
   originURL: string,
   crawlOptions: CrawlOptions,
-  errors: Error[],
+  errors: object[],
   urls: URLExtended[],
   invalidURLs: object[],
   robotstxt: Robot | null,
@@ -101,22 +101,26 @@ async function collectSitemapsToCrawl(
     sitemaps: [],
   };
 
-  // try robots.txt
-  try {
-    const r: Robot = await Web.parseRobotsTxt(`${options.originURLObj.origin}/robots.txt`, options);
-    options.logger.debug(r);
-    /* eslint-disable @typescript-eslint/dot-notation */
-    result.robotstxt = r['raw'];
-    result.sitemaps = r.getSitemaps();
-    result.sitemaps.push(...r.getSitemaps());
-  } catch (e) {
-    options.logger.debug(`no robots.txt found for origin URL ${originURL}`);
-  }
+  if (path.basename(options.originURLObj.pathname).indexOf('.xml') > -1) {
+    result.sitemaps.push(originURL);
+  } else {
+    // try robots.txt
+    try {
+      const r: Robot = await Web.parseRobotsTxt(`${options.originURLObj.origin}/robots.txt`, options);
+      options.logger.debug(r);
+      /* eslint-disable @typescript-eslint/dot-notation */
+      result.robotstxt = r['raw'];
+      result.sitemaps = r.getSitemaps();
+      result.sitemaps.push(...r.getSitemaps());
+    } catch (e) {
+      options.logger.debug(`no robots.txt found for origin URL ${originURL}`);
+    }
 
-  // try default sitemap.xml
-  const defaultSitemapURL = `${options.originURLObj.origin}/sitemap.xml`;
-  if (!result.sitemaps.find((s) => s === defaultSitemapURL)) {
-    result.sitemaps.push(defaultSitemapURL);
+    // try default sitemap.xml
+    const defaultSitemapURL = `${options.originURLObj.origin}/sitemap.xml`;
+    if (!result.sitemaps.find((s) => s === defaultSitemapURL)) {
+      result.sitemaps.push(defaultSitemapURL);
+    }
   }
 
   return result;
@@ -314,7 +318,11 @@ export async function crawl(
     const queueErrorHandler = async (error) => {
       crawlOptions.logger.error(error);
       crawlOptions.logger.error('queue error', error);
-      crawlResult.errors.push(error);
+      crawlResult.errors.push({
+        url: error.url,
+        message: error.message,
+        stack: error.stack,
+      });
     };
 
     const queueResultHandler = async (result) => {
