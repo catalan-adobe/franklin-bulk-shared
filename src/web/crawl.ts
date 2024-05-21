@@ -349,7 +349,7 @@ export async function crawl(
         // valid urls only
         const validURLs = foundURLs.filter((o) => o.status === 'valid');
         if (crawlOptions.limit > 0 && validURLs.length >= crawlOptions.limit) {
-          await queue.kill();
+          await queue.killAndDrain();
         } else {
           crawlOptions.logger.debug('foundURLs', foundURLs.length);
           crawlOptions.logger.debug(foundURLs.slice(-10));
