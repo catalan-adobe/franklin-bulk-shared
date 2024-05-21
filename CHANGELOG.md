@@ -1,3 +1,11 @@
+## [1.18.1](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.18.0...v1.18.1) (2024-05-21)
+
+
+### Bug Fixes
+
+* add support for crawl sitemap origin urls ([b37fc5d](https://github.com/catalan-adobe/franklin-bulk-shared/commit/b37fc5d2d83c4ad660aaf96cb2175ec5ed17455f))
+* handle fetch errors for robots.txt and sitemaps ([8f6806d](https://github.com/catalan-adobe/franklin-bulk-shared/commit/8f6806d93e233b03f6c9ea1492cf2dc496959321))
+
 # [1.18.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.17.5...v1.18.0) (2024-05-21)
 
 
