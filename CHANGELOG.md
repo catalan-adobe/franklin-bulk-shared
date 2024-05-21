@@ -1,3 +1,10 @@
+## [1.18.2](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.18.1...v1.18.2) (2024-05-21)
+
+
+### Bug Fixes
+
+* kill crawl queue when limit reached ([e0ce5b7](https://github.com/catalan-adobe/franklin-bulk-shared/commit/e0ce5b718a25b3b4bd925f1b360a445866108fac))
+
 ## [1.18.1](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.18.0...v1.18.1) (2024-05-21)
 
 
