@@ -1,3 +1,15 @@
+# [1.19.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.18.2...v1.19.0) (2024-05-25)
+
+
+### Bug Fixes
+
+* queue async processing and limit handling ([5791a4d](https://github.com/catalan-adobe/franklin-bulk-shared/commit/5791a4da50290e3c026501a35fb3d30464ae137b))
+
+
+### Features
+
+* add support for fetch signal in function parseSitemapFromUrl ([7656ef7](https://github.com/catalan-adobe/franklin-bulk-shared/commit/7656ef7804daf768febcd5a1a3b4e300ca7e609e))
+
 ## [1.18.2](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.18.1...v1.18.2) (2024-05-21)
 
 
