@@ -1,4 +1,5 @@
 /* eslint import/no-unresolved: "off" */
+/* eslint "@typescript-eslint/no-explicit-any": "off" */
 /* TODO - eslint is complaining even though the import works at runtime */
 import { XMLParser } from 'fast-xml-parser';
 import path from 'path';
