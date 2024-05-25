@@ -43,7 +43,6 @@ export async function parseSitemapFromUrl(
 
       try {
         reqOptions.responseType = 'buffer';
-        // @ts-expect-error - got options type is not correct
         response = await fetch(url, reqOptions);
 
         if (!response.ok) {
@@ -55,7 +54,6 @@ export async function parseSitemapFromUrl(
         sitemapRaw = response.body;
       }
     } else {
-      // @ts-expect-error - got options type is not correct
       const response = await fetch(url, reqOptions);
 
       if (!response.ok) {
