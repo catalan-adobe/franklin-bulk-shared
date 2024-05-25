@@ -1,10 +1,11 @@
 /* eslint "@typescript-eslint/no-explicit-any": "off" */
 
+import path from 'path';
+import EventEmitter from 'events';
 import { Robot } from 'robots-parser';
 import fastq from 'fastq';
 import type { queueAsPromised } from 'fastq';
 import { isMatch } from 'matcher';
-import path from 'path';
 import { Web, Url } from '../../index.js';
 import { Sitemap } from './sitemap.js';
 import { Logger } from '../logger.js';
@@ -60,6 +61,7 @@ type URLPattern = {
 /**
  * Represents a task for crawling a URL.
  */
+
 type Task = {
   url: string,
   retries: number,
@@ -107,7 +109,6 @@ async function collectSitemapsToCrawl(
     // try robots.txt
     try {
       const r: Robot = await Web.parseRobotsTxt(`${options.originURLObj.origin}/robots.txt`, options);
-      options.logger.debug(r);
       /* eslint-disable @typescript-eslint/dot-notation */
       result.robotstxt = r['raw'];
       result.sitemaps = r.getSitemaps();
@@ -124,46 +125,6 @@ async function collectSitemapsToCrawl(
   }
 
   return result;
-}
-
-async function crawlWorker({
-  // payload
-  url,
-  retries,
-}) {
-  /* eslint-disable no-async-promise-executor */
-  return new Promise(async (resolve, reject) => {
-    const result = {
-      url,
-      status: 'unknown',
-      retries,
-      error: null,
-      sitemaps: [],
-      urls: [],
-    };
-
-    try {
-      // options.logger.debug(`crawling sitemap ${sitemap}`);
-      const s: Sitemap = await Web.parseSitemapFromUrl(url, {
-        timeout: this.timeout,
-      });
-
-      if (s.urls && s.urls.length > 0) {
-        result.urls = s.urls;
-      }
-      if (s.sitemaps && s.sitemaps.length > 0) {
-        result.sitemaps.push(...s.sitemaps.map((o) => o.url));
-      }
-      result.status = 'done';
-
-      resolve(result);
-    } catch (e) {
-      // result.status = 'error';
-      // result.error = e;
-      e.url = url;
-      reject(e);
-    }
-  });
 }
 
 function qualifyURLsForCrawl(urls, {
@@ -247,6 +208,44 @@ function qualifyURLsForCrawl(urls, {
     });
 }
 
+async function crawlWorker({
+  // payload
+  url,
+  retries,
+}) {
+  // context: this <=> { crawlOptions }
+  // console.log('crawlWorker', this, url, retries);
+  const result = {
+    url,
+    status: 'unknown',
+    retries,
+    error: null,
+    sitemaps: [],
+    urls: [],
+  };
+
+  try {
+    // options.logger.debug(`crawling sitemap ${sitemap}`);
+    const s: Sitemap = await Web.parseSitemapFromUrl(url, {
+      timeout: this.crawlOptions.timeout,
+    });
+
+    if (s.urls && s.urls.length > 0) {
+      result.urls = s.urls;
+    }
+    if (s.sitemaps && s.sitemaps.length > 0) {
+      result.sitemaps.push(...s.sitemaps.map((o) => o.url));
+    }
+    result.status = 'done';
+
+    return result;
+  } catch (e) {
+    e.url = url;
+    result.error = e;
+    return result;
+  }
+}
+
 /**
  * exports
  */
@@ -272,6 +271,7 @@ export async function crawl(
     robotstxt: null,
     sitemaps: [],
   };
+  const eventEmitter = new EventEmitter();
 
   try {
     const url = Url.isValidHTTP(originURL);
@@ -304,36 +304,34 @@ export async function crawl(
       crawlWorker,
       5,
     );
-    // force pause - no autostart
-    await queue.pause();
-
-    const monitorInt = setInterval(() => {
-      crawlOptions.logger.debug('>>> queue length:', queue.length());
-    }, 5000);
+    queue.drained = null;
 
     /**
      * main
      */
 
-    const queueErrorHandler = async (error) => {
-      crawlOptions.logger.error(error);
-      crawlOptions.logger.error('queue error', error);
-      crawlResult.errors.push({
-        url: error.url,
-        message: error.message,
-        stack: error.stack,
-      });
-    };
+    // queue main error handler
+    queue.error((e, task) => {
+      if (e) {
+        crawlOptions.logger.error(`crawl queue main error: ${e.message} (task: ${task.url})`);
+      }
+    });
 
+    // handler for queue worker results
     const queueResultHandler = async (result) => {
-      // await queue.pause();
-      // options.logger.debug(arguments);
-      if (result) {
-        crawlOptions.logger.debug(result.url);
-        crawlOptions.logger.debug('urls', result.urls.length);
-        // options.logger.debug(result.urls);
-        crawlOptions.logger.debug('sitemaps', result.sitemaps.length);
+      // do not process if queue is drained
+      if (queue.drained !== null) {
+        return;
+      }
 
+      if (result.error) {
+        crawlOptions.logger.error(`resource crawl error: ${result.error.message}`);
+        crawlResult.errors.push({
+          url: result.url,
+          message: result.error.message,
+          stack: result.error.stack,
+        });
+      } else {
         const newURLs = result.urls.map((o) => o.url);
 
         const qualifiedURLs = qualifyURLsForCrawl(newURLs, {
@@ -345,49 +343,56 @@ export async function crawl(
         });
 
         foundURLs.push(...qualifiedURLs);
-
-        // valid urls only
-        const validURLs = foundURLs.filter((o) => o.status === 'valid');
-        if (crawlOptions.limit > 0 && validURLs.length >= crawlOptions.limit) {
-          await queue.killAndDrain();
-        } else {
-          crawlOptions.logger.debug('foundURLs', foundURLs.length);
-          crawlOptions.logger.debug(foundURLs.slice(-10));
-          crawlOptions.logger.debug(foundURLs.filter((o) => o.status === 'duplicate').slice(-10));
-
-          for (let i = 0; i < result.sitemaps.length; i += 1) {
-            const s = result.sitemaps[i];
-            queue.push({ url: s, retries: 0 })
-              .then(queueResultHandler)
-              .catch(queueErrorHandler);
-            crawlResult.sitemaps.push(s);
-          }
+        for (let i = 0; i < result.sitemaps.length; i += 1) {
+          const s = result.sitemaps[i];
+          queue.push({ url: s, retries: 0 })
+            .then(queueResultHandler);
+          crawlResult.sitemaps.push(s);
         }
+        crawlOptions.logger.debug(`done crawling ${result.url} (found ${result.sitemaps.length} sitemaps and ${qualifiedURLs.length} urls)`);
       }
-      // await queue.resume();
+
+      // valid urls only
+      const validURLs = foundURLs.filter((o) => o.status === 'valid');
+
+      if (
+        (crawlOptions.limit > 0 && validURLs.length >= crawlOptions.limit)
+        || (queue.idle() && (result.error || result.sitemaps.length === 0))
+      ) {
+        queue.killAndDrain();
+        queue.drained = () => undefined;
+        let reason = 'all resources crawled';
+        if (!queue.idle()) {
+          reason = `max urls limit reached (${crawlOptions.limit}), process aborted`;
+        }
+        eventEmitter.emit('done', reason);
+      }
     };
 
     try {
+      queue.pause();
       // add items to queue
       for (let i = 0; i < sources.sitemaps.length; i += 1) {
         const sitemap = sources.sitemaps[i];
         queue.push({ url: sitemap, retries: 0 })
-          .then(queueResultHandler)
-          .catch(queueErrorHandler);
+          .then(queueResultHandler);
       }
 
       crawlOptions.logger.debug('queue - all items added, start processing');
-      await queue.resume();
-      crawlOptions.logger.debug('queue - wait for drained');
-      await queue.drained();
-      crawlOptions.logger.debug('queue - done, stop queue');
-      await queue.kill();
+      queue.resume();
 
-      clearInterval(monitorInt);
+      crawlOptions.logger.debug('queue - wait for drained');
+
+      const result = await new Promise((resolve) => {
+        eventEmitter.once('done', (reason) => {
+          resolve(`crawling done: ${reason}`);
+        });
+      });
+
+      crawlOptions.logger.debug(result);
     } catch (e) {
       throw new Error(e);
     }
-    crawlOptions.logger.debug('handler - analyse done');
 
     crawlResult.urls = foundURLs;
   } catch (e) {
@@ -397,6 +402,8 @@ export async function crawl(
   if (crawlOptions.limit > 0) {
     crawlResult.urls = foundURLs.filter((o) => o.status === 'valid').slice(0, crawlOptions.limit);
   }
+
+  crawlOptions.logger.debug(`found ${crawlResult.urls.length} valid urls`);
 
   return crawlResult;
 }
