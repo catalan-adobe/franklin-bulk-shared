@@ -25,17 +25,20 @@ function parseXMLSitemap(sitemapContent) {
 
 export async function parseSitemapFromUrl(
   url: string,
-  options: { timeout?: number } = {},
+  options: { timeout?: number, signal?: any } = {},
 ): Promise<Sitemap> {
   try {
     let sitemapRaw;
 
-    const reqOptions = {
+    const reqOptions: any = {
       timeout: {
         request: options.timeout || 10000,
       },
       responseType: 'text',
     };
+    if (options.signal) {
+      reqOptions.signal = options.signal;
+    }
 
     if (path.extname(url) === '.gz') {
       // unzip if needed
