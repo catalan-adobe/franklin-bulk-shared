@@ -10,16 +10,13 @@
  * governing permissions and limitations under the License.
  */
 
-import chromium from 'chromium';
-import _puppeteer from 'puppeteer-extra';
-import pptr, { PuppeteerLaunchOptions } from 'puppeteer';
 import fp from 'find-free-port';
-import StealthPlugin from 'puppeteer-extra-plugin-stealth';
-import { fullLists, PuppeteerBlocker } from '@cliqz/adblocker-puppeteer';
 import chromePaths from 'chrome-paths';
+import pptr, { PuppeteerLaunchOptions } from 'puppeteer-core';
+import _puppeteer from 'puppeteer-extra';
+import StealthPlugin from 'puppeteer-extra-plugin-stealth';
+import { PuppeteerExtraPluginAdblocker } from 'puppeteer-extra-plugin-adblocker';
 import { sleep } from '../time.js';
-
-const puppeteer = _puppeteer.default;
 
 /*
  * Types
@@ -27,6 +24,7 @@ const puppeteer = _puppeteer.default;
 
 export type BrowserOptions = {
   headless?: boolean;
+  executablePath?: string;
   port?: number;
   width?: number;
   height?: number;
@@ -42,11 +40,12 @@ export type BrowserOptions = {
 
 const defaultBrowserOptions = {
   headless: true,
+  executablePath: null,
   port: null,
   width: 1280,
   height: 1000,
   adBlocker: true,
-  gdprBlocker: true,
+  gdprBlocker: false,
   devTools: false,
   maximized: false,
   useLocalChrome: false,
@@ -64,9 +63,10 @@ const defaultBrowserArgs = [
  * Functions
  */
 
-puppeteer.use(StealthPlugin());
-
 export async function initBrowser(options?: BrowserOptions) {
+  const puppeteer = _puppeteer.default;
+  puppeteer.use(StealthPlugin());
+
   const opts: BrowserOptions = {
     ...defaultBrowserOptions,
     ...options,
@@ -76,13 +76,13 @@ export async function initBrowser(options?: BrowserOptions) {
     opts.port = await fp(9222);
   }
 
-  let chromePath = chromium.path;
-  if (opts.useLocalChrome) {
+  if (!opts.executablePath && opts.useLocalChrome) {
     if (chromePaths.chrome) {
-      chromePath = chromePaths.chrome;
+      opts.executablePath = chromePaths.chrome;
     } else {
       // eslint-disable-next-line no-console
-      console.error('chrome not found on this machine, fallback to chromium');
+      console.error('chrome not found on this machine, cannot continue!');
+      return [ null, null ];
     }
   }
 
@@ -95,7 +95,7 @@ export async function initBrowser(options?: BrowserOptions) {
   const browserLaunchOptions: PuppeteerLaunchOptions = {
     devtools: opts.devTools,
     headless: opts.headless,
-    executablePath: chromePath,
+    executablePath: opts.executablePath,
     defaultViewport: null,
     args: browserArgs,
     ignoreDefaultArgs: ['--enable-automation'],
@@ -109,12 +109,18 @@ export async function initBrowser(options?: BrowserOptions) {
     browserLaunchOptions.userDataDir = opts.userDataDir;
   }
 
+  // blockers
+  if (opts.adBlocker || opts.gdprBlocker) {
+    console.log('using adblocker!');
+    puppeteer.use(new PuppeteerExtraPluginAdblocker({ blockTrackersAndAnnoyances: true }));
+  }
+
   // init browser
   // @ts-ignore
   const browser = await puppeteer.launch(browserLaunchOptions);
-  const pages = await browser.pages();
-  if (pages[0]) {
-    await pages[0].close();
+  let [ page ] = await browser.pages();
+  if (!page) {
+    page = await browser.newPage();
   }
 
   // force disable javascript on all new pages
@@ -125,26 +131,6 @@ export async function initBrowser(options?: BrowserOptions) {
         await page.setJavaScriptEnabled(false);
       }
     });
-  }
-
-  // const page = pages[0] || await browser.newPage();
-  const page = await browser.newPage();
-
-  // blockers
-  const blockerList = [];
-  if (options?.adBlocker) {
-    blockerList.push(...fullLists);
-  }
-  if (options?.gdprBlocker) {
-    blockerList.push('https://secure.fanboy.co.nz/fanboy-cookiemonster.txt');
-  }
-
-  if (blockerList.length > 0) {
-    const blocker = await PuppeteerBlocker.fromLists(fetch, [
-      ...blockerList,
-    ]);
-
-    await blocker.enableBlockingInPage(page);
   }
 
   return [browser, page];
@@ -288,4 +274,3 @@ export async function smartScroll(page, options = { postReset: true }) {
 }
 
 export * as Steps from './steps/steps.js';
-export * as Scenarios from './scenarios/scenarios.js';
