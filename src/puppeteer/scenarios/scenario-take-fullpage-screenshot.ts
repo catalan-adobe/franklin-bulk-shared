@@ -3,7 +3,6 @@ import pptr from 'puppeteer';
 import _puppeteer from 'puppeteer-extra';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 import { fullLists, PuppeteerBlocker } from '@cliqz/adblocker-puppeteer';
-import fetch from 'cross-fetch';
 import { sleep } from '../../time.js';
 
 const puppeteer = _puppeteer.default;
