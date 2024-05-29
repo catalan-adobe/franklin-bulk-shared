@@ -251,10 +251,10 @@ async function crawlWorker({
  */
 
 /**
- * Crawl a website and return a list of URLs.
- * @param originURL string
- * @param options CrawlOptions
- * @returns string[]
+ * Crawls a website starting from the specified origin URL.
+ * @param originURL The origin URL to start crawling from.
+ * @param options The crawl options (optional).
+ * @returns A promise that resolves to the crawl result.
  */
 export async function crawl(
   originURL: string,

@@ -13,7 +13,7 @@ npm install https://gitpkg.now.sh/catalan-adobe/franklin-bulk-shared
 
 ## Usage
 
-Sample script that takes a screenshot of the bottom of a page:
+### Sample script that takes a screenshot of the bottom of a page:
 
 ```js
 // take-screenshot.js
@@ -42,8 +42,23 @@ await page.screenshot({
 await browser.close();
 ```
 
+### Crawl a domain for max 50 URLs with specific pattern
+
+```js
+// crawl.js
+
+import { Web } from 'franklin-bulk-shared';
+
+const result = Web.crawl( 'https://www.adobe.com', {
+  timeout: 30000,
+  limit: 50,
+  inclusionPatterns: [ '*/blog/*' ]
+});
+```
+
 
 ## Domains
 
 * Puppeteer (_`initBrowserAgent`_, _`scrollDown`_, _`scrollUp`_)
 * Time (_`sleep`_, _`randomSleep`_)
+* Web (_crawl_, _parseRobotsTxt_, _parseSitemapFromUrl_)
