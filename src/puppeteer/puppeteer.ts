@@ -111,16 +111,15 @@ export async function initBrowser(options?: BrowserOptions) {
 
   // blockers
   if (opts.adBlocker || opts.gdprBlocker) {
-    console.log('using adblocker!');
     puppeteer.use(new PuppeteerExtraPluginAdblocker({ blockTrackersAndAnnoyances: true }));
   }
 
   // init browser
   // @ts-ignore
   const browser = await puppeteer.launch(browserLaunchOptions);
-  let [ page ] = await browser.pages();
-  if (!page) {
-    page = await browser.newPage();
+  const pages = await browser.pages();
+  if (pages[0]) {
+    await pages[0].close();
   }
 
   // force disable javascript on all new pages
@@ -132,6 +131,8 @@ export async function initBrowser(options?: BrowserOptions) {
       }
     });
   }
+
+  const page = await browser.newPage();
 
   return [browser, page];
 }
