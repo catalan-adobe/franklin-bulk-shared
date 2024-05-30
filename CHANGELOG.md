@@ -1,3 +1,10 @@
+## [1.19.2](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.19.1...v1.19.2) (2024-05-30)
+
+
+### Bug Fixes
+
+* exclude eslint from renovate for now ([f6082c7](https://github.com/catalan-adobe/franklin-bulk-shared/commit/f6082c7ae0ed76c0ba2bc2a8cacae28a1cfc5b99))
+
 ## [1.19.1](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.19.0...v1.19.1) (2024-05-30)
 
 
