@@ -1,3 +1,10 @@
+## [1.19.1](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.19.0...v1.19.1) (2024-05-30)
+
+
+### Bug Fixes
+
+* new page handling when starting a browser instance ([70629ee](https://github.com/catalan-adobe/franklin-bulk-shared/commit/70629ee8764a8ff4706883922c949ebf6c1f6cfa))
+
 # [1.19.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.18.2...v1.19.0) (2024-05-25)
 
 
