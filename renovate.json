@@ -52,6 +52,12 @@
         "minor"
       ],
       "automerge": true
+    },
+    {
+      "packageNames": [
+        "eslint"
+      ],
+      "allowedVersions": "8.57.0"
     }
   ]
 }
