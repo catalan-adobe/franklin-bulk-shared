@@ -1,3 +1,10 @@
+## [1.19.3](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.19.2...v1.19.3) (2024-05-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency lighthouse to v12 ([#88](https://github.com/catalan-adobe/franklin-bulk-shared/issues/88)) ([53ef749](https://github.com/catalan-adobe/franklin-bulk-shared/commit/53ef749b136a01e2e1159309864d0821c019cd72))
+
 ## [1.19.2](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.19.1...v1.19.2) (2024-05-30)
 
 
