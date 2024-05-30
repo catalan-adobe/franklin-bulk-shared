@@ -82,7 +82,7 @@ export async function initBrowser(options?: BrowserOptions) {
     } else {
       // eslint-disable-next-line no-console
       console.error('chrome not found on this machine, cannot continue!');
-      return [ null, null ];
+      return [null, null];
     }
   }
 
