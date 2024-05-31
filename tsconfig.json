@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "module": "NodeNext",
+    "module": "ESNext",
     "target": "es2022",
     "outDir": "dist",
     "rootDir": ".",
@@ -10,9 +10,12 @@
     "skipLibCheck": true,
     "allowJs": true,
     "esModuleInterop": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
     "types": [
       "node",
-      "mocha",
+      "jest",
+      "puppeteer",
     ],
   },
   // NEW: Options for file/directory watching
@@ -38,7 +41,7 @@
     "src/**/*.ts",
     "index.ts",
     ".eslintrc.cjs",
-    "test/**/*.ts",
+    "test",
   ],
   "exclude": ["node_modules", "dist"]
 }

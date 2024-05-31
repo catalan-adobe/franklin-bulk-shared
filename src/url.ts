@@ -1,79 +1,14 @@
-import path from 'path';
-
-export function buildPathAndFilenameWithPathFromUrl(url, suffix = '', extension = 'html') {
-  const u = new URL(url);
-  const p = path.parse(u.pathname); // path
-
-  if (u.pathname.lastIndexOf('/') === u.pathname.length - 1) {
-    p.name = 'index';
-    p.dir = path.join(p.dir, p.base);
-  }
-
-  if (suffix) {
-    p.name += `.${suffix}`;
-  }
-
-  const matches = /.*\.?htm.*$/.exec(p.base);
-
-  if (!matches) {
-    p.ext = '.html';
-  }
-
-  if (extension !== 'html') {
-    p.ext = `.${extension}`;
-  }
-
-  return [p.dir, p.name + p.ext];
-}
-
-export function buildFilenameWithPathFromUrl(url, suffix = '', extension = 'html') {
-  const res = buildPathAndFilenameWithPathFromUrl(url, suffix, extension);
-  return path.join(...res);
-}
-
-export function sanitizeURL(url) {
-  try {
-    const u = new URL(url);
-    let s = u.origin + u.pathname;
-    s = s.replaceAll(/[/.,:]/g, '_');
-    return s;
-  } catch (e) {
-    throw new Error(`: ${e}`);
-  }
-}
-
-export function getPlainHtmlUrl(url) {
-  if (url.endsWith('/')) {
-    return `${url}index.plain.html`;
-  }
-
-  const u = new URL(url);
-
-  const p = path.parse(u.pathname);
-  p.base = '';
-  p.ext = '.plain.html';
-
-  u.pathname = path.format(p);
-
-  return u.toString();
-}
-
-export function extractDetailsFromUrl(url) {
-  const u = new URL(url);
-  const p = path.parse(u.pathname); // path
-
-  if (u.pathname.lastIndexOf('/') === u.pathname.length - 1) {
-    p.name = 'index';
-    p.dir = path.join(p.dir, p.base);
-  }
-
-  return {
-    host: u.host.replaceAll(/[:.]/g, '_'),
-    path: p.dir,
-    filename: p.name,
-    extension: p.ext,
-  };
-}
+/*
+ * Copyright 2022 Adobe. All rights reserved.
+ * This file is licensed to you under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License. You may obtain a copy
+ * of the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under
+ * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
+ * OF ANY KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
+ */
 
 /**
  * Checks if a given URL is valid.
