@@ -1,3 +1,10 @@
+## [1.19.4](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.19.3...v1.19.4) (2024-05-31)
+
+
+### Bug Fixes
+
+* renovate json5 configuration ([4e90a46](https://github.com/catalan-adobe/franklin-bulk-shared/commit/4e90a4691a4425641d0cdb1c92d3953ff6b8ca04))
+
 ## [1.19.3](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.19.2...v1.19.3) (2024-05-30)
 
 
