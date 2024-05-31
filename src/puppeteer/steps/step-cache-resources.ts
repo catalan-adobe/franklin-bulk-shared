@@ -12,7 +12,7 @@
 
 import fs from 'fs';
 import pUtils from 'path';
-import { buildPathAndFilenameWithPathFromUrl } from '../../url.js';
+import { computeFSDetailsFromUrl } from '../../fs.js';
 
 type CacheResroucesStepOptions = {
   outputFolder?: string;
@@ -185,18 +185,18 @@ export function cacheResources({ outputFolder = `${process.cwd()}/cache` }: Cach
         }
       });
 
-      const [p, filename] = buildPathAndFilenameWithPathFromUrl(params.url);
-      const path = pUtils.join(cacheFolder, p);
+      const urlFSDetails = computeFSDetailsFromUrl(params.url);
+      const path = pUtils.join(cacheFolder, urlFSDetails.path);
 
       if (!fs.existsSync(path)) {
         fs.mkdirSync(path, { recursive: true });
       }
-      fs.writeFileSync(pUtils.join(path, filename), content);
+      fs.writeFileSync(pUtils.join(path, urlFSDetails.filename), content);
       params.dom = content;
 
       // dump page headers
       if (params.headers) {
-        fs.writeFileSync(`${filename}.headers.json`, JSON.stringify(params.headers, null, 2));
+        fs.writeFileSync(`${urlFSDetails.filename}.headers.json`, JSON.stringify(params.headers, null, 2));
       }
 
       params.logger.info('stop cache web resources');

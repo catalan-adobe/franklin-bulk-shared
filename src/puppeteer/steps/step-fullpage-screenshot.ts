@@ -12,7 +12,7 @@
 
 import fs from 'fs';
 import pUtils from 'path';
-import { buildPathAndFilenameWithPathFromUrl } from '../../url.js';
+import { computeFSDetailsFromUrl } from '../../fs.js';
 
 type FullPageScreenshotStepOptions = {
   outputFolder?: string;
@@ -30,8 +30,9 @@ export function fullPageScreenshot({ outputFolder = `${process.cwd()}/screenshot
 
       params.logger.debug('taking fullpage screenshot...');
 
-      const [p, filename] = buildPathAndFilenameWithPathFromUrl(params.url, 'screenshot', 'png');
-      const path = pUtils.join(outputFolder, p);
+      const urlFSDetails = computeFSDetailsFromUrl(params.url);
+      const path = pUtils.join(outputFolder, urlFSDetails.path);
+      const filename = `${urlFSDetails.filename}.screenshot.png`;
       if (!fs.existsSync(path)) {
         fs.mkdirSync(path, { recursive: true });
       }

@@ -11,7 +11,7 @@
  */
 import fs from 'fs';
 import pUtils from 'path';
-import { buildPathAndFilenameWithPathFromUrl } from '../../url.js';
+import { computeFSDetailsFromUrl } from '../../fs.js';
 
 type CollectWebconsoleStepOptions = {
   outputFolder?: string;
@@ -33,8 +33,9 @@ export function webConsoleMessages({ outputFolder = `${process.cwd()}/webconsole
 
     await action(params);
 
-    const [p, filename] = buildPathAndFilenameWithPathFromUrl(params.url, 'webconsole', 'json');
-    const path = pUtils.join(outputFolder, p);
+    const urlFSDetails = computeFSDetailsFromUrl(params.url);
+    const path = pUtils.join(outputFolder, urlFSDetails.path);
+    const filename = `${urlFSDetails.filename}.webconsole.json`;
 
     if (!fs.existsSync(path)) {
       fs.mkdirSync(path, { recursive: true });
