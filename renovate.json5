@@ -1,0 +1,23 @@
+// Adobe Helix Shared configuration https://github.com/adobe/helix-shared/blob/main/renovate.json5
+
+{
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+  extends: [
+    'local>adobe/helix-shared'
+  ],
+  packageRules: [
+    {
+      packageNames: [
+        'semantic-release'
+      ],
+      allowedVersions: '>=23.0'
+    },
+    {
+      // helix shared linting rules not supporting eslint 9
+      "packageNames": [
+        "eslint"
+      ],
+      "allowedVersions": "8.57.0"
+    }
+  ]
+}
