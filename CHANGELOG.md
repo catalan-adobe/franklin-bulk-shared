@@ -1,3 +1,11 @@
+# [1.20.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.19.4...v1.20.0) (2024-05-31)
+
+
+### Features
+
+* implement a function to stream new urls found during crawling ([caab59f](https://github.com/catalan-adobe/franklin-bulk-shared/commit/caab59f01fc39d8e1813398fbbe8aa23e8e1d798))
+* implement filesystem namespace functions ([f165dd7](https://github.com/catalan-adobe/franklin-bulk-shared/commit/f165dd781a079b5246273317497896c24fac7532))
+
 ## [1.19.4](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.19.3...v1.19.4) (2024-05-31)
 
 
