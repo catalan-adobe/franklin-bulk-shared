@@ -9,11 +9,10 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-
 import fp from 'find-free-port';
 import chromePaths from 'chrome-paths';
-import pptr, { PuppeteerLaunchOptions } from 'puppeteer-core';
-import _puppeteer from 'puppeteer-extra';
+import * as pptr from 'puppeteer-core';
+import * as _puppeteer from 'puppeteer-extra';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 import { PuppeteerExtraPluginAdblocker } from 'puppeteer-extra-plugin-adblocker';
 import { sleep } from '../time.js';
@@ -92,7 +91,7 @@ export async function initBrowser(options?: BrowserOptions) {
     ...opts.extraArgs,
   ];
 
-  const browserLaunchOptions: PuppeteerLaunchOptions = {
+  const browserLaunchOptions: pptr.PuppeteerLaunchOptions = {
     devtools: opts.devTools,
     headless: opts.headless,
     executablePath: opts.executablePath,
@@ -115,7 +114,7 @@ export async function initBrowser(options?: BrowserOptions) {
   }
 
   // init browser
-  // @ts-ignore
+  // @ts-expect-error - puppeteer-extra types are not up to date
   const browser = await puppeteer.launch(browserLaunchOptions);
   const pages = await browser.pages();
   if (pages[0]) {
@@ -139,7 +138,7 @@ export async function initBrowser(options?: BrowserOptions) {
 
 /**
  * Scrolls down the current page
- * @param {pptr.Page} page - An existing Puppeteer page object
+ * @param {_puppeteer.Page} page - An existing Puppeteer page object
  */
 export async function scrollDown(page: pptr.Page): Promise<void> {
   return page.evaluate(() => {

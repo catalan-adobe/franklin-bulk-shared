@@ -1,4 +1,3 @@
-// @ts-nocheck
 /*
  * Copyright 2022 Adobe. All rights reserved.
  * This file is licensed to you under the Apache License, Version 2.0 (the "License");
@@ -11,9 +10,7 @@
  * governing permissions and limitations under the License.
  */
 import lighthouse, { Flags } from 'lighthouse';
-// @ts-nocheck
 import desktopConfig from 'lighthouse/core/config/lr-desktop-config.js';
-// @ts-nocheck
 import mobileConfig from 'lighthouse/core/config/lr-mobile-config.js';
 
 /* eslint-disable-next-line import/prefer-default-export */
@@ -29,17 +26,6 @@ export function runLighthouseCheck() {
         logLevel: 'error',
         output: 'json',
         disableFullPageScreenshot: true,
-        detailed: true,
-        chromeFlags: [
-          '--disable-gpu', // disable gpu acceleration
-          '--headless', // run chrome in headless mode
-          '--no-sandbox', // disable chrome sandbox mode
-          '--no-zygote', // disable the zygote process (https://chromium.googlesource.com/chromium/src/+/HEAD/docs/linux/zygote.md)
-          '--no-first-run', // disable first run beacon (e.g. first run wizard)
-          '--disable-storage-reset', //  disable resetting the local storage at the end
-          '--disable-features=TranslateUI,BlinkGenPropertyTrees', // disable some unnecessary chrome features
-          '--max-wait-for-load=120000', // LH waits up to 20s for the page to load
-        ],
         onlyCategories: ['accessibility', 'best-practices', 'performance', 'seo'],
       };
 
