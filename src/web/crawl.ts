@@ -14,6 +14,8 @@ import { Logger } from '../logger.js';
  * types
  */
 
+type UrlStreamFn = (newUrls: URLExtended[]) => Promise<void>;
+
 /**
  * @typedef CrawlOptions
  * @property {number} [timeout] - The timeout for the crawl operation (in ms).
@@ -29,6 +31,7 @@ type CrawlOptions = {
   sameDomain?: boolean;
   keepHash?: boolean;
   logger?: Logger;
+  urlStreamFn?: UrlStreamFn;
 };
 
 type CrawlResult = {
@@ -41,7 +44,7 @@ type CrawlResult = {
   sitemaps: string[],
 };
 
-type URLExtended = {
+export type URLExtended = {
   url: string,
   origin: string,
   status: string,
@@ -319,6 +322,7 @@ export async function crawl(
 
     // handler for queue worker results
     const queueResultHandler = async (result) => {
+      let qualifiedURLs = [];
       // do not process if queue is drained
       if (queue.drained !== null) {
         return;
@@ -334,7 +338,7 @@ export async function crawl(
       } else {
         const newURLs = result.urls.map((o) => o.url);
 
-        const qualifiedURLs = qualifyURLsForCrawl(newURLs, {
+        qualifiedURLs = qualifyURLsForCrawl(newURLs, {
           baseURL: crawlOptions.originURLObj.origin,
           origin: result.url,
           urlPatterns,
@@ -366,6 +370,10 @@ export async function crawl(
           reason = `max urls limit reached (${crawlOptions.limit}), process aborted`;
         }
         eventEmitter.emit('done', reason);
+      }
+
+      if (crawlOptions.urlStreamFn && qualifiedURLs && qualifiedURLs.length > 0) {
+        await crawlOptions.urlStreamFn(qualifiedURLs);
       }
     };
 
