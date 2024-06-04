@@ -12,11 +12,6 @@
     "esModuleInterop": true,
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "types": [
-      "node",
-      "jest",
-      "puppeteer",
-    ],
   },
   // NEW: Options for file/directory watching
   "watchOptions": {
@@ -33,11 +28,7 @@
     "excludeDirectories": ["node_modules", "**/node_modules", "dist"]
   },
   "include": [
-    "./node_modules/puppeteer-extra/*.d.ts", // Optional, if any `Extra` types are missing...
-    "./node_modules/puppeteer-extra-*/*.d.ts", // Optional, if any `Extra` types are missing...
-    "./node_modules/@types/puppeteer/index.d.ts", // Generally shouldn't be needed if added to `devDependencies`...
-    "./node_modules/lighthouse/types/**/*.d.ts", // Optional, if any `Lighthouse` types are missing...
-    "./node_modules/lighthouse/core/config/*.d.ts", // Optional, if any `Lighthouse` types are missing...
+    "./node_modules/@types/**/*.d.ts",
     "src/**/*.ts",
     "index.ts",
     ".eslintrc.cjs",
