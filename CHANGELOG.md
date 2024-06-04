@@ -1,3 +1,10 @@
+# [1.22.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.21.0...v1.22.0) (2024-06-04)
+
+
+### Features
+
+* optimize headless chromium by re-using startup flags set from @sparticuz/chromium-min ([83713c6](https://github.com/catalan-adobe/franklin-bulk-shared/commit/83713c63fa39cf4f12ecc206972e22f23902ba05))
+
 # [1.21.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.20.0...v1.21.0) (2024-06-04)
 
 
