@@ -1,3 +1,15 @@
+# [1.21.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.20.0...v1.21.0) (2024-06-04)
+
+
+### Bug Fixes
+
+* do not add discovered sitemaps urls twice ([6f6a929](https://github.com/catalan-adobe/franklin-bulk-shared/commit/6f6a929b999eb16741847105d4533491d28f594b))
+
+
+### Features
+
+* add support to pass headers to crawl function for http requests ([5422971](https://github.com/catalan-adobe/franklin-bulk-shared/commit/5422971f1172f3e517960475076e2900aac5dc37))
+
 # [1.20.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.19.4...v1.20.0) (2024-05-31)
 
 
