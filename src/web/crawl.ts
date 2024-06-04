@@ -114,7 +114,6 @@ async function collectSitemapsToCrawl(
       const r: Robot = await Web.parseRobotsTxt(`${options.originURLObj.origin}/robots.txt`, options);
       /* eslint-disable @typescript-eslint/dot-notation */
       result.robotstxt = r['raw'];
-      result.sitemaps = r.getSitemaps();
       result.sitemaps.push(...r.getSitemaps());
     } catch (e) {
       options.logger.debug(`no robots.txt found for origin URL ${originURL}`);
