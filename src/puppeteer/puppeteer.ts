@@ -15,6 +15,7 @@ import * as pptr from 'puppeteer-core';
 import * as _puppeteer from 'puppeteer-extra';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 import { PuppeteerExtraPluginAdblocker } from 'puppeteer-extra-plugin-adblocker';
+import Chromium from '@sparticuz/chromium-min';
 import { sleep } from '../time.js';
 
 /*
@@ -53,10 +54,9 @@ const defaultBrowserOptions = {
 };
 
 const defaultBrowserArgs = [
-  '--remote-allow-origins=*',
-  '--no-sandbox',
-  '--no-default-browser-check',
-];
+  ...['--remote-allow-origins=*'],
+  ...Chromium.args,
+].filter((arg) => !arg.startsWith('--headless') && !arg.startsWith('--window-size') && !arg.startsWith('--use-angle'));
 
 /*
  * Functions
