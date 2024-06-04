@@ -5,7 +5,7 @@ export async function parseRobotsTxt(
   url: string,
   options: {
     timeout?: number,
-    userAgent?: string,
+    httpHeaders?: Record<string, string>,
   } = {},
 ): Promise<Robot> {
   const reqOptions = {
@@ -15,10 +15,8 @@ export async function parseRobotsTxt(
     headers: {},
   };
 
-  if (options.userAgent) {
-    reqOptions.headers = {
-      'User-Agent': options.userAgent,
-    };
+  if (options.httpHeaders) {
+    reqOptions.headers = options.httpHeaders;
   }
 
   try {

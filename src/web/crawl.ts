@@ -32,6 +32,7 @@ type CrawlOptions = {
   keepHash?: boolean;
   logger?: Logger;
   urlStreamFn?: UrlStreamFn;
+  httpHeaders?: Record<string, string>;
 };
 
 type CrawlResult = {
@@ -90,6 +91,7 @@ const DefaultCrawlOptions: CrawlOptions = {
   limit: -1,
   sameDomain: true,
   keepHash: true,
+  httpHeaders: null,
   logger: console,
 };
 
@@ -230,6 +232,7 @@ async function crawlWorker({
     // options.logger.debug(`crawling sitemap ${sitemap}`);
     const s: Sitemap = await Web.parseSitemapFromUrl(url, {
       timeout: this.crawlOptions.timeout,
+      httpHeaders: this.crawlOptions.httpHeaders,
     });
 
     if (s.urls && s.urls.length > 0) {

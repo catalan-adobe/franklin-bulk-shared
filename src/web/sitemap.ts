@@ -26,7 +26,7 @@ function parseXMLSitemap(sitemapContent) {
 
 export async function parseSitemapFromUrl(
   url: string,
-  options: { timeout?: number, signal?: any } = {},
+  options: { timeout?: number, signal?: any, httpHeaders?: Record<string, string> } = {},
 ): Promise<Sitemap> {
   try {
     let sitemapRaw;
@@ -36,7 +36,11 @@ export async function parseSitemapFromUrl(
         request: options.timeout || 10000,
       },
       responseType: 'text',
+      headers: {},
     };
+    if (options.httpHeaders) {
+      reqOptions.headers = options.httpHeaders;
+    }
     if (options.signal) {
       reqOptions.signal = options.signal;
     }
