@@ -274,3 +274,4 @@ export async function smartScroll(page, options = { postReset: true }) {
 }
 
 export * as Steps from './steps/steps.js';
+export * as CSS from './css.js';
