@@ -1,3 +1,10 @@
+# [1.23.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.22.0...v1.23.0) (2024-06-06)
+
+
+### Features
+
+* **puppeteer:** add function to extract minimal css for a given page ([#97](https://github.com/catalan-adobe/franklin-bulk-shared/issues/97)) ([463a8e6](https://github.com/catalan-adobe/franklin-bulk-shared/commit/463a8e66fa72a66ea0eeb0e9b096dc482952c59d))
+
 # [1.22.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.21.0...v1.22.0) (2024-06-04)
 
 
