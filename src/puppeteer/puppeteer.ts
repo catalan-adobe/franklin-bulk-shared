@@ -14,6 +14,7 @@ import * as pptr from 'puppeteer-core';
 import * as _puppeteer from 'puppeteer-extra';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 import { PuppeteerExtraPluginAdblocker } from 'puppeteer-extra-plugin-adblocker';
+import { fullLists, PuppeteerBlocker } from '@cliqz/adblocker-puppeteer';
 import Chromium from '@sparticuz/chromium-min';
 import { sleep } from '../time.js';
 
@@ -142,6 +143,19 @@ export async function initBrowser(options?: BrowserOptions) {
       const page = await target.page();
       if (page) {
         await page.setJavaScriptEnabled(false);
+      }
+    });
+  }
+
+  if (opts.adBlocker || opts.gdprBlocker) {
+    const blocker = await PuppeteerBlocker.fromLists(fetch, [
+      ...fullLists,
+      'https://secure.fanboy.co.nz/fanboy-cookiemonster.txt',
+    ]);
+    browser.on('targetcreated', async (target) => {
+      const page = await target.page();
+      if (page) {
+        await blocker.enableBlockingInPage(page);
       }
     });
   }
