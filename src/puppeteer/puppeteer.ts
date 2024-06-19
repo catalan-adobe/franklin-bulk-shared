@@ -16,8 +16,8 @@ import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 import { PuppeteerExtraPluginAdblocker } from 'puppeteer-extra-plugin-adblocker';
 import { fullLists, PuppeteerBlocker } from '@cliqz/adblocker-puppeteer';
 import Chromium from '@sparticuz/chromium-min';
-import { sleep } from '../time.js';
 import { Cluster } from 'puppeteer-cluster';
+import { sleep } from '../time.js';
 
 /*
  * Types
@@ -67,6 +67,7 @@ async function buildPuppeteerLauncher(options?: BrowserOptions):
 Promise<{
   puppeteer: _puppeteer.PuppeteerExtra,
   opts: BrowserOptions,
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   browserLaunchOptions: any,
 }> {
   const puppeteer = _puppeteer.default;
