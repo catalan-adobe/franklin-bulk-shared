@@ -1,3 +1,10 @@
+## [1.24.1](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.24.0...v1.24.1) (2024-06-19)
+
+
+### Bug Fixes
+
+* **puppeteer:** fix puppeteer cluster execute function signature ([90c8b78](https://github.com/catalan-adobe/franklin-bulk-shared/commit/90c8b7886d3953179cfa7655a538b06c0c9136bb))
+
 # [1.24.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.23.0...v1.24.0) (2024-06-19)
 
 
