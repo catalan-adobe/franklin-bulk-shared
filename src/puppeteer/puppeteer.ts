@@ -34,6 +34,7 @@ export type BrowserOptions = {
   userDataDir?: string;
   extraArgs?: string[];
   disableJS?: boolean;
+  pageTimeout?: number;
 };
 
 const defaultBrowserOptions = {
@@ -48,6 +49,7 @@ const defaultBrowserOptions = {
   useLocalChrome: false,
   extraArgs: [],
   disableJS: false,
+  pageTimeout: 30000,
 };
 
 const defaultBrowserArgs = [
@@ -126,6 +128,13 @@ export async function initBrowser(options?: BrowserOptions) {
   if (pages[0]) {
     await pages[0].close();
   }
+
+  browser.on('targetcreated', async (target) => {
+    const page = await target.page();
+    if (page) {
+      page.setDefaultNavigationTimeout(opts.pageTimeout);
+    }
+  });
 
   // force disable javascript on all new pages
   if (opts.disableJS) {
