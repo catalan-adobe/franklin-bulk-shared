@@ -1,3 +1,12 @@
+# [1.24.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.23.0...v1.24.0) (2024-06-19)
+
+
+### Features
+
+* **puppeteer:** add page timeout parameter ([76237de](https://github.com/catalan-adobe/franklin-bulk-shared/commit/76237dedc523ececb309fc2ddb15cc5a1512bd5e))
+* **puppeteer:** add puppeteer cluster function ([ca1e13a](https://github.com/catalan-adobe/franklin-bulk-shared/commit/ca1e13a31ff7bc8482b086d0f2d3da1fe5c50070))
+* **puppeteer:** improve ad/gdpr blocker ([f9c3f94](https://github.com/catalan-adobe/franklin-bulk-shared/commit/f9c3f946423157caef165edec9cc0d58205fa23d))
+
 # [1.23.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.22.0...v1.23.0) (2024-06-06)
 
 
