@@ -53,13 +53,18 @@ const defaultBrowserOptions = {
 const defaultBrowserArgs = [
   ...['--remote-allow-origins=*'],
   ...Chromium.args,
-].filter((arg) => !arg.startsWith('--headless') && !arg.startsWith('--window-size') && !arg.startsWith('--use-angle'));
+].filter((arg) => !arg.startsWith('--in-process-gpu') && !arg.startsWith('--single-process') && !arg.startsWith('--headless') && !arg.startsWith('--window-size') && !arg.startsWith('--use-angle'));
 
 /*
  * Functions
  */
 
-export async function initBrowser(options?: BrowserOptions) {
+async function buildPuppeteerLauncher(options?: BrowserOptions):
+Promise<{
+  puppeteer: _puppeteer.PuppeteerExtra,
+  opts: BrowserOptions,
+  browserLaunchOptions: any,
+}> {
   const puppeteer = _puppeteer.default;
   puppeteer.use(StealthPlugin());
 
@@ -74,7 +79,7 @@ export async function initBrowser(options?: BrowserOptions) {
     } else {
       // eslint-disable-next-line no-console
       console.error('chrome not found on this machine, cannot continue!');
-      return [null, null];
+      return null;
     }
   }
 
@@ -105,8 +110,17 @@ export async function initBrowser(options?: BrowserOptions) {
     puppeteer.use(new PuppeteerExtraPluginAdblocker({ blockTrackersAndAnnoyances: true }));
   }
 
+  return {
+    puppeteer,
+    opts,
+    browserLaunchOptions,
+  };
+}
+
+export async function initBrowser(options?: BrowserOptions) {
+  const { puppeteer, opts, browserLaunchOptions } = await buildPuppeteerLauncher(options);
+
   // init browser
-  // @ts-expect-error - puppeteer-extra types are not up to date
   const browser = await puppeteer.launch(browserLaunchOptions);
   const pages = await browser.pages();
   if (pages[0]) {
