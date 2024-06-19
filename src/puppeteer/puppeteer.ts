@@ -187,7 +187,7 @@ export async function initBrowserCluster(workers: number = 1, options?: BrowserO
       await pptrCluster.close();
     },
     /* eslint-disable-next-line @typescript-eslint/no-shadow */
-    execute: async (data, fn) => pptrCluster.queue(data, async ({ page, data }) => {
+    execute: async (data, fn) => pptrCluster.execute(data, async ({ page, data, worker }) => {
       page.setDefaultNavigationTimeout(opts.pageTimeout);
 
       // force disable javascript on all new pages
@@ -203,7 +203,7 @@ export async function initBrowserCluster(workers: number = 1, options?: BrowserO
         await blocker.enableBlockingInPage(page);
       }
 
-      return fn({ data, page });
+      return fn({ data, page, worker });
     }),
   };
 }
