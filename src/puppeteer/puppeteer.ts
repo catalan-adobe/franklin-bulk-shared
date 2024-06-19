@@ -9,7 +9,6 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-import fp from 'find-free-port';
 import chromePaths from 'chrome-paths';
 import * as pptr from 'puppeteer-core';
 import * as _puppeteer from 'puppeteer-extra';
@@ -25,7 +24,6 @@ import { sleep } from '../time.js';
 export type BrowserOptions = {
   headless?: boolean;
   executablePath?: string;
-  port?: number;
   width?: number;
   height?: number;
   adBlocker?: boolean;
@@ -41,7 +39,6 @@ export type BrowserOptions = {
 const defaultBrowserOptions = {
   headless: true,
   executablePath: null,
-  port: null,
   width: 1280,
   height: 1000,
   adBlocker: true,
@@ -71,10 +68,6 @@ export async function initBrowser(options?: BrowserOptions) {
     ...options,
   };
 
-  if (!opts.port) {
-    opts.port = await fp(9222);
-  }
-
   if (!opts.executablePath && opts.useLocalChrome) {
     if (chromePaths.chrome) {
       opts.executablePath = chromePaths.chrome;
@@ -87,7 +80,6 @@ export async function initBrowser(options?: BrowserOptions) {
 
   const browserArgs = [
     ...defaultBrowserArgs,
-    ...[`--remote-debugging-port=${opts.port}`],
     ...opts.extraArgs,
   ];
 
