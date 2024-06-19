@@ -17,6 +17,7 @@ import { PuppeteerExtraPluginAdblocker } from 'puppeteer-extra-plugin-adblocker'
 import { fullLists, PuppeteerBlocker } from '@cliqz/adblocker-puppeteer';
 import Chromium from '@sparticuz/chromium-min';
 import { sleep } from '../time.js';
+import { Cluster } from 'puppeteer-cluster';
 
 /*
  * Types
@@ -163,6 +164,47 @@ export async function initBrowser(options?: BrowserOptions) {
   const page = await browser.newPage();
 
   return [browser, page];
+}
+
+export async function initBrowserCluster(workers: number = 1, options?: BrowserOptions) {
+  const { puppeteer, opts, browserLaunchOptions } = await buildPuppeteerLauncher(options);
+
+  const pptrCluster = await Cluster.launch({
+    concurrency: Cluster.CONCURRENCY_BROWSER,
+    maxConcurrency: workers,
+    puppeteer,
+    puppeteerOptions: {
+      ...browserLaunchOptions,
+    },
+    perBrowserOptions: undefined,
+    timeout: opts.pageTimeout,
+  });
+
+  return {
+    close: async () => {
+      await pptrCluster.idle();
+      await pptrCluster.close();
+    },
+    /* eslint-disable-next-line @typescript-eslint/no-shadow */
+    execute: async (data, fn) => pptrCluster.queue(data, async ({ page, data }) => {
+      page.setDefaultNavigationTimeout(opts.pageTimeout);
+
+      // force disable javascript on all new pages
+      if (opts.disableJS) {
+        await page.setJavaScriptEnabled(false);
+      }
+
+      if (opts.adBlocker || opts.gdprBlocker) {
+        const blocker = await PuppeteerBlocker.fromLists(fetch, [
+          ...fullLists,
+          'https://secure.fanboy.co.nz/fanboy-cookiemonster.txt',
+        ]);
+        await blocker.enableBlockingInPage(page);
+      }
+
+      return fn({ data, page });
+    }),
+  };
 }
 
 /**
