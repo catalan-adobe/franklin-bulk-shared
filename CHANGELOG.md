@@ -1,3 +1,10 @@
+## [1.25.1](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.25.0...v1.25.1) (2024-06-20)
+
+
+### Bug Fixes
+
+* **web:** add missing export of web namespace ([76ed591](https://github.com/catalan-adobe/franklin-bulk-shared/commit/76ed59156941f3a897746f477797eff3e6be1f59))
+
 # [1.25.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.24.2...v1.25.0) (2024-06-20)
 
 
