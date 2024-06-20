@@ -1,3 +1,10 @@
+# [1.25.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.24.2...v1.25.0) (2024-06-20)
+
+
+### Features
+
+* **web:** add function to make absolute urls relative in a given html string ([3c53013](https://github.com/catalan-adobe/franklin-bulk-shared/commit/3c530137c2c42528dce50a9d749ce76cdf5351da))
+
 ## [1.24.2](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.24.1...v1.24.2) (2024-06-20)
 
 
