@@ -1,3 +1,10 @@
+## [1.24.2](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.24.1...v1.24.2) (2024-06-20)
+
+
+### Bug Fixes
+
+* **puppeteer:** fix js disabling in puppeteer instances ([8758942](https://github.com/catalan-adobe/franklin-bulk-shared/commit/8758942b29bb7bc41d5e88ec894b9eff9891b5a7))
+
 ## [1.24.1](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.24.0...v1.24.1) (2024-06-19)
 
 
