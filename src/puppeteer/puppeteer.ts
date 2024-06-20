@@ -15,6 +15,7 @@ import * as _puppeteer from 'puppeteer-extra';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 import { PuppeteerExtraPluginAdblocker } from 'puppeteer-extra-plugin-adblocker';
 import { fullLists, PuppeteerBlocker } from '@cliqz/adblocker-puppeteer';
+import { RequestInterceptionManager } from 'puppeteer-intercept-and-modify-requests';
 import Chromium from '@sparticuz/chromium-min';
 import { Cluster } from 'puppeteer-cluster';
 import { sleep } from '../time.js';
@@ -132,22 +133,40 @@ export async function initBrowser(options?: BrowserOptions) {
     await pages[0].close();
   }
 
+  // force disable javascript on all new pages
+  if (opts.disableJS) {
+    browser.on('targetcreated', async (target) => {
+      const page = await target.page();
+      if (page) {
+        const client = await page.createCDPSession();
+        // @ts-expect-error - no types for this package
+        const interceptManager = new RequestInterceptionManager(client);
+        await interceptManager.intercept(
+          {
+            urlPattern: '*',
+            resourceType: 'Document',
+            modifyResponse({ body }) {
+              if (body) {
+                // remove all script tags
+                const regex = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script\s*>/gm;
+                const subst = '';
+                const result = body.replace(regex, subst);
+                return { body: result };
+              }
+              return { body };
+            },
+          },
+        );
+      }
+    });
+  }
+
   browser.on('targetcreated', async (target) => {
     const page = await target.page();
     if (page) {
       page.setDefaultNavigationTimeout(opts.pageTimeout);
     }
   });
-
-  // force disable javascript on all new pages
-  if (opts.disableJS) {
-    browser.on('targetcreated', async (target) => {
-      const page = await target.page();
-      if (page) {
-        await page.setJavaScriptEnabled(false);
-      }
-    });
-  }
 
   if (opts.adBlocker || opts.gdprBlocker) {
     const blocker = await PuppeteerBlocker.fromLists(fetch, [
@@ -192,7 +211,25 @@ export async function initBrowserCluster(workers: number = 1, options?: BrowserO
 
       // force disable javascript on all new pages
       if (opts.disableJS) {
-        await page.setJavaScriptEnabled(false);
+        const client = await page.createCDPSession();
+        // @ts-expect-error - no types for this package
+        const interceptManager = new RequestInterceptionManager(client);
+        await interceptManager.intercept(
+          {
+            urlPattern: '*',
+            resourceType: 'Document',
+            modifyResponse({ body }) {
+              if (body) {
+                // remove all script tags
+                const regex = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script\s*>/gm;
+                const subst = '';
+                const result = body.replace(regex, subst);
+                return { body: result };
+              }
+              return { body };
+            },
+          },
+        );
       }
 
       if (opts.adBlocker || opts.gdprBlocker) {
