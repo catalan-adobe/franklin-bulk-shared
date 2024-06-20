@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 import { describe, expect, test } from '@jest/globals';
-import { isValid, isValidHTTP } from '../src/url';
+import { isValid, isValidHTTP } from '../../src/web/url';
 
 describe('isValid', () => {
   test('should return a URL object for valid URLs', () => {

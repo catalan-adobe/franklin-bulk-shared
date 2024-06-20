@@ -6,7 +6,8 @@ import { Robot } from 'robots-parser';
 import fastq from 'fastq';
 import type { queueAsPromised } from 'fastq';
 import { isMatch } from 'matcher';
-import { Web, Url } from '../../index.js';
+import { Web } from '../../index.js';
+import { isValidHTTP } from './url.js';
 import { Sitemap } from './sitemap.js';
 import { Logger } from '../logger.js';
 
@@ -167,7 +168,7 @@ function qualifyURLsForCrawl(urls, {
         message: '',
       };
 
-      const u = Url.isValidHTTP(url);
+      const u = isValidHTTP(url);
       let ext = '';
 
       if (!keepHash && u) {
@@ -279,7 +280,7 @@ export async function crawl(
   const eventEmitter = new EventEmitter();
 
   try {
-    const url = Url.isValidHTTP(originURL);
+    const url = isValidHTTP(originURL);
 
     if (!url) {
       throw new Error(`Invalid origin URL (${originURL})`);
