@@ -1,3 +1,10 @@
+## [1.26.1](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.26.0...v1.26.1) (2024-06-24)
+
+
+### Bug Fixes
+
+* **crawl:** fix limit handling ([51aec37](https://github.com/catalan-adobe/franklin-bulk-shared/commit/51aec376e8c6c301f80f90e8ea0cde37676ac408))
+
 # [1.26.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.25.1...v1.26.0) (2024-06-24)
 
 
