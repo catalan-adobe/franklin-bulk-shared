@@ -9,7 +9,7 @@ import { isMatch } from 'matcher';
 import { Web } from '../../index.js';
 import { isValidHTTP } from './url.js';
 import { Sitemap } from './sitemap.js';
-import { Logger } from '../logger.js';
+import logger, { Logger } from '../logger.js';
 
 /**
  * types
@@ -17,12 +17,19 @@ import { Logger } from '../logger.js';
 
 type UrlStreamFn = (newUrls: URLExtended[]) => Promise<void>;
 
+enum CrawlStrategy {
+  Sitemaps = 'sitemaps',
+  HTTP = 'http',
+}
+
 /**
  * @typedef CrawlOptions
  * @property {number} [timeout] - The timeout for the crawl operation (in ms).
  * @property {string} [userAgent] - The user agent to use for the crawl operation.
  */
 type CrawlOptions = {
+  strategy?: CrawlStrategy;
+  workers?: number;
   timeout?: number;
   userAgent?: string;
   originURLObj?: URL;
@@ -84,6 +91,8 @@ type Task = {
  * @default null
  */
 const DefaultCrawlOptions: CrawlOptions = {
+  strategy: CrawlStrategy.Sitemaps,
+  workers: 1,
   timeout: 10000,
   userAgent: null,
   originURLObj: null,
@@ -93,7 +102,7 @@ const DefaultCrawlOptions: CrawlOptions = {
   sameDomain: true,
   keepHash: true,
   httpHeaders: null,
-  logger: console,
+  logger,
 };
 
 /**
@@ -187,7 +196,7 @@ function qualifyURLsForCrawl(urls, {
         urlExt.message = 'not an html page';
       } else {
         const excludedFromURLPatterns = urlPatterns.find(
-          (pat) => !(isMatch(`${u.pathname}${u.search}`, pat.pattern) === pat.expect),
+          (pat) => !(isMatch(`${u.pathname}${u.search}${u.hash}`, pat.pattern) === pat.expect),
         );
         if (excludedFromURLPatterns) {
           const message = excludedFromURLPatterns.expect
@@ -213,7 +222,7 @@ function qualifyURLsForCrawl(urls, {
     });
 }
 
-async function crawlWorker({
+async function sitemapCrawlWorker({
   // payload
   url,
   retries,
@@ -252,6 +261,63 @@ async function crawlWorker({
   }
 }
 
+async function httpCrawlWorker({
+  // payload
+  url,
+  retries,
+}) {
+  // context: this <=> { crawlOptions }
+  // console.log('crawlWorker', this, url, retries);
+  const result = {
+    url,
+    status: 'unknown',
+    retries,
+    error: null,
+    sitemaps: [],
+    urls: [],
+  };
+
+  try {
+    const response = await fetch(url, {
+      // timeout: this.crawlOptions.timeout,
+      headers: this.crawlOptions.httpHeaders,
+    });
+
+    if (!response.ok) {
+      throw new Error(`collect urls from ${url}: ${response.status} ${response.statusText}`);
+    }
+
+    if (response.headers.get('content-type').indexOf('text/html') === -1) {
+      throw new Error(`collect urls from ${url}: content type is not text/html`);
+    }
+
+    const html = await response.text();
+
+    const u = new URL(url);
+
+    result.urls = Web.extractLinks(html, u.origin).map((o) => {
+      const uu = new URL(o, u.origin);
+      return { url: uu.toString(), origin: u.origin };
+    });
+    result.status = 'done';
+
+    return result;
+  } catch (e) {
+    e.url = url;
+    result.error = e;
+    return result;
+  }
+}
+
+const STRATEGY_WORKER_MAPPING = {
+  [CrawlStrategy.Sitemaps]: sitemapCrawlWorker,
+  [CrawlStrategy.HTTP]: httpCrawlWorker,
+};
+
+function getCrawlWorker(strategy: CrawlStrategy): any {
+  return STRATEGY_WORKER_MAPPING[strategy];
+}
+
 /**
  * exports
  */
@@ -279,6 +345,11 @@ export async function crawl(
   };
   const eventEmitter = new EventEmitter();
 
+  crawlOptions.logger.silly(`init crawl from ${originURL} with options:`);
+  JSON.stringify(crawlOptions, null, 2).split('\n').forEach((line) => {
+    crawlOptions.logger.silly(line);
+  });
+
   try {
     const url = isValidHTTP(originURL);
 
@@ -288,10 +359,20 @@ export async function crawl(
 
     crawlOptions.originURLObj = url;
 
-    const sources = await collectSitemapsToCrawl(originURL, crawlOptions);
-    crawlOptions.logger.debug(`found ${sources.sitemaps.length} sitemap(s) to crawl`);
-    crawlResult.robotstxt = sources.robotstxt;
-    crawlResult.sitemaps = sources.sitemaps;
+    const sources = [];
+    if (crawlOptions.strategy === CrawlStrategy.Sitemaps) {
+      crawlOptions.logger.debug('crawl strategy: sitemaps');
+      const result = await collectSitemapsToCrawl(originURL, crawlOptions);
+      sources.push(...result.sitemaps);
+      crawlOptions.logger.debug(`found ${sources.length} sitemap(s) to crawl`);
+      crawlResult.robotstxt = result.robotstxt;
+      crawlResult.sitemaps = result.sitemaps;
+    } else if (crawlOptions.strategy === CrawlStrategy.HTTP) {
+      sources.push(originURL);
+      crawlOptions.logger.debug(`HTTP crawling starting from ${originURL}`);
+      crawlResult.robotstxt = null;
+      crawlResult.sitemaps = null;
+    }
 
     // init url patterns
     const urlPatterns: URLPattern[] = crawlOptions.inclusionPatterns.map((pattern) => ({
@@ -307,8 +388,8 @@ export async function crawl(
       {
         crawlOptions,
       },
-      crawlWorker,
-      5,
+      getCrawlWorker(crawlOptions.strategy),
+      crawlOptions.workers,
     );
     queue.drained = null;
 
@@ -349,14 +430,27 @@ export async function crawl(
           keepHash: crawlOptions.keepHash,
         });
 
-        foundURLs.push(...qualifiedURLs);
-        for (let i = 0; i < result.sitemaps.length; i += 1) {
-          const s = result.sitemaps[i];
-          queue.push({ url: s, retries: 0 })
-            .then(queueResultHandler);
-          crawlResult.sitemaps.push(s);
+        if (crawlOptions.strategy === CrawlStrategy.Sitemaps) {
+          for (let i = 0; i < result.sitemaps.length; i += 1) {
+            const s = result.sitemaps[i];
+            queue.push({ url: s, retries: 0 })
+              .then(queueResultHandler);
+            crawlResult.sitemaps.push(s);
+          }
+          crawlOptions.logger.debug(`done crawling ${result.url} (found ${result.sitemaps.length} sitemaps and ${qualifiedURLs.length} urls)`);
+        } else if (crawlOptions.strategy === CrawlStrategy.HTTP) {
+          const newURLsToCrawl = qualifiedURLs.filter(
+            (o) => o.status === 'valid' && !foundURLs.some((f) => f.url === o.url),
+          );
+          for (let i = 0; i < newURLsToCrawl.length; i += 1) {
+            const u = newURLsToCrawl[i];
+            queue.push({ url: u.url, retries: 0 })
+              .then(queueResultHandler);
+          }
+          crawlOptions.logger.debug(`done crawling ${result.url} (found ${newURLsToCrawl.length} valid urls to crawl)`);
         }
-        crawlOptions.logger.debug(`done crawling ${result.url} (found ${result.sitemaps.length} sitemaps and ${qualifiedURLs.length} urls)`);
+
+        foundURLs.push(...qualifiedURLs.filter((o) => (!foundURLs.some((f) => f.url === o.url))));
       }
 
       // valid urls only
@@ -383,9 +477,8 @@ export async function crawl(
     try {
       queue.pause();
       // add items to queue
-      for (let i = 0; i < sources.sitemaps.length; i += 1) {
-        const sitemap = sources.sitemaps[i];
-        queue.push({ url: sitemap, retries: 0 })
+      for (let i = 0; i < sources.length; i += 1) {
+        queue.push({ url: sources[i], retries: 0 })
           .then(queueResultHandler);
       }
 
@@ -414,7 +507,7 @@ export async function crawl(
     crawlResult.urls = foundURLs.filter((o) => o.status === 'valid').slice(0, crawlOptions.limit);
   }
 
-  crawlOptions.logger.debug(`found ${crawlResult.urls.length} valid urls`);
+  crawlOptions.logger.debug(`found ${crawlResult.urls.filter((o) => o.status === 'valid').length} valid urls`);
 
   return crawlResult;
 }
