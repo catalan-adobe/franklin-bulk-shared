@@ -29,6 +29,12 @@ export interface Logger {
    * @param args - The arguments to be logged.
    */
   error: (...args: any[]) => void;
+
+  /**
+   * Logs a silly message.
+   * @param args - The arguments to be logged.
+   */
+  silly: (...args: any[]) => void;
 }
 
 /**
@@ -40,6 +46,7 @@ const logger: Logger = {
   info: console.info,
   warn: console.warn,
   error: console.error,
+  silly: console.debug,
 };
 
 export default logger;
