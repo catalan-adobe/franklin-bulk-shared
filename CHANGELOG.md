@@ -1,3 +1,12 @@
+# [1.26.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.25.1...v1.26.0) (2024-06-24)
+
+
+### Features
+
+* **html:** add function to extract all href links from html string (for http crawling) ([2124304](https://github.com/catalan-adobe/franklin-bulk-shared/commit/2124304b908cdae0e4ce604e84dd74b9a2760b02))
+* **logger:** add "silly" log level ([4fed7c0](https://github.com/catalan-adobe/franklin-bulk-shared/commit/4fed7c0cd1865eb03ec8d5665656c5633711e8b8))
+* **web:** add http strategy for crawl function ([5c1e6ad](https://github.com/catalan-adobe/franklin-bulk-shared/commit/5c1e6ad42970235fb4e615cc7fd9c2e26a5fcf4d))
+
 ## [1.25.1](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.25.0...v1.25.1) (2024-06-20)
 
 
