@@ -22,3 +22,18 @@ export function rewriteLinksRelative(html: string, host: string): string {
   const re = new RegExp(`(src|href)\\s*=\\s*(["'])${hostPattern}(/.*?)?(['"])`, 'gm');
   return html.replaceAll(re, (match, arg, q1, value, q2) => (`${arg}=${q1}${value || '/'}${q2}`));
 }
+
+export function extractLinks(html: string, host: string): string[] {
+  const hostPattern = host.replaceAll('.', '\\.');
+  const re = new RegExp(`(?:href)\\s*=\\s*["']((?=${hostPattern}|/[a-zA-Z0-9]+).*?)['"]`, 'gm');
+  const links = [];
+  let match;
+  /* eslint-disable no-cond-assign */
+  while ((match = re.exec(html)) !== null) {
+    const m = match[1];
+    if (!['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp', 'ico', 'css', 'js', 'json', 'xml', 'txt', 'ttf', 'pdf'].some((ext) => m.endsWith(ext))) {
+      links.push(m);
+    }
+  }
+  return [...new Set(links)];
+}

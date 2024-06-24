@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { rewriteLinksRelative } from '../../src/web/html';
+import { extractLinks, rewriteLinksRelative } from '../../src/web/html';
 
 describe('rewriteLinksRelative', () => {
   test('should rewrite relative links to be relative to the specified host', () => {
@@ -67,5 +67,47 @@ describe('rewriteLinksRelative', () => {
       </html>
     `;
     expect(rewriteLinksRelative(html, host)).toBe(expected);
+  });
+});
+
+describe('extractLinks', () => {
+  test('should extract all relative links and the ones specifc to the given host (href only + only potential html)', () => {
+    const html = `
+      <html>
+        <head>
+          <link rel="stylesheet" href="https://my-host.com/styles/main.css">
+        </head>
+        <body>
+          <img src="https://my-host.com/images/logo.png" alt="Logo">
+          <a href="/about">About</a>
+          <a href="https://my-host.com">Home</a>
+        </body>
+      </html>
+    `;
+    const host = 'https://my-host.com';
+    const expected = [
+      '/about',
+      'https://my-host.com',
+    ];
+    const a = extractLinks(html, host);
+    console.log(a);
+    expect(a).toStrictEqual(expected);
+  });
+
+  test('should not extract unrelated links', () => {
+    const html = `
+      <html>
+        <head>
+          <link rel="stylesheet" href="https://www.example.com/styles/main.css">
+        </head>
+        <body>
+          <img src="mailto: user@host.com" alt="Logo">
+          <a href="//weird-link">About</a>
+        </body>
+      </html>
+    `;
+    const host = 'https://my-host.com';
+    const expected = [];
+    expect(extractLinks(html, host)).toStrictEqual(expected);
   });
 });
