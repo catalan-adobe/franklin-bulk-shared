@@ -407,6 +407,7 @@ export async function crawl(
     // handler for queue worker results
     const queueResultHandler = async (result) => {
       let qualifiedURLs = [];
+      let newFoundURLs = [];
       // do not process if queue is drained
       if (queue.drained !== null) {
         return;
@@ -450,11 +451,16 @@ export async function crawl(
           crawlOptions.logger.debug(`done crawling ${result.url} (found ${newURLsToCrawl.length} valid urls to crawl)`);
         }
 
-        foundURLs.push(...qualifiedURLs.filter((o) => (!foundURLs.some((f) => f.url === o.url))));
+        newFoundURLs = qualifiedURLs.filter((o) => (!foundURLs.some((f) => f.url === o.url)));
+        foundURLs.push(...newFoundURLs);
       }
 
       // valid urls only
       const validURLs = foundURLs.filter((o) => o.status === 'valid');
+
+      if (crawlOptions.urlStreamFn && qualifiedURLs && qualifiedURLs.length > 0) {
+        await crawlOptions.urlStreamFn(newFoundURLs);
+      }
 
       if (
         (crawlOptions.limit > 0 && validURLs.length >= crawlOptions.limit)
@@ -466,11 +472,8 @@ export async function crawl(
         if (!queue.idle()) {
           reason = `max urls limit reached (${crawlOptions.limit}), process aborted`;
         }
-        eventEmitter.emit('done', reason);
-      }
 
-      if (crawlOptions.urlStreamFn && qualifiedURLs && qualifiedURLs.length > 0) {
-        await crawlOptions.urlStreamFn(qualifiedURLs);
+        eventEmitter.emit('done', reason);
       }
     };
 
