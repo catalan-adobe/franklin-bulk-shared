@@ -40,7 +40,7 @@
     "lighthouse": "12.1.0",
     "matcher": "^5.0.0",
     "puppeteer-cluster": "^0.24.0",
-    "puppeteer-core": "22.12.1",
+    "puppeteer-core": "22.15.0",
     "puppeteer-extra": "3.3.6",
     "puppeteer-extra-plugin-adblocker": "2.13.6",
     "puppeteer-extra-plugin-stealth": "2.11.2",
