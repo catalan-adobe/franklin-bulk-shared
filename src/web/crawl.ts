@@ -1,3 +1,15 @@
+/*
+ * Copyright 2024 Adobe. All rights reserved.
+ * This file is licensed to you under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License. You may obtain a copy
+ * of the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under
+ * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
+ * OF ANY KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
+ */
+
 /* eslint "@typescript-eslint/no-explicit-any": "off" */
 
 import path from 'path';
@@ -15,12 +27,29 @@ import logger, { Logger } from '../logger.js';
  * types
  */
 
-type UrlStreamFn = (newUrls: URLExtended[]) => Promise<void>;
-
 enum CrawlStrategy {
   Sitemaps = 'sitemaps',
   HTTP = 'http',
 }
+
+export type URLExtended = {
+  url: string,
+  origin: string,
+  status: string,
+  level1: string,
+  level2: string,
+  level3: string,
+  filename: string,
+  search: string,
+  message?: string,
+};
+
+type URLPattern = {
+  pattern: string,
+  expect: boolean,
+};
+
+type UrlStreamFn = (newUrls: URLExtended[]) => Promise<void>;
 
 /**
  * @typedef CrawlOptions
@@ -51,23 +80,6 @@ type CrawlResult = {
   invalidURLs: object[],
   robotstxt: Robot | null,
   sitemaps: string[],
-};
-
-export type URLExtended = {
-  url: string,
-  origin: string,
-  status: string,
-  level1: string,
-  level2: string,
-  level3: string,
-  filename: string,
-  search: string,
-  message?: string,
-};
-
-type URLPattern = {
-  pattern: string,
-  expect: boolean,
 };
 
 /**
@@ -124,10 +136,10 @@ async function collectSitemapsToCrawl(
     // try robots.txt
     try {
       const r: Robot = await Web.parseRobotsTxt(`${options.originURLObj.origin}/robots.txt`, options);
-      /* eslint-disable @typescript-eslint/dot-notation */
+      /* eslint-disable-next-line dot-notation */
       result.robotstxt = r['raw'];
       result.sitemaps.push(...r.getSitemaps());
-    } catch (e) {
+    } catch {
       options.logger.debug(`no robots.txt found for origin URL ${originURL}`);
     }
 
@@ -158,7 +170,7 @@ function qualifyURLsForCrawl(urls, {
           if (u.search !== '' || u.hash !== '') {
             acc.push(`${u.origin}${u.pathname}`);
           }
-        } catch (e) {
+        } catch {
           // nothing
         }
         return acc;

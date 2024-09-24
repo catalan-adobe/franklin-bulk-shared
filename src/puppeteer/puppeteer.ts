@@ -186,7 +186,7 @@ export async function initBrowser(options?: BrowserOptions) {
   return [browser, page];
 }
 
-export async function initBrowserCluster(workers: number = 1, options?: BrowserOptions) {
+export async function initBrowserCluster(options?: BrowserOptions, workers: number = 1) {
   const { puppeteer, opts, browserLaunchOptions } = await buildPuppeteerLauncher(options);
 
   const pptrCluster = await Cluster.launch({
@@ -205,7 +205,7 @@ export async function initBrowserCluster(workers: number = 1, options?: BrowserO
       await pptrCluster.idle();
       await pptrCluster.close();
     },
-    /* eslint-disable-next-line @typescript-eslint/no-shadow */
+    /* eslint-disable-next-line no-shadow */
     execute: async (data, fn) => pptrCluster.execute(data, async ({ page, data, worker }) => {
       page.setDefaultNavigationTimeout(opts.pageTimeout);
 
@@ -277,7 +277,7 @@ export async function runStepsSequence(
 ): Promise<void> {
   function wrapBrowserAction(action, ...middlewares) {
     /* eslint-disable-next-line @typescript-eslint/no-shadow */
-    return middlewares/* .reverse() */.reduce((action, middleware) => middleware(action), action);
+    return middlewares/* .reverse() */.reduce((act, middleware) => middleware(act), action);
   }
 
   const bLogger = logger || console;

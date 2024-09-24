@@ -2,8 +2,7 @@ module.exports = {
   root: true,
   parser: '@typescript-eslint/parser',
   extends: [
-    'airbnb-base',
-    'airbnb-typescript/base',
+    '@adobe/helix',
     'eslint:recommended',
     'plugin:@typescript-eslint/eslint-recommended',
     'plugin:@typescript-eslint/recommended',
@@ -33,6 +32,7 @@ module.exports = {
   settings: {
     'import/resolver': {
       exports: {},
+      "typescript": {},
     },
   },
   ignorePatterns: ['xp/'],

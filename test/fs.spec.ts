@@ -26,7 +26,7 @@ describe('sanitizeForFS', () => {
 
 describe('computeFSDetailsFromUrl', () => {
   test('throw an error for invalid urls', () => {
-    expect(() => { computeFSDetailsFromUrl('dummy'); }).toThrow(/^extract details from url/);
+    expect(() => computeFSDetailsFromUrl('dummy')).toThrow(/^extract details from url/);
   });
 
   test.each([
