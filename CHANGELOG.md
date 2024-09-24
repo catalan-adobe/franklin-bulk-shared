@@ -1,3 +1,10 @@
+## [1.27.1](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.27.0...v1.27.1) (2024-09-24)
+
+
+### Bug Fixes
+
+* handle fonts folder does not exist in aem boilerplate css command ([7ed8d4a](https://github.com/catalan-adobe/franklin-bulk-shared/commit/7ed8d4a0c663ae294aa89f6215e7e04482662db8))
+
 # [1.27.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.26.1...v1.27.0) (2024-09-24)
 
 
