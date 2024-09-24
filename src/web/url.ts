@@ -26,7 +26,7 @@ export function isValid(url: string, protocols:Array<string> | null = null): URL
       return null;
     }
     return u;
-  } catch (err) {
+  } catch {
     return null;
   }
 }
