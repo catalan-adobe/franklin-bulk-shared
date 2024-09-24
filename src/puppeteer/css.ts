@@ -249,11 +249,17 @@ export async function getMinimalCSSForCurrentPage(page: Page) {
   };
 }
 
-export async function getMinimalCSSForAEMBoilerplateFromCurrentPage(page: Page) {
+export async function getMinimalCSSForAEMBoilerplateFromCurrentPage(page: Page, fontsFolder = './fonts') {
+  if (!fs.existsSync(fontsFolder)) {
+    fs.mkdirSync(fontsFolder);
+  }
+
+  // add listener for font updates
   const client = await page.createCDPSession();
   await client.send('DOM.enable');
   await client.send('CSS.enable');
 
+  // collect fonts
   const fonts = [];
   client.on('CSS.fontsUpdated', (e) => {
     if (e.font) {
@@ -290,10 +296,10 @@ export async function getMinimalCSSForAEMBoilerplateFromCurrentPage(page: Page) 
       const fontDataBuffer = Buffer.from(fontData, 'base64');
       // sanitize font family name
       const fontFilename = `${font.fontFamily.replace(/[^a-z0-9]/gi, '-')}-${font.fontWeight}-${font.fontStyle}`.toLowerCase();
-      fs.writeFileSync(`./fonts/${fontFilename}.woff`, fontDataBuffer);
+      fs.writeFileSync(`${fontsFolder}/${fontFilename}.woff`, fontDataBuffer);
 
       if (font.fontFamily === mainBodyFont && !bodyFontFBDone) {
-        const fb = computeFallbackFont(`./fonts/${fontFilename}.woff`, font.fontFamily.replace(/[^a-z0-9]/gi, '-'));
+        const fb = computeFallbackFont(`${fontsFolder}/${fontFilename}.woff`, font.fontFamily.replace(/[^a-z0-9]/gi, '-'));
         fontFBFacesArr.push(fb);
         fontFBFaces += `@font-face {
   font-family: '${fb.fontFamily} Fallback';
@@ -309,7 +315,7 @@ export async function getMinimalCSSForAEMBoilerplateFromCurrentPage(page: Page) 
         bodyFontFBDone = true;
       }
       if (font.fontFamily === mainHeadingFont && !headingFontFBDone) {
-        const fb = computeFallbackFont(`./fonts/${fontFilename}.woff`, font.fontFamily.replace(/[^a-z0-9]/gi, '-'));
+        const fb = computeFallbackFont(`${fontsFolder}/${fontFilename}.woff`, font.fontFamily.replace(/[^a-z0-9]/gi, '-'));
         fontFBFacesArr.push(fb);
         fontFBFaces += `@font-face {
   font-family: '${fb.fontFamily} Fallback';
@@ -348,12 +354,12 @@ export async function getMinimalCSSForAEMBoilerplateFromCurrentPage(page: Page) 
       const p = path.parse(u.pathname);
       const ext = p.ext.replace('.', '');
       const fontFilename = `${font.fontFamily.replace(/[^a-z0-9]/gi, '-')}-${font.fontWeight}-${font.fontStyle}.${ext}`.toLowerCase();
-      if (!fs.existsSync(`./fonts/${fontFilename}`)) {
-        fs.writeFileSync(`./fonts/${fontFilename}`, new Uint8Array(fontDataBuffer));
+      if (!fs.existsSync(`${fontsFolder}/${fontFilename}`)) {
+        fs.writeFileSync(`${fontsFolder}/${fontFilename}`, new Uint8Array(fontDataBuffer));
       }
 
       if (font.fontFamily === mainBodyFont && !bodyFontFBDone) {
-        const fb = computeFallbackFont(`./fonts/${fontFilename}.woff`, font.fontFamily.replace(/[^a-z0-9]/gi, '-'));
+        const fb = computeFallbackFont(`${fontsFolder}/${fontFilename}.woff`, font.fontFamily.replace(/[^a-z0-9]/gi, '-'));
         fontFBFacesArr.push(fb);
         fontFBFaces += `@font-face {
   font-family: '${fb.fontFamily} Fallback';
@@ -369,7 +375,7 @@ export async function getMinimalCSSForAEMBoilerplateFromCurrentPage(page: Page) 
         bodyFontFBDone = true;
       }
       if (font.fontFamily === mainHeadingFont && !headingFontFBDone) {
-        const fb = computeFallbackFont(`./fonts/${fontFilename}.woff`, font.fontFamily.replace(/[^a-z0-9]/gi, '-'));
+        const fb = computeFallbackFont(`${fontsFolder}/${fontFilename}.woff`, font.fontFamily.replace(/[^a-z0-9]/gi, '-'));
         fontFBFacesArr.push(fb);
         fontFBFaces += `@font-face {
   font-family: '${fb.fontFamily} Fallback';
