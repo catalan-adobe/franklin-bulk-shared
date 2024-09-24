@@ -1,3 +1,10 @@
+# [1.27.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.26.1...v1.27.0) (2024-09-24)
+
+
+### Features
+
+* add css method to extract fonts information for a given page ([#119](https://github.com/catalan-adobe/franklin-bulk-shared/issues/119)) ([74b732d](https://github.com/catalan-adobe/franklin-bulk-shared/commit/74b732da49a50471c3c25b95f1473f5b26f38552))
+
 ## [1.26.1](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.26.0...v1.26.1) (2024-06-24)
 
 
