@@ -288,7 +288,7 @@ export async function getMinimalCSSForAEMBoilerplateFromCurrentPage(page: Page, 
       const fontFilename = `${font.fontFamily.replace(/[^a-z0-9]/gi, '-')}-${font.fontWeight}-${font.fontStyle}.woff`.toLowerCase();
       fs.writeFileSync(`${fontsFolder}/${fontFilename}`, fontDataBuffer);
 
-      const fb = computeFallbackFont(`${fontsFolder}/${fontFilename}`, font.fontFamily.replace(/[^a-z0-9]/gi, '-'), font.fontWeight, font.fontStyle);
+      const fb = computeFallbackFont(`${fontsFolder}/${fontFilename}`, font.fontFamily, font.fontWeight, font.fontStyle);
       fontFBFacesArr.push(fb);
       fontFBFaces += `@font-face {
   font-family: '${fb.fontFamily} Fallback';
@@ -330,7 +330,7 @@ export async function getMinimalCSSForAEMBoilerplateFromCurrentPage(page: Page, 
         fs.writeFileSync(`${fontsFolder}/${fontFilename}`, new Uint8Array(fontDataBuffer));
       }
 
-      const fb = computeFallbackFont(`${fontsFolder}/${fontFilename}`, font.fontFamily.replace(/[^a-z0-9]/gi, '-'), font.fontWeight, font.fontStyle);
+      const fb = computeFallbackFont(`${fontsFolder}/${fontFilename}`, font.fontFamily, font.fontWeight, font.fontStyle);
       fontFBFacesArr.push(fb);
       fontFBFaces += `@font-face {
   font-family: '${fb.fontFamily} Fallback';
