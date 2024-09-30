@@ -189,8 +189,8 @@ export async function getCSSValuesForDefaultElements(
   }
 }
 
-function computeFallbackFont(file, name) {
-  const ff = fontpie(file, { name });
+function computeFallbackFont(file, name, weight = 400, style = 'normal') {
+  const ff = fontpie(file, { name, weight, style });
   return ff;
 }
 
@@ -198,10 +198,6 @@ export async function getMinimalCSSForCurrentPage(page: Page) {
   const client = await page.createCDPSession();
   await client.send('DOM.enable');
   await client.send('CSS.enable');
-
-  client.on('CSS.fontsUpdated', (e) => {
-    console.log(e);
-  });
 
   await page.setViewport({ width: 600, height: 1080 });
   await page.reload();
@@ -276,12 +272,6 @@ export async function getMinimalCSSForAEMBoilerplateFromCurrentPage(page: Page, 
   const bodyFontFamilySet = computedStylesForDefaultElements.p[0]['font-family'];
   const headingFontFamilySet = computedStylesForDefaultElements.h1[0]['font-family'];
 
-  const mainBodyFont = bodyFontFamilySet.split(',')[0].trim().replace(/['"]+/g, '');
-  const mainHeadingFont = headingFontFamilySet.split(',')[0].trim().replace(/['"]+/g, '');
-
-  let bodyFontFBDone = false;
-  let headingFontFBDone = false;
-
   let fontFaces = '';
   let fontFBFaces = '';
   const fontFacesArr = [];
@@ -295,13 +285,12 @@ export async function getMinimalCSSForAEMBoilerplateFromCurrentPage(page: Page, 
       const fontData = font.src.split('data:application/x-font-woff;base64,').pop();
       const fontDataBuffer = Buffer.from(fontData, 'base64');
       // sanitize font family name
-      const fontFilename = `${font.fontFamily.replace(/[^a-z0-9]/gi, '-')}-${font.fontWeight}-${font.fontStyle}`.toLowerCase();
-      fs.writeFileSync(`${fontsFolder}/${fontFilename}.woff`, fontDataBuffer);
+      const fontFilename = `${font.fontFamily.replace(/[^a-z0-9]/gi, '-')}-${font.fontWeight}-${font.fontStyle}.woff`.toLowerCase();
+      fs.writeFileSync(`${fontsFolder}/${fontFilename}`, fontDataBuffer);
 
-      if (font.fontFamily === mainBodyFont && !bodyFontFBDone) {
-        const fb = computeFallbackFont(`${fontsFolder}/${fontFilename}.woff`, font.fontFamily.replace(/[^a-z0-9]/gi, '-'));
-        fontFBFacesArr.push(fb);
-        fontFBFaces += `@font-face {
+      const fb = computeFallbackFont(`${fontsFolder}/${fontFilename}`, font.fontFamily.replace(/[^a-z0-9]/gi, '-'), font.fontWeight, font.fontStyle);
+      fontFBFacesArr.push(fb);
+      fontFBFaces += `@font-face {
   font-family: '${fb.fontFamily} Fallback';
   font-style: ${fb.fontStyle};
   font-weight: ${fb.fontWeight};
@@ -312,27 +301,9 @@ export async function getMinimalCSSForAEMBoilerplateFromCurrentPage(page: Page, 
   size-adjust: ${fb.sizeAdjust};
 }
 `;
-        bodyFontFBDone = true;
-      }
-      if (font.fontFamily === mainHeadingFont && !headingFontFBDone) {
-        const fb = computeFallbackFont(`${fontsFolder}/${fontFilename}.woff`, font.fontFamily.replace(/[^a-z0-9]/gi, '-'));
-        fontFBFacesArr.push(fb);
-        fontFBFaces += `@font-face {
-  font-family: '${fb.fontFamily} Fallback';
-  font-style: ${fb.fontStyle};
-  font-weight: ${fb.fontWeight};
-  src: local('${fb.fallbackFont}');
-  ascent-override: ${fb.ascentOverride};
-  descent-override: ${fb.descentOverride};
-  line-gap-override: ${fb.lineGapOverride};
-  size-adjust: ${fb.sizeAdjust};
-}
-`;
-        headingFontFBDone = true;
-      }
       fontFaces += `@font-face {
   font-family: '${font.fontFamily}';      
-  src: url('../fonts/${fontFilename}.woff') format('woff');
+  src: url('../fonts/${fontFilename}') format('woff');
   font-weight: ${font.fontWeight};
   font-style: ${font.fontStyle};
   font-display: ${font.fontDisplay};
@@ -342,7 +313,8 @@ export async function getMinimalCSSForAEMBoilerplateFromCurrentPage(page: Page, 
 `;
       fontFacesArr.push({
         ...font,
-        src: `url('../fonts/${fontFilename}.woff') format('woff')`,
+        src: `url('../fonts/${fontFilename}') format('woff')`,
+        location: `${fontsFolder}/${fontFilename}`,
       });
     } else if (font.src.startsWith('http')) {
       console.log('External font detected:', font.src);
@@ -352,16 +324,15 @@ export async function getMinimalCSSForAEMBoilerplateFromCurrentPage(page: Page, 
       // sanitize font family name
       const u = new URL(font.src);
       const p = path.parse(u.pathname);
-      const ext = p.ext.replace('.', '');
+      const ext = p.ext?.replace('.', '') || 'woff';
       const fontFilename = `${font.fontFamily.replace(/[^a-z0-9]/gi, '-')}-${font.fontWeight}-${font.fontStyle}.${ext}`.toLowerCase();
       if (!fs.existsSync(`${fontsFolder}/${fontFilename}`)) {
         fs.writeFileSync(`${fontsFolder}/${fontFilename}`, new Uint8Array(fontDataBuffer));
       }
 
-      if (font.fontFamily === mainBodyFont && !bodyFontFBDone) {
-        const fb = computeFallbackFont(`${fontsFolder}/${fontFilename}.woff`, font.fontFamily.replace(/[^a-z0-9]/gi, '-'));
-        fontFBFacesArr.push(fb);
-        fontFBFaces += `@font-face {
+      const fb = computeFallbackFont(`${fontsFolder}/${fontFilename}`, font.fontFamily.replace(/[^a-z0-9]/gi, '-'), font.fontWeight, font.fontStyle);
+      fontFBFacesArr.push(fb);
+      fontFBFaces += `@font-face {
   font-family: '${fb.fontFamily} Fallback';
   font-style: ${fb.fontStyle};
   font-weight: ${fb.fontWeight};
@@ -372,24 +343,7 @@ export async function getMinimalCSSForAEMBoilerplateFromCurrentPage(page: Page, 
   size-adjust: ${fb.sizeAdjust};
 }
 `;
-        bodyFontFBDone = true;
-      }
-      if (font.fontFamily === mainHeadingFont && !headingFontFBDone) {
-        const fb = computeFallbackFont(`${fontsFolder}/${fontFilename}.woff`, font.fontFamily.replace(/[^a-z0-9]/gi, '-'));
-        fontFBFacesArr.push(fb);
-        fontFBFaces += `@font-face {
-  font-family: '${fb.fontFamily} Fallback';
-  font-style: ${fb.fontStyle};
-  font-weight: ${fb.fontWeight};
-  src: local('${fb.fallbackFont}');
-  ascent-override: ${fb.ascentOverride};
-  descent-override: ${fb.descentOverride};
-  line-gap-override: ${fb.lineGapOverride};
-  size-adjust: ${fb.sizeAdjust};
-}
-`;
-        headingFontFBDone = true;
-      }
+
       fontFaces += `@font-face {
   font-family: '${font.fontFamily}';      
   src: url('../fonts/${fontFilename}') format('${ext}');');
@@ -402,7 +356,8 @@ export async function getMinimalCSSForAEMBoilerplateFromCurrentPage(page: Page, 
 `;
       fontFacesArr.push({
         ...font,
-        src: `url('../fonts/${fontFilename}.woff') format('woff')`,
+        src: `url('../fonts/${fontFilename}') format('${ext}')`,
+        location: `${fontsFolder}/${fontFilename}`,
       });
     }
   });
@@ -465,7 +420,9 @@ ${fontFBFaces}
     bodyFontFamilySet,
     headingFontFamilySet,
     fontFaces: fontFacesArr,
-    fontFBFaces: fontFBFacesArr,
+    fontFBFaces: fontFBFacesArr.filter((value1, i) => fontFBFacesArr.findIndex(
+      (value2) => JSON.stringify(value2) === JSON.stringify(value1),
+    ) === i),
     headingFontSizes: {
       xs: {
         desktop: computedStylesForDefaultElements.h6[0]['font-size'],
