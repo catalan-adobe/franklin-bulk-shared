@@ -1,3 +1,10 @@
+# [1.28.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.27.1...v1.28.0) (2024-09-30)
+
+
+### Features
+
+* Extract all fallback fonts with the correct weight and file ending ([78defa9](https://github.com/catalan-adobe/franklin-bulk-shared/commit/78defa96dc737efb0b789cc3f6da20fa229c149e))
+
 ## [1.27.1](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.27.0...v1.27.1) (2024-09-24)
 
 
