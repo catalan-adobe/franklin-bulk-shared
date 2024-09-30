@@ -1,3 +1,10 @@
+## [1.28.1](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.28.0...v1.28.1) (2024-09-30)
+
+
+### Bug Fixes
+
+* keep fontname ([5c6a976](https://github.com/catalan-adobe/franklin-bulk-shared/commit/5c6a976bf794169aee9458de54c7cbb5e184462e))
+
 # [1.28.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.27.1...v1.28.0) (2024-09-30)
 
 
