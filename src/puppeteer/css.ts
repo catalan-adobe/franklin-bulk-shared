@@ -199,10 +199,6 @@ export async function getMinimalCSSForCurrentPage(page: Page) {
   await client.send('DOM.enable');
   await client.send('CSS.enable');
 
-  client.on('CSS.fontsUpdated', (e) => {
-    console.log(e);
-  });
-
   await page.setViewport({ width: 600, height: 1080 });
   await page.reload();
 
