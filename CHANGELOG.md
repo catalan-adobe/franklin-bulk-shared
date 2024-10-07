@@ -1,3 +1,10 @@
+# [1.29.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.28.1...v1.29.0) (2024-10-07)
+
+
+### Features
+
+* use font that occurred the most often ([#133](https://github.com/catalan-adobe/franklin-bulk-shared/issues/133)) ([0530cf7](https://github.com/catalan-adobe/franklin-bulk-shared/commit/0530cf72f6f65d1ba86cd6027f3c6be291e3c8c4))
+
 ## [1.28.1](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.28.0...v1.28.1) (2024-09-30)
 
 
