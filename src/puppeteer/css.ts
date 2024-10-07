@@ -269,8 +269,32 @@ export async function getMinimalCSSForAEMBoilerplateFromCurrentPage(page: Page, 
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   const computedStylesForDefaultElements: any = await getCSSValuesForDefaultElements(page);
 
-  const bodyFontFamilySet = computedStylesForDefaultElements.p[0]['font-family'];
-  const headingFontFamilySet = computedStylesForDefaultElements.h1[0]['font-family'];
+  const highestAverageFontFamily = (els) => {
+    const fontFamilies = els.map((el) => el['font-family']);
+    const fontFamiliesSet = new Set(fontFamilies);
+    const fontFamiliesArr = Array.from(fontFamiliesSet);
+    const fontFamiliesCount = fontFamiliesArr.map((ff) => {
+      const count = fontFamilies.filter((f) => f === ff).length;
+      return { fontFamily: ff, count };
+    }).filter((f) => (<string>f.fontFamily).trim() !== '');
+    const highestCount = Math.max(...fontFamiliesCount.map((f) => f.count));
+    const highestCountFF = fontFamiliesCount.find((f) => f.count === highestCount);
+    return highestCountFF?.fontFamily || '';
+  };
+  const bodyFontFamilySet = highestAverageFontFamily(
+    computedStylesForDefaultElements.p
+    || computedStylesForDefaultElements.span
+    || [],
+  );
+  const headingFontFamilySet = highestAverageFontFamily(
+    computedStylesForDefaultElements.h1
+    || computedStylesForDefaultElements.h2
+    || computedStylesForDefaultElements.h3
+    || computedStylesForDefaultElements.h4
+    || computedStylesForDefaultElements.h5
+    || computedStylesForDefaultElements.h6
+    || [],
+  );
 
   let fontFaces = '';
   let fontFBFaces = '';
