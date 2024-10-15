@@ -1,3 +1,16 @@
+# [1.29.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.28.1...v1.29.0) (2024-10-15)
+
+
+### Bug Fixes
+
+* **crawl:** support edge case where sitemap contains only 1 sitemap url ([e057103](https://github.com/catalan-adobe/franklin-bulk-shared/commit/e057103595a4375ccb4ba4ce596ccf87c7c293de))
+* fix ietf url test ([4f1eede](https://github.com/catalan-adobe/franklin-bulk-shared/commit/4f1eede6e9b518b5a15048604d56d0ad7985fa9e))
+
+
+### Features
+
+* **crawl:** detect languages from url paths, using ietf references ([fa5f856](https://github.com/catalan-adobe/franklin-bulk-shared/commit/fa5f85672ecf68fb5ed97dc3b76c25e462685b0b))
+
 ## [1.28.1](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.28.0...v1.28.1) (2024-09-30)
 
 
