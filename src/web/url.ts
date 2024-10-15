@@ -10,7 +10,6 @@
  * governing permissions and limitations under the License.
  */
 
-import path from 'path';
 import ietf from './ietf.js';
 
 /**
