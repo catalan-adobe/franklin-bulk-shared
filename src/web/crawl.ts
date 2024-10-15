@@ -42,6 +42,7 @@ export type URLExtended = {
   filename: string,
   search: string,
   message?: string,
+  lang?: string,
 };
 
 type URLPattern = {
@@ -80,6 +81,7 @@ type CrawlResult = {
   invalidURLs: object[],
   robotstxt: Robot | null,
   sitemaps: string[],
+  languages: string[],
 };
 
 /**
@@ -187,6 +189,7 @@ function qualifyURLsForCrawl(urls, {
         filename: '',
         search: '',
         message: '',
+        lang: null,
       };
 
       const u = isValidHTTP(url);
@@ -200,7 +203,7 @@ function qualifyURLsForCrawl(urls, {
       if (!u) {
         urlExt.status = 'excluded';
         urlExt.message = 'invalid url';
-      } else if (sameDomain && !urlExt.url.startsWith(baseURL)) {
+      } else if (sameDomain && urlExt.url && !urlExt.url.startsWith(baseURL)) {
         urlExt.status = 'excluded';
         urlExt.message = `not same origin as base URL ${baseURL}`;
       } else if ((ext !== '' && !ext.includes('htm'))) {
@@ -226,6 +229,7 @@ function qualifyURLsForCrawl(urls, {
           [urlExt.level1, urlExt.level2, urlExt.level3] = levels.slice(1);
           urlExt.filename = filename;
           urlExt.search = search;
+          urlExt.lang = Web.getLanguageFromURL(urlExt.url);
           urlExt.status = 'valid';
         }
       }
@@ -354,6 +358,7 @@ export async function crawl(
     invalidURLs: [],
     robotstxt: null,
     sitemaps: [],
+    languages: [],
   };
   const eventEmitter = new EventEmitter();
 
@@ -462,6 +467,14 @@ export async function crawl(
           }
           crawlOptions.logger.debug(`done crawling ${result.url} (found ${newURLsToCrawl.length} valid urls to crawl)`);
         }
+
+        // compute list of languages from qualifiedURLs
+        const newLanguages = Array.from(
+          new Set(qualifiedURLs.filter((o) => o.lang !== null).map((o) => o.lang)),
+        ) || [];
+        crawlResult.languages = Array.from(
+          new Set(crawlResult.languages.concat(newLanguages)),
+        ) || [];
 
         newFoundURLs = qualifiedURLs.filter((o) => (!foundURLs.some((f) => f.url === o.url)));
         foundURLs.push(...newFoundURLs);

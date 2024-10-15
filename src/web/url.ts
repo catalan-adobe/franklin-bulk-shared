@@ -10,6 +10,9 @@
  * governing permissions and limitations under the License.
  */
 
+import path from 'path';
+import ietf from './ietf.js';
+
 /**
  * Checks if a given URL is valid.
  *
@@ -40,4 +43,16 @@ export function isValid(url: string, protocols:Array<string> | null = null): URL
  */
 export function isValidHTTP(url: string): URL | null {
   return isValid(url, ['http:', 'https:']);
+}
+
+/**
+ * Extract language from URL.
+ * @param url - The URL to extract language from.
+ * @returns The language extracted from the URL or null if unknown or not set.
+ */
+export function getLanguageFromURL(url: string): string {
+  const urlObj = new URL(url);
+
+  const found = ietf.find((i) => urlObj.pathname.split('/').slice(1, 3).find((p) => p === i.tag || p === i.ietf));
+  return found ? found.ietf : null;
 }
