@@ -48,7 +48,7 @@ export async function parseSitemapFromUrl(
       timeout: {
         request: options.timeout || 10000,
       },
-      responseType: 'text',
+      // responseType: 'text',
       headers: {},
     };
     if (options.httpHeaders) {
@@ -86,10 +86,18 @@ export async function parseSitemapFromUrl(
 
     const sitemapObject = parseXMLSitemap(sitemapRaw);
 
-    const sitemaps = sitemapObject.sitemapindex?.sitemap?.map((element) => ({
-      url: element.loc,
-      lastMod: element.lastmod,
-    }));
+    let sitemaps = [];
+    if (sitemapObject.sitemapindex?.sitemap) {
+      if (Array.isArray(sitemapObject.sitemapindex.sitemap)) {
+        sitemaps = sitemapObject.sitemapindex.sitemap;
+      } else {
+        sitemaps = [sitemapObject.sitemapindex.sitemap];
+      }
+      sitemaps = sitemaps.map((element) => ({
+        url: element.loc,
+        lastMod: element.lastmod,
+      }));
+    }
 
     let urls = [];
     if (sitemapObject.urlset?.url) {
@@ -106,6 +114,6 @@ export async function parseSitemapFromUrl(
 
     return { url, sitemaps, urls };
   } catch (e) {
-    throw new Error(`parseSitemapFromUrl (${url}): ${e}`);
+    throw new Error(`parseSitemapFromUrl (${url}): ${e.cause || e.message}`);
   }
 }
