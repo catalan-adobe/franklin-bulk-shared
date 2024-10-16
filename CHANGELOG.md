@@ -1,3 +1,10 @@
+## [1.29.2](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.29.1...v1.29.2) (2024-10-16)
+
+
+### Bug Fixes
+
+* **build:** enforce automerge for non major external updates ([#141](https://github.com/catalan-adobe/franklin-bulk-shared/issues/141)) ([b77dda5](https://github.com/catalan-adobe/franklin-bulk-shared/commit/b77dda54a38d333b8aa040281f3df4c0f439bb36))
+
 ## [1.29.1](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.29.0...v1.29.1) (2024-10-16)
 
 
