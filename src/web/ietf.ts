@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-const ietf = [
+export const ietf = [
   {
     tag: 'ar-ae',
     ietf: 'ar-AE',
@@ -741,4 +741,4 @@ const ietf = [
   },
 ];
 
-export default ietf;
+// export default ietf;

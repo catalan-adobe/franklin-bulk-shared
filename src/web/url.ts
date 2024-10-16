@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import ietf from './ietf';
+import { ietf } from './ietf';
 
 /**
  * Checks if a given URL is valid.
