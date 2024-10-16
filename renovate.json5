@@ -15,6 +15,20 @@
         "eslint"
       ],
       "allowedVersions": "8.57.0"
+    },
+    {
+      "groupName": "external fixes",
+      "matchUpdateTypes": ["patch", "pin", "digest", "minor"],
+      "automerge": true,
+      "matchPackagePatterns": ["^.+"],
+      "schedule": ["after 2pm on Saturday"],
+    },
+    {
+      "groupName": "external major",
+      "matchUpdateTypes": ["major"],
+      "automerge": false,
+      "matchPackagePatterns": ["^.+"],
+      "schedule": ["after 2pm on Monday"]
     }
   ]
 }
