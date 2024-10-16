@@ -20,10 +20,8 @@ export async function parseRobotsTxt(
     httpHeaders?: Record<string, string>,
   } = {},
 ): Promise<Robot> {
-  const reqOptions = {
-    timeout: {
-      request: options.timeout || 10000,
-    },
+  const reqOptions: RequestInit = {
+    signal: AbortSignal.timeout(options.timeout || 10000),
     headers: {},
   };
 

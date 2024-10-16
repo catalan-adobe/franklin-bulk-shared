@@ -257,7 +257,7 @@ async function sitemapCrawlWorker({
   try {
     // options.logger.debug(`crawling sitemap ${sitemap}`);
     const s: Sitemap = await Web.parseSitemapFromUrl(url, {
-      timeout: this.crawlOptions.timeout,
+      signal: AbortSignal.timeout(this.crawlOptions.timeout),
       httpHeaders: this.crawlOptions.httpHeaders,
     });
 
@@ -295,7 +295,7 @@ async function httpCrawlWorker({
 
   try {
     const response = await fetch(url, {
-      // timeout: this.crawlOptions.timeout,
+      signal: AbortSignal.timeout(this.crawlOptions.timeout),
       headers: this.crawlOptions.httpHeaders,
     });
 

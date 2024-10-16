@@ -45,10 +45,7 @@ export async function parseSitemapFromUrl(
     let sitemapRaw;
 
     const reqOptions: any = {
-      timeout: {
-        request: options.timeout || 10000,
-      },
-      // responseType: 'text',
+      signal: AbortSignal.timeout(options.timeout || 10000),
       headers: {},
     };
     if (options.httpHeaders) {
