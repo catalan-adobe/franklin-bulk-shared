@@ -5,6 +5,21 @@
 
 * **build:** fix test execution ([c8a9598](https://github.com/catalan-adobe/franklin-bulk-shared/commit/c8a9598fedc4d36b9191a5fba56675674788a3b1))
 * **crawl:** support edge case where sitemap contains only 1 sitemap url ([e057103](https://github.com/catalan-adobe/franklin-bulk-shared/commit/e057103595a4375ccb4ba4ce596ccf87c7c293de))
+* **crawl:** use fetch signal for timeout ([7d8c548](https://github.com/catalan-adobe/franklin-bulk-shared/commit/7d8c548f1997a3b60d0f5e0d64db78c1ae73bf69))
+* fix ietf url test ([4f1eede](https://github.com/catalan-adobe/franklin-bulk-shared/commit/4f1eede6e9b518b5a15048604d56d0ad7985fa9e))
+
+
+### Features
+
+* **crawl:** detect languages from url paths, using ietf references ([fa5f856](https://github.com/catalan-adobe/franklin-bulk-shared/commit/fa5f85672ecf68fb5ed97dc3b76c25e462685b0b))
+
+# [1.29.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.28.1...v1.29.0) (2024-10-16)
+
+
+### Bug Fixes
+
+* **build:** fix test execution ([c8a9598](https://github.com/catalan-adobe/franklin-bulk-shared/commit/c8a9598fedc4d36b9191a5fba56675674788a3b1))
+* **crawl:** support edge case where sitemap contains only 1 sitemap url ([e057103](https://github.com/catalan-adobe/franklin-bulk-shared/commit/e057103595a4375ccb4ba4ce596ccf87c7c293de))
 * fix ietf url test ([4f1eede](https://github.com/catalan-adobe/franklin-bulk-shared/commit/4f1eede6e9b518b5a15048604d56d0ad7985fa9e))
 
 
