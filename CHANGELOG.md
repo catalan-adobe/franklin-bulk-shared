@@ -1,3 +1,10 @@
+## [1.29.1](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.29.0...v1.29.1) (2024-10-16)
+
+
+### Bug Fixes
+
+* **build:** fix test execution ([#140](https://github.com/catalan-adobe/franklin-bulk-shared/issues/140)) ([f9fefda](https://github.com/catalan-adobe/franklin-bulk-shared/commit/f9fefda98ae8634732fed82ddf8dc71e5af47882))
+
 # [1.29.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.28.1...v1.29.0) (2024-10-16)
 
 
