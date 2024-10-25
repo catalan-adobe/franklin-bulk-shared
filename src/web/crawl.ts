@@ -12,7 +12,6 @@
 
 /* eslint "@typescript-eslint/no-explicit-any": "off" */
 
-import path from 'path';
 import EventEmitter from 'events';
 import { Robot } from 'robots-parser';
 import fastq from 'fastq';
@@ -41,16 +40,14 @@ export type URLExtended = {
   level3: string,
   filename: string,
   search: string,
-  message?: string,
   lang?: string,
+  message?: string,
 };
 
 type URLPattern = {
   pattern: string,
   expect: boolean,
 };
-
-type UrlStreamFn = (newUrls: URLExtended[]) => Promise<void>;
 
 /**
  * @typedef CrawlOptions
@@ -69,7 +66,7 @@ type CrawlOptions = {
   sameDomain?: boolean;
   keepHash?: boolean;
   logger?: Logger;
-  urlStreamFn?: UrlStreamFn;
+  urlStreamFn: any; // object; // UrlStreamFn;
   httpHeaders?: Record<string, string>;
 };
 
@@ -77,8 +74,7 @@ type CrawlResult = {
   originURL: string,
   crawlOptions: CrawlOptions,
   errors: object[],
-  urls: URLExtended[],
-  invalidURLs: object[],
+  urls: { total: number, valid: number },
   robotstxt: Robot | null,
   sitemaps: string[],
   languages: string[],
@@ -117,6 +113,7 @@ const DefaultCrawlOptions: CrawlOptions = {
   keepHash: true,
   httpHeaders: null,
   logger,
+  urlStreamFn: () => Promise.resolve(),
 };
 
 /**
@@ -132,7 +129,8 @@ async function collectSitemapsToCrawl(
     sitemaps: [],
   };
 
-  if (path.basename(options.originURLObj.pathname).indexOf('.xml') > -1) {
+  // if (path.basename(options.originURLObj.pathname).indexOf('.xml') > -1) {
+  if (options.originURLObj.pathname !== '/') {
     result.sitemaps.push(originURL);
   } else {
     // try robots.txt
@@ -140,7 +138,7 @@ async function collectSitemapsToCrawl(
       const r: Robot = await Web.parseRobotsTxt(`${options.originURLObj.origin}/robots.txt`, options);
       /* eslint-disable-next-line dot-notation */
       result.robotstxt = r['raw'];
-      result.sitemaps.push(...r.getSitemaps());
+      result.sitemaps.push(...new Set(r.getSitemaps()));
     } catch {
       options.logger.debug(`no robots.txt found for origin URL ${originURL}`);
     }
@@ -155,30 +153,31 @@ async function collectSitemapsToCrawl(
   return result;
 }
 
-function qualifyURLsForCrawl(urls, {
+export function qualifyURLsForCrawl(urls, {
   baseURL,
   origin,
-  urlPatterns,
+  urlPatterns = [],
   sameDomain = true,
   keepHash = false,
 }): URLExtended[] {
   return urls
-    .concat(urls.reduce(
-      // for urls with query or hash, concatenate the origin + pathname url to the list
-      // of urls to qualify and crawl
-      (acc, val) => {
-        try {
-          const u = new URL(val);
-          if (u.search !== '' || u.hash !== '') {
-            acc.push(`${u.origin}${u.pathname}`);
-          }
-        } catch {
-          // nothing
-        }
-        return acc;
-      },
-      [],
-    )).map((url) => {
+    // .concat(urls.reduce(
+    //   // for urls with query or hash, concatenate the origin + pathname url to the list
+    //   // of urls to qualify and crawl
+    //   (acc, val) => {
+    //     try {
+    //       const u = new URL(val);
+    //       if (u.search !== '' || u.hash !== '') {
+    //         acc.push(`${u.origin}${u.pathname}`);
+    //       }
+    //     } catch {
+    //       // nothing
+    //     }
+    //     return acc;
+    //   },
+    //   [],
+    // ))
+    .map((url) => {
       const urlExt: URLExtended = {
         url,
         origin,
@@ -188,50 +187,51 @@ function qualifyURLsForCrawl(urls, {
         level3: '',
         filename: '',
         search: '',
+        lang: '',
         message: '',
-        lang: null,
       };
 
-      const u = isValidHTTP(url);
-      let ext = '';
+      try {
+        const u = isValidHTTP(url);
 
-      if (!keepHash && u) {
-        urlExt.url = `${u.origin}${u.pathname}${u.search}`;
-        ext = path.parse(`${u.origin}${u.pathname}` || '').ext;
-      }
-
-      if (!u) {
-        urlExt.status = 'excluded';
-        urlExt.message = 'invalid url';
-      } else if (sameDomain && urlExt.url && !urlExt.url.startsWith(baseURL)) {
-        urlExt.status = 'excluded';
-        urlExt.message = `not same origin as base URL ${baseURL}`;
-      } else if ((ext !== '' && !ext.includes('htm'))) {
-        urlExt.status = 'excluded';
-        urlExt.message = 'not an html page';
-      } else {
-        const excludedFromURLPatterns = urlPatterns.find(
-          (pat) => !(isMatch(`${u.pathname}${u.search}${u.hash}`, pat.pattern) === pat.expect),
-        );
-        if (excludedFromURLPatterns) {
-          const message = excludedFromURLPatterns.expect
-            ? `does not match any including filter ${urlPatterns.filter((f) => f.expect).map((f) => f.pattern).join(', ')}`
-            : `matches excluding filter ${excludedFromURLPatterns.pattern}`;
-          urlExt.status = 'excluded';
-          urlExt.message = message;
-        } else {
-          const { pathname, search } = u;
-          const levels = pathname.split('/');
-          const filename = levels.pop();
-          while (levels.length < 4) {
-            levels.push('');
-          }
-          [urlExt.level1, urlExt.level2, urlExt.level3] = levels.slice(1);
-          urlExt.filename = filename;
-          urlExt.search = search;
-          urlExt.lang = Web.getLanguageFromURL(urlExt.url);
-          urlExt.status = 'valid';
+        if (!keepHash && u) {
+          urlExt.url = `${u.origin}${u.pathname}${u.search}`;
         }
+
+        if (!u) {
+          urlExt.status = 'excluded';
+          urlExt.message = 'invalid url';
+        } else if (sameDomain && urlExt.url && !urlExt.url.startsWith(baseURL)) {
+          urlExt.status = 'excluded';
+          urlExt.message = `not same origin as base URL ${baseURL}`;
+        } else {
+          const excludedFromURLPatterns = urlPatterns.find(
+            (pat) => !(isMatch(`${u.pathname}${u.search}${u.hash}`, pat.pattern) === pat.expect),
+          );
+          if (excludedFromURLPatterns) {
+            const message = excludedFromURLPatterns.expect
+              ? `does not match any including filter ${urlPatterns.filter((f) => f.expect).map((f) => f.pattern).join(', ')}`
+              : `matches excluding filter ${excludedFromURLPatterns.pattern}`;
+            urlExt.status = 'excluded';
+            urlExt.message = message;
+          } else {
+            const { pathname, search } = u;
+            const levels = pathname.split('/');
+            const filename = levels.pop();
+            while (levels.length < 4) {
+              levels.push('');
+            }
+            [urlExt.level1, urlExt.level2, urlExt.level3] = levels.slice(1);
+            urlExt.filename = filename;
+            urlExt.search = search;
+            urlExt.lang = Web.getLanguageFromURL(urlExt.url) || '';
+            urlExt.status = 'valid';
+          }
+        }
+      } catch (e) {
+        console.error(e);
+        urlExt.status = 'error';
+        urlExt.message = e.message;
       }
 
       return urlExt;
@@ -244,7 +244,6 @@ async function sitemapCrawlWorker({
   retries,
 }) {
   // context: this <=> { crawlOptions }
-  // console.log('crawlWorker', this, url, retries);
   const result = {
     url,
     status: 'unknown',
@@ -255,17 +254,18 @@ async function sitemapCrawlWorker({
   };
 
   try {
-    // options.logger.debug(`crawling sitemap ${sitemap}`);
     const s: Sitemap = await Web.parseSitemapFromUrl(url, {
       signal: AbortSignal.timeout(this.crawlOptions.timeout),
+      timeout: this.crawlOptions.timeout,
       httpHeaders: this.crawlOptions.httpHeaders,
+      logger: this.crawlOptions.logger,
     });
 
     if (s.urls && s.urls.length > 0) {
       result.urls = s.urls;
     }
     if (s.sitemaps && s.sitemaps.length > 0) {
-      result.sitemaps.push(...s.sitemaps.map((o) => o.url));
+      result.sitemaps = s.sitemaps;
     }
     result.status = 'done';
 
@@ -283,7 +283,6 @@ async function httpCrawlWorker({
   retries,
 }) {
   // context: this <=> { crawlOptions }
-  // console.log('crawlWorker', this, url, retries);
   const result = {
     url,
     status: 'unknown',
@@ -354,8 +353,7 @@ export async function crawl(
     originURL,
     crawlOptions,
     errors: [],
-    urls: foundURLs,
-    invalidURLs: [],
+    urls: { total: 0, valid: 0 },
     robotstxt: null,
     sitemaps: [],
     languages: [],
@@ -421,14 +419,18 @@ export async function crawl(
       }
     });
 
+    // maintain a set of all unique urls found
+    const allUrls = new Set();
+
     // handler for queue worker results
     const queueResultHandler = async (result) => {
-      let qualifiedURLs = [];
-      let newFoundURLs = [];
       // do not process if queue is drained
       if (queue.drained !== null) {
+        crawlOptions.logger.silly('queue drained');
         return;
       }
+
+      let newResToCrawl = false;
 
       if (result.error) {
         crawlOptions.logger.error(`resource crawl error: ${result.error.message}`);
@@ -438,26 +440,20 @@ export async function crawl(
           stack: result.error.stack,
         });
       } else {
-        const newURLs = result.urls.map((o) => o.url);
-
-        qualifiedURLs = qualifyURLsForCrawl(newURLs, {
-          baseURL: crawlOptions.originURLObj.origin,
-          origin: result.url,
-          urlPatterns,
-          sameDomain: crawlOptions.sameDomain,
-          keepHash: crawlOptions.keepHash,
-        });
-
         if (crawlOptions.strategy === CrawlStrategy.Sitemaps) {
           for (let i = 0; i < result.sitemaps.length; i += 1) {
             const s = result.sitemaps[i];
-            queue.push({ url: s, retries: 0 })
-              .then(queueResultHandler);
-            crawlResult.sitemaps.push(s);
+            // check if sitemap is already in the list of sitemaps
+            if (!crawlResult.sitemaps.includes(s)) {
+              newResToCrawl = true;
+              queue.push({ url: s, retries: 0 })
+                .then(queueResultHandler);
+              crawlResult.sitemaps.push(s);
+            }
           }
-          crawlOptions.logger.debug(`done crawling ${result.url} (found ${result.sitemaps.length} sitemaps and ${qualifiedURLs.length} urls)`);
+          crawlOptions.logger.debug(`done crawling ${result.url} (found ${result.sitemaps.length} sitemaps and ${result.urls.length} urls)`);
         } else if (crawlOptions.strategy === CrawlStrategy.HTTP) {
-          const newURLsToCrawl = qualifiedURLs.filter(
+          const newURLsToCrawl = result.urls.filter(
             (o) => o.status === 'valid' && !foundURLs.some((f) => f.url === o.url),
           );
           for (let i = 0; i < newURLsToCrawl.length; i += 1) {
@@ -468,28 +464,35 @@ export async function crawl(
           crawlOptions.logger.debug(`done crawling ${result.url} (found ${newURLsToCrawl.length} valid urls to crawl)`);
         }
 
-        // compute list of languages from qualifiedURLs
-        const newLanguages = Array.from(
-          new Set(qualifiedURLs.filter((o) => o.lang !== null).map((o) => o.lang)),
-        ) || [];
-        crawlResult.languages = Array.from(
-          new Set(crawlResult.languages.concat(newLanguages)),
-        ) || [];
+        if (result.urls && result.urls.length > 0) {
+          let newURLs = result.urls.filter((u) => !allUrls.has(u));
+          if (
+            crawlOptions.limit > 0
+            && (newURLs.length + crawlResult.urls.valid) >= crawlOptions.limit
+          ) {
+            newURLs = newURLs.slice(0, crawlOptions.limit - crawlResult.urls.valid);
+          }
 
-        newFoundURLs = qualifiedURLs.filter((o) => (!foundURLs.some((f) => f.url === o.url)));
-        foundURLs.push(...newFoundURLs);
-      }
+          newURLs.forEach((u) => allUrls.add(u));
 
-      // valid urls only
-      const validURLs = foundURLs.filter((o) => o.status === 'valid');
+          const qualifiedURLs = qualifyURLsForCrawl(newURLs, {
+            baseURL: crawlOptions.originURLObj.origin,
+            origin: result.url,
+            urlPatterns,
+            sameDomain: crawlOptions.sameDomain,
+            keepHash: crawlOptions.keepHash,
+          });
 
-      if (crawlOptions.urlStreamFn && qualifiedURLs && qualifiedURLs.length > 0) {
-        await crawlOptions.urlStreamFn(newFoundURLs);
+          crawlResult.urls.total += qualifiedURLs.length;
+          crawlResult.urls.valid += qualifiedURLs.filter((o) => o.status === 'valid').length;
+
+          await crawlOptions.urlStreamFn(qualifiedURLs);
+        }
       }
 
       if (
-        (crawlOptions.limit > 0 && validURLs.length >= crawlOptions.limit)
-        || (queue.idle() && (result.error || result.sitemaps.length === 0))
+        (crawlOptions.limit > 0 && crawlResult.urls.valid >= crawlOptions.limit)
+        || (queue.idle() && (result.error || !newResToCrawl))
       ) {
         queue.killAndDrain();
         queue.drained = () => undefined;
@@ -510,6 +513,10 @@ export async function crawl(
           .then(queueResultHandler);
       }
 
+      const monitorInterval = setInterval(() => {
+        crawlOptions.logger.debug(`crawling queue - ${queue.length()} items left - ${crawlResult.urls.valid} valid urls found`);
+      }, 5000);
+
       crawlOptions.logger.debug('queue - all items added, start processing');
       queue.resume();
 
@@ -521,21 +528,17 @@ export async function crawl(
         });
       });
 
+      clearInterval(monitorInterval);
+
       crawlOptions.logger.debug(result);
     } catch (e) {
       throw new Error(e);
     }
-
-    crawlResult.urls = foundURLs;
   } catch (e) {
     crawlResult.errors.push(e);
   }
 
-  if (crawlOptions.limit > 0) {
-    crawlResult.urls = foundURLs.filter((o) => o.status === 'valid').slice(0, crawlOptions.limit);
-  }
-
-  crawlOptions.logger.debug(`found ${crawlResult.urls.filter((o) => o.status === 'valid').length} valid urls`);
+  crawlOptions.logger.debug(`found ${crawlResult.urls.total} urls`);
 
   return crawlResult;
 }

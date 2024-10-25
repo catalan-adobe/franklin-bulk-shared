@@ -9,14 +9,13 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-
-/* eslint import/no-unresolved: "off" */
-/* eslint "@typescript-eslint/no-explicit-any": "off" */
 /* TODO - eslint is complaining even though the import works at runtime */
-
-import { XMLParser } from 'fast-xml-parser';
-import path from 'path';
-import zlib from 'zlib';
+import { createGunzip } from 'zlib';
+import { pipeline, Readable } from 'stream';
+// import { ReadableStream as WebReadableStream } from 'stream/web';
+import { promisify } from 'util';
+import expat from 'node-expat';
+import { Logger } from '../logger.js';
 
 export type Sitemap = {
   url: string;
@@ -25,91 +24,148 @@ export type Sitemap = {
   urls?: string[];
 };
 
-// parse a text string into an XML DOM object
-function parseXMLSitemap(sitemapContent) {
-  const options = {
-    ignoreAttributes: false,
+const streamPipeline = promisify(pipeline);
+
+// // Helper function to convert Web Stream to Node.js Readable Stream
+// function webToNodeStream(webStream) {
+//   const reader = webStream.getReader();
+//   return new Readable({
+//     async read() {
+//       const { done, value } = await reader.read();
+//       if (done) {
+//         this.push(null); // End the stream
+//       } else {
+//         this.push(Buffer.from(value)); // Push the chunk into the Node.js stream
+//       }
+//     },
+//   });
+// }
+
+async function parseStreamXMLSitemap(url, fetchOptions, timeout) {
+  const sitemaps = [];
+  const urls = [];
+  let currentElement = null;
+  let currentLoc = '';
+
+  const result = {
+    url,
+    sitemaps: [],
+    urls: [],
+    error: null,
   };
 
-  const parser = new XMLParser(options);
-  const jsonObj = parser.parse(sitemapContent);
+  let response = null;
 
-  return jsonObj;
+  try {
+    // Fetch the sitemap.xml.gz using native fetch API
+    try {
+      response = await fetch(url, {
+        ...fetchOptions,
+        signal: AbortSignal.timeout(timeout),
+      });
+    } catch (e) {
+      throw new Error(`Failed to fetch the sitemap. ${e.message}`);
+    }
+
+    if (!response?.ok) {
+      throw new Error(`Failed to fetch the sitemap. Status: ${response.status}`);
+    }
+
+    // Check the Content-Encoding and Content-Type to determine if the content is compressed
+    const contentEncoding = response.headers.get('content-encoding');
+    const contentType = response.headers.get('content-type');
+
+    const isGzipped = contentEncoding
+      ? (contentEncoding === 'gzip' && contentType && contentType.includes('gzip'))
+      : (contentType && contentType.includes('gzip'));
+
+    // Convert the web response body to a Node.js readable stream
+    let bodyStream = Readable.fromWeb(response.body);
+
+    // If the content is gzipped, add the gunzip decompression stream
+    if (isGzipped) {
+      const gunzip = createGunzip();
+      bodyStream = bodyStream.pipe(gunzip); // Pipe the body stream to gunzip
+    }
+
+    // Create an expat parser
+    const parser = new expat.Parser('utf-8');
+
+    // Listen for XML 'startElement' and 'endElement' events
+    parser.on('startElement', (name) => {
+      currentElement = name;
+
+      // Reset the currentLoc when a new element starts
+      if (name === 'sitemap' || name === 'url') {
+        currentLoc = '';
+      }
+    });
+
+    parser.on('endElement', (name) => {
+      // Capture the <loc> URL within <sitemap> and <url>
+      if (name === 'sitemap' && currentLoc !== '') {
+        sitemaps.push(currentLoc);
+      } else if (name === 'url' && currentLoc !== '') {
+        urls.push(currentLoc);
+      }
+
+      // Reset the currentElement after it ends
+      currentElement = null;
+    });
+
+    // Capture the <loc> tag content inside <sitemap> or <url>
+    parser.on('text', (text) => {
+      if (currentElement === 'loc') {
+        currentLoc += text; // Save the current location (URL)
+      }
+    });
+
+    parser.on('error', (error) => {
+      console.error('Error during parsing:', error);
+      result.error = error;
+    });
+
+    // Stream pipeline
+    await streamPipeline(
+      bodyStream, // The (possibly decompressed) response stream
+      /* eslint-disable-next-line require-yield */
+      async function* f(source) {
+        for await (const chunk of source) {
+          parser.parse(chunk); // Parse chunk by chunk
+        }
+      },
+    );
+
+    result.sitemaps = sitemaps;
+    result.urls = urls;
+    return result;
+  } catch (error) {
+    throw new Error(`Failed to fetch or parse the sitemap. ${error.cause || error.message}`);
+  }
 }
 
 export async function parseSitemapFromUrl(
   url: string,
-  options: { timeout?: number, signal?: any, httpHeaders?: Record<string, string> } = {},
+  options: {
+    timeout?: number,
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    signal?: any,
+    httpHeaders?: Record<string, string>,
+    logger?: Logger,
+  } = {},
 ): Promise<Sitemap> {
+  const timeout = options.timeout || 10000;
   try {
-    let sitemapRaw;
-
-    const reqOptions: any = {
-      signal: AbortSignal.timeout(options.timeout || 10000),
+    const reqOptions: RequestInit = {
       headers: {},
     };
     if (options.httpHeaders) {
       reqOptions.headers = options.httpHeaders;
     }
-    if (options.signal) {
-      reqOptions.signal = options.signal;
-    }
 
-    if (path.extname(url) === '.gz') {
-      // unzip if needed
-      let response;
+    const sitemapObject = await parseStreamXMLSitemap(url, reqOptions, timeout);
 
-      try {
-        reqOptions.responseType = 'buffer';
-        response = await fetch(url, reqOptions);
-
-        if (!response.ok) {
-          throw new Error(`parseSitemapFromUrl (${url}): ${response.status} ${response.statusText}`);
-        }
-
-        sitemapRaw = zlib.gunzipSync((await response.text())).toString();
-      } catch {
-        sitemapRaw = response.body;
-      }
-    } else {
-      const response = await fetch(url, reqOptions);
-
-      if (!response.ok) {
-        throw new Error(`parseSitemapFromUrl (${url}): ${response.status} ${response.statusText}`);
-      }
-
-      sitemapRaw = await response.text();
-    }
-
-    const sitemapObject = parseXMLSitemap(sitemapRaw);
-
-    let sitemaps = [];
-    if (sitemapObject.sitemapindex?.sitemap) {
-      if (Array.isArray(sitemapObject.sitemapindex.sitemap)) {
-        sitemaps = sitemapObject.sitemapindex.sitemap;
-      } else {
-        sitemaps = [sitemapObject.sitemapindex.sitemap];
-      }
-      sitemaps = sitemaps.map((element) => ({
-        url: element.loc,
-        lastMod: element.lastmod,
-      }));
-    }
-
-    let urls = [];
-    if (sitemapObject.urlset?.url) {
-      if (Array.isArray(sitemapObject.urlset.url)) {
-        urls = sitemapObject.urlset.url;
-      } else {
-        urls = [sitemapObject.urlset.url];
-      }
-    }
-    urls = urls.map((element) => ({
-      url: element.loc,
-      lastMod: element.lastmod,
-    }));
-
-    return { url, sitemaps, urls };
+    return { url, sitemaps: sitemapObject.sitemaps, urls: sitemapObject.urls };
   } catch (e) {
     throw new Error(`parseSitemapFromUrl (${url}): ${e.cause || e.message}`);
   }

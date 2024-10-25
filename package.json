@@ -41,6 +41,7 @@
     "fontpie-calc": "0.2.0",
     "lighthouse": "12.2.1",
     "matcher": "^5.0.0",
+    "node-expat": "^2.4.1",
     "puppeteer-cluster": "^0.24.0",
     "puppeteer-core": "23.6.0",
     "puppeteer-extra": "3.3.6",
