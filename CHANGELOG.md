@@ -1,3 +1,10 @@
+# [1.30.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.29.2...v1.30.0) (2024-10-25)
+
+
+### Features
+
+* implement retry mechanism for fetch requests ([6b6ca84](https://github.com/catalan-adobe/franklin-bulk-shared/commit/6b6ca840abb7d49aafc977c2cd5b3bb53b46c955))
+
 ## [1.29.2](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.29.1...v1.29.2) (2024-10-16)
 
 
