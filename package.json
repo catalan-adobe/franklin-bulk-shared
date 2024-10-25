@@ -37,6 +37,7 @@
     "eslint-import-resolver-typescript": "^3.6.3",
     "fast-xml-parser": "4.5.0",
     "fastq": "^1.17.1",
+    "fetch-retry": "^6.0.0",
     "find-free-port": "2.0.0",
     "fontpie-calc": "0.2.0",
     "lighthouse": "12.2.1",
