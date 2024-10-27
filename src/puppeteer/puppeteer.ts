@@ -13,8 +13,7 @@ import chromePaths from 'chrome-paths';
 import * as pptr from 'puppeteer-core';
 import * as _puppeteer from 'puppeteer-extra';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
-import { PuppeteerExtraPluginAdblocker } from 'puppeteer-extra-plugin-adblocker';
-import { fullLists, PuppeteerBlocker } from '@cliqz/adblocker-puppeteer';
+import { fullLists, PuppeteerBlocker } from '@ghostery/adblocker-puppeteer';
 import { RequestInterceptionManager } from 'puppeteer-intercept-and-modify-requests';
 import Chromium from '@sparticuz/chromium-min';
 import { Cluster } from 'puppeteer-cluster';
@@ -109,11 +108,6 @@ Promise<{
   }
   if (opts.userDataDir) {
     browserLaunchOptions.userDataDir = opts.userDataDir;
-  }
-
-  // blockers
-  if (opts.adBlocker || opts.gdprBlocker) {
-    puppeteer.use(new PuppeteerExtraPluginAdblocker({ blockTrackersAndAnnoyances: true }));
   }
 
   return {

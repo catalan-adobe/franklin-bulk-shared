@@ -25,14 +25,14 @@
     "synchronousWatchDirectory": true,
     // Finally, two additional settings for reducing the amount of possible
     // files to track  work from these directories
-    "excludeDirectories": ["node_modules", "**/node_modules", "dist"]
+    "excludeDirectories": ["dist"]
   },
   "include": [
-    "./node_modules/@types/**/*.d.ts",
+    // "./node_modules/@types/**/*.d.ts",
     "src/**/*.ts",
     "index.ts",
     ".eslintrc.cjs",
     "test",
   ],
-  "exclude": ["node_modules", "dist"]
+  "exclude": ["dist"]
 }
