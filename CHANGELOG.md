@@ -1,3 +1,10 @@
+## [1.30.1](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.30.0...v1.30.1) (2024-11-07)
+
+
+### Bug Fixes
+
+* better handle gzip sitemap urls ([#147](https://github.com/catalan-adobe/franklin-bulk-shared/issues/147)) ([67ca9c5](https://github.com/catalan-adobe/franklin-bulk-shared/commit/67ca9c5c263f8721cd415a3634880185ea29f037))
+
 # [1.30.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.29.2...v1.30.0) (2024-10-25)
 
 
