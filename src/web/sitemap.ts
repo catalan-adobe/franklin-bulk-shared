@@ -75,9 +75,16 @@ async function parseStreamXMLSitemap(url, fetchOptions, timeout) {
     const contentEncoding = response.headers.get('content-encoding');
     const contentType = response.headers.get('content-type');
 
+    if (contentType && contentType.includes('html')) {
+      throw new Error(`Failed to fetch the sitemap. Content-Type: ${contentType}`);
+    }
+
     const isGzipped = contentEncoding
-      ? (contentEncoding === 'gzip' && contentType && contentType.includes('gzip'))
-      : (contentType && contentType.includes('gzip'));
+      ? (contentEncoding === 'gzip' && contentType && (contentType.includes('gzip') || contentType.includes('application/octet-stream')))
+      : (
+        (contentType && contentType.includes('gzip'))
+        || url.endsWith('.gz')
+      );
 
     // Convert the web response body to a Node.js readable stream
     let bodyStream = Readable.fromWeb(response.body);
