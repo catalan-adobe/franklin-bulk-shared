@@ -1,3 +1,10 @@
+# [1.31.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.30.1...v1.31.0) (2024-11-21)
+
+
+### Features
+
+* improve font detection and extraction process, support more cases ([e3988fd](https://github.com/catalan-adobe/franklin-bulk-shared/commit/e3988fd4e6b32c641662d158373ad1fdd3c07d8a))
+
 ## [1.30.1](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.30.0...v1.30.1) (2024-11-07)
 
 
