@@ -32,7 +32,7 @@
   "homepage": "https://github.com/catalan-adobe/franklin-bulk-shared#readme",
   "dependencies": {
     "@ghostery/adblocker-puppeteer": "2.0.4",
-    "@sparticuz/chromium-min": "^130.0.0",
+    "@sparticuz/chromium-min": "^131.0.0",
     "chrome-paths": "^1.0.1",
     "fastq": "^1.17.1",
     "fetch-retry": "^6.0.0",
