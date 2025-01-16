@@ -380,7 +380,7 @@ export async function getMinimalCSSForAEMBoilerplateFromURL(url: string, page: P
     const fontFacesArr = [];
     const fontFBFacesArr = [];
 
-    fonts.forEach(async (f) => {
+    await Promise.all(fonts.map(async (f) => {
       const { font } = f;
 
       if (font.src.includes('data:application/x-font-woff;base64')) {
@@ -420,49 +420,54 @@ export async function getMinimalCSSForAEMBoilerplateFromURL(url: string, page: P
           location: `${fontsFolder}/${fontFilename}`,
         });
       } else if (font.src.startsWith('http')) {
-        const resp = await fetch(font.src);
-        const fontDataBuffer = await resp.arrayBuffer();
+        try {
+          const resp = await fetch(font.src);
+          const fontDataBuffer = await resp.arrayBuffer();
 
-        // sanitize font family name
-        const u = new URL(font.src);
-        const p = path.parse(u.pathname);
-        const ext = p.ext?.replace('.', '') || 'woff';
-        const fontFilename = `${font.fontFamily.replace(/[^a-z0-9]/gi, '-')}-${font.fontWeight}-${font.fontStyle}.${ext}`.toLowerCase();
-        if (!fs.existsSync(`${fontsFolder}/${fontFilename}`)) {
-          fs.writeFileSync(`${fontsFolder}/${fontFilename}`, new Uint8Array(fontDataBuffer));
+          // sanitize font family name
+          const u = new URL(font.src);
+          const p = path.parse(u.pathname);
+          const ext = p.ext?.replace('.', '') || 'woff';
+          const fontFilename = `${font.fontFamily.replace(/[^a-z0-9]/gi, '-')}-${font.fontWeight}-${font.fontStyle}.${ext}`.toLowerCase();
+          if (!fs.existsSync(`${fontsFolder}/${fontFilename}`)) {
+            fs.writeFileSync(`${fontsFolder}/${fontFilename}`, new Uint8Array(fontDataBuffer));
+          }
+
+          const fb = computeFallbackFont(`${fontsFolder}/${fontFilename}`, font.fontFamily, font.fontWeight, font.fontStyle);
+          fontFBFacesArr.push(fb);
+          fontFBFaces += `@font-face {
+      font-family: '${fb.fontFamily} Fallback';
+      font-style: ${fb.fontStyle};
+      font-weight: ${fb.fontWeight};
+      src: local('${fb.fallbackFont}');
+      ascent-override: ${fb.ascentOverride};
+      descent-override: ${fb.descentOverride};
+      line-gap-override: ${fb.lineGapOverride};
+      size-adjust: ${fb.sizeAdjust};
+    }
+    `;
+
+          fontFaces += `@font-face {
+      font-family: '${font.fontFamily}';      
+      src: url('../fonts/${fontFilename}') format('${ext}');');
+      font-weight: ${font.fontWeight};
+      font-style: ${font.fontStyle};
+      font-display: ${font.fontDisplay};
+      unicode-range: ${font.unicodeRange};
+    }
+    
+    `;
+          fontFacesArr.push({
+            ...font,
+            src: `url('../fonts/${fontFilename}') format('${ext}')`,
+            location: `${fontsFolder}/${fontFilename}`,
+          });
+        } catch (error) {
+          logger.error(error);
+          throw error;
         }
-
-        const fb = computeFallbackFont(`${fontsFolder}/${fontFilename}`, font.fontFamily, font.fontWeight, font.fontStyle);
-        fontFBFacesArr.push(fb);
-        fontFBFaces += `@font-face {
-    font-family: '${fb.fontFamily} Fallback';
-    font-style: ${fb.fontStyle};
-    font-weight: ${fb.fontWeight};
-    src: local('${fb.fallbackFont}');
-    ascent-override: ${fb.ascentOverride};
-    descent-override: ${fb.descentOverride};
-    line-gap-override: ${fb.lineGapOverride};
-    size-adjust: ${fb.sizeAdjust};
-  }
-  `;
-
-        fontFaces += `@font-face {
-    font-family: '${font.fontFamily}';      
-    src: url('../fonts/${fontFilename}') format('${ext}');');
-    font-weight: ${font.fontWeight};
-    font-style: ${font.fontStyle};
-    font-display: ${font.fontDisplay};
-    unicode-range: ${font.unicodeRange};
-  }
-  
-  `;
-        fontFacesArr.push({
-          ...font,
-          src: `url('../fonts/${fontFilename}') format('${ext}')`,
-          location: `${fontsFolder}/${fontFilename}`,
-        });
       }
-    });
+    }));
 
     logger.info('setting up browser page for mobile resolution ...');
 
