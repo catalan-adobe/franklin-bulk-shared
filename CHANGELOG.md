@@ -1,3 +1,10 @@
+## [1.31.1](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.31.0...v1.31.1) (2025-01-16)
+
+
+### Bug Fixes
+
+* race condition when waiting on fonts http download ([#159](https://github.com/catalan-adobe/franklin-bulk-shared/issues/159)) ([7b7d011](https://github.com/catalan-adobe/franklin-bulk-shared/commit/7b7d011ac42956a18b907bd2d5e16479f3d74f2e))
+
 # [1.31.0](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.30.1...v1.31.0) (2024-11-21)
 
 
