@@ -37,7 +37,7 @@
     "fastq": "^1.17.1",
     "fetch-retry": "^6.0.0",
     "fontpie-calc": "0.2.0",
-    "lighthouse": "12.8.0",
+    "lighthouse": "12.8.1",
     "matcher": "^5.0.0",
     "node-expat": "^2.4.1",
     "puppeteer-cluster": "^0.24.0",
