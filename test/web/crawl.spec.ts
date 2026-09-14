@@ -65,6 +65,30 @@ describe('qualifyURLsForCrawl — Bug 1: inclusion patterns ORed, not ANDed', ()
   });
 });
 
+describe('qualifyURLsForCrawl — sameDomain: lookalike-origin bypass', () => {
+  test('URL whose hostname starts with the base origin but is a different domain is excluded', () => {
+    // e.g. base = https://example.com, attack = https://example.com.attacker.test/steal
+    // startsWith-based check would pass; origin comparison must reject it
+    const results = qualifyURLsForCrawl(
+      ['https://example.com.attacker.test/steal'],
+      {
+        baseURL: BASE, origin: BASE, urlPatterns: [], sameDomain: true, keepHash: false,
+      },
+    );
+    expect(results[0].status).toBe('excluded');
+  });
+
+  test('URL on the exact same origin is not excluded by sameDomain', () => {
+    const results = qualifyURLsForCrawl(
+      [`${BASE}/page.html`],
+      {
+        baseURL: BASE, origin: BASE, urlPatterns: [], sameDomain: true, keepHash: false,
+      },
+    );
+    expect(results[0].status).toBe('valid');
+  });
+});
+
 describe('qualifyURLsForCrawl — Bug 2: object inputs treated as invalid URLs', () => {
   test('plain URL strings are qualified correctly', () => {
     const results = qualifyURLsForCrawl(

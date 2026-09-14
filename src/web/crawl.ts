@@ -201,7 +201,7 @@ export function qualifyURLsForCrawl(urls, {
         if (!u) {
           urlExt.status = 'excluded';
           urlExt.message = 'invalid url';
-        } else if (sameDomain && urlExt.url && !urlExt.url.startsWith(baseURL)) {
+        } else if (sameDomain && u.origin !== baseURL) {
           urlExt.status = 'excluded';
           urlExt.message = `not same origin as base URL ${baseURL}`;
         } else {
