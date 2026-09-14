@@ -208,7 +208,8 @@ export function qualifyURLsForCrawl(urls, {
           const inclusions = urlPatterns.filter((p) => p.expect);
           const exclusions = urlPatterns.filter((p) => !p.expect);
           const path = `${u.pathname}${u.search}${u.hash}`;
-          const includedByPattern = !inclusions.length || inclusions.some((p) => isMatch(path, p.pattern));
+          const includedByPattern = !inclusions.length
+            || inclusions.some((p) => isMatch(path, p.pattern));
           const matchedExclusion = exclusions.find((p) => isMatch(path, p.pattern));
           if (!includedByPattern || matchedExclusion) {
             const message = matchedExclusion
