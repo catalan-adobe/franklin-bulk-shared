@@ -12,6 +12,8 @@ const jestConfig: JestConfigWithTsJest = {
   extensionsToTreatAsEsm: ['.ts'],
   moduleNameMapper: {
     '^(\\.{1,2}/.*)\\.js$': '$1',
+    // node-expat is a native module that can't be rebuilt for Node 24; stub it for tests
+    '^node-expat$': '<rootDir>/__mocks__/node-expat-stub.js',
   },
   transform: {
     // '^.+\\.[tj]sx?$' to process ts,js,tsx,jsx with `ts-jest`

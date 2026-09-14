@@ -111,7 +111,7 @@ const DefaultCrawlOptions: CrawlOptions = {
   limit: -1,
   sameDomain: true,
   keepHash: true,
-  httpHeaders: null,
+  httpHeaders: {},
   logger,
   urlStreamFn: () => Promise.resolve(),
 };
@@ -205,13 +205,15 @@ export function qualifyURLsForCrawl(urls, {
           urlExt.status = 'excluded';
           urlExt.message = `not same origin as base URL ${baseURL}`;
         } else {
-          const excludedFromURLPatterns = urlPatterns.find(
-            (pat) => !(isMatch(`${u.pathname}${u.search}${u.hash}`, pat.pattern) === pat.expect),
-          );
-          if (excludedFromURLPatterns) {
-            const message = excludedFromURLPatterns.expect
-              ? `does not match any including filter ${urlPatterns.filter((f) => f.expect).map((f) => f.pattern).join(', ')}`
-              : `matches excluding filter ${excludedFromURLPatterns.pattern}`;
+          const inclusions = urlPatterns.filter((p) => p.expect);
+          const exclusions = urlPatterns.filter((p) => !p.expect);
+          const path = `${u.pathname}${u.search}${u.hash}`;
+          const includedByPattern = !inclusions.length || inclusions.some((p) => isMatch(path, p.pattern));
+          const matchedExclusion = exclusions.find((p) => isMatch(path, p.pattern));
+          if (!includedByPattern || matchedExclusion) {
+            const message = matchedExclusion
+              ? `matches excluding filter ${matchedExclusion.pattern}`
+              : `does not match any including filter ${inclusions.map((f) => f.pattern).join(', ')}`;
             urlExt.status = 'excluded';
             urlExt.message = message;
           } else {
@@ -310,10 +312,7 @@ async function httpCrawlWorker({
 
     const u = new URL(url);
 
-    result.urls = Web.extractLinks(html, u.origin).map((o) => {
-      const uu = new URL(o, u.origin);
-      return { url: uu.toString(), origin: u.origin };
-    });
+    result.urls = Web.extractLinks(html, u.origin).map((o) => new URL(o, u.origin).toString());
     result.status = 'done';
 
     return result;
@@ -348,7 +347,6 @@ export async function crawl(
   options: CrawlOptions = DefaultCrawlOptions,
 ): Promise<CrawlResult> {
   const crawlOptions = { ...DefaultCrawlOptions, ...options };
-  const foundURLs: URLExtended[] = [];
   const crawlResult: CrawlResult = {
     originURL,
     crawlOptions,
@@ -453,15 +451,7 @@ export async function crawl(
           }
           crawlOptions.logger.debug(`done crawling ${result.url} (found ${result.sitemaps.length} sitemaps and ${result.urls.length} urls)`);
         } else if (crawlOptions.strategy === CrawlStrategy.HTTP) {
-          const newURLsToCrawl = result.urls.filter(
-            (o) => o.status === 'valid' && !foundURLs.some((f) => f.url === o.url),
-          );
-          for (let i = 0; i < newURLsToCrawl.length; i += 1) {
-            const u = newURLsToCrawl[i];
-            queue.push({ url: u.url, retries: 0 })
-              .then(queueResultHandler);
-          }
-          crawlOptions.logger.debug(`done crawling ${result.url} (found ${newURLsToCrawl.length} valid urls to crawl)`);
+          crawlOptions.logger.debug(`done crawling ${result.url} (found ${result.urls.length} links)`);
         }
 
         if (result.urls && result.urls.length > 0) {
@@ -485,6 +475,15 @@ export async function crawl(
 
           crawlResult.urls.total += qualifiedURLs.length;
           crawlResult.urls.valid += qualifiedURLs.filter((o) => o.status === 'valid').length;
+
+          if (crawlOptions.strategy === CrawlStrategy.HTTP) {
+            const toCrawl = qualifiedURLs.filter((o) => o.status === 'valid');
+            for (const u of toCrawl) {
+              newResToCrawl = true;
+              queue.push({ url: u.url, retries: 0 }).then(queueResultHandler);
+            }
+            crawlOptions.logger.debug(`queued ${toCrawl.length} valid urls for further crawl`);
+          }
 
           await crawlOptions.urlStreamFn(qualifiedURLs);
         }
