@@ -232,6 +232,7 @@ export function qualifyURLsForCrawl(urls, {
           }
         }
       } catch (e) {
+        // eslint-disable-next-line no-console
         console.error(e);
         urlExt.status = 'error';
         urlExt.message = e.message;

@@ -14,7 +14,7 @@ import { createGunzip } from 'zlib';
 import { pipeline, Readable } from 'stream';
 // import { ReadableStream as WebReadableStream } from 'stream/web';
 import { promisify } from 'util';
-import expat from 'node-expat';
+import sax from 'sax';
 import { Logger } from '../logger.js';
 
 export type Sitemap = {
@@ -95,20 +95,27 @@ async function parseStreamXMLSitemap(url, fetchOptions, timeout) {
       bodyStream = bodyStream.pipe(gunzip); // Pipe the body stream to gunzip
     }
 
-    // Create an expat parser
-    const parser = new expat.Parser('utf-8');
+    // Decode bytes as a stream with fatal mode so:
+    // - multi-byte UTF-8 characters split across chunk boundaries are
+    //   reassembled correctly (stream: true buffers incomplete sequences), and
+    // - invalid byte sequences throw rather than being silently replaced
+    //   with U+FFFD, which would corrupt URLs and hide malformed sitemaps.
+    const decoder = new TextDecoder('utf-8', { fatal: true });
 
-    // Listen for XML 'startElement' and 'endElement' events
-    parser.on('startElement', (name) => {
+    // Create a SAX parser (pure-JS, no native build required)
+    const parser = sax.parser(true);
+
+    // Listen for XML open/close/text events
+    parser.onopentag = ({ name }: sax.Tag | sax.QualifiedTag) => {
       currentElement = name;
 
       // Reset the currentLoc when a new element starts
       if (name === 'sitemap' || name === 'url') {
         currentLoc = '';
       }
-    });
+    };
 
-    parser.on('endElement', (name) => {
+    parser.onclosetag = (name: string) => {
       // Capture the <loc> URL within <sitemap> and <url>
       if (name === 'sitemap' && currentLoc !== '') {
         sitemaps.push(currentLoc);
@@ -118,19 +125,25 @@ async function parseStreamXMLSitemap(url, fetchOptions, timeout) {
 
       // Reset the currentElement after it ends
       currentElement = null;
-    });
+    };
 
-    // Capture the <loc> tag content inside <sitemap> or <url>
-    parser.on('text', (text) => {
+    // Capture the <loc> tag content inside <sitemap> or <url>.
+    // Both ontext and oncdata must be handled: sax fires ontext for regular
+    // text and oncdata for CDATA sections (e.g. <loc><![CDATA[...]]></loc>).
+    const appendLoc = (text: string) => {
       if (currentElement === 'loc') {
-        currentLoc += text; // Save the current location (URL)
+        currentLoc += text;
       }
-    });
+    };
 
-    parser.on('error', (error) => {
+    parser.ontext = appendLoc;
+    parser.oncdata = appendLoc;
+
+    parser.onerror = (error: Error) => {
+      // eslint-disable-next-line no-console
       console.error('Error during parsing:', error);
       result.error = error;
-    });
+    };
 
     // Stream pipeline
     await streamPipeline(
@@ -138,7 +151,12 @@ async function parseStreamXMLSitemap(url, fetchOptions, timeout) {
       /* eslint-disable-next-line require-yield */
       async function* f(source) {
         for await (const chunk of source) {
-          parser.parse(chunk); // Parse chunk by chunk
+          parser.write(decoder.decode(chunk, { stream: true }));
+        }
+        parser.write(decoder.decode()); // flush any remaining bytes
+        parser.close();
+        if (result.error) {
+          throw result.error;
         }
       },
     );
