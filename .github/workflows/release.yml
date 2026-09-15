@@ -32,6 +32,7 @@ jobs:
       contents: write       # push release commit + tag
       issues: write         # comment on released issues
       pull-requests: write  # comment on released PRs
+      id-token: write       # OIDC for npm trusted publishing (no NPM_TOKEN needed)
     steps:
       - uses: actions/checkout@v4
       - name: Use Node.js 24
@@ -42,4 +43,3 @@ jobs:
       - run: npm run semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.ADOBE_NPM_TOKEN }}
