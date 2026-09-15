@@ -1,3 +1,12 @@
+## [1.31.2](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.31.1...v1.31.2) (2026-09-15)
+
+
+### Bug Fixes
+
+* **ci:** migrate to Node 24, replace node-expat with sax ([#243](https://github.com/catalan-adobe/franklin-bulk-shared/issues/243)) ([0cb9dfd](https://github.com/catalan-adobe/franklin-bulk-shared/commit/0cb9dfd3a361c19418a285c76755e36554cf0645))
+* **crawl:** inclusion patterns ORed, http strategy URLs as strings, httpHeaders default ([#242](https://github.com/catalan-adobe/franklin-bulk-shared/issues/242)) ([52f3696](https://github.com/catalan-adobe/franklin-bulk-shared/commit/52f3696c135a83de0821ffb205d50a37c901de00)), closes [#241](https://github.com/catalan-adobe/franklin-bulk-shared/issues/241)
+* **deps:** upgrade semantic-release to v25 for OIDC npm publishing ([#247](https://github.com/catalan-adobe/franklin-bulk-shared/issues/247)) ([18e1904](https://github.com/catalan-adobe/franklin-bulk-shared/commit/18e1904f0d1f5ae60f444667eff42bebea9b7aee))
+
 ## [1.31.1](https://github.com/catalan-adobe/franklin-bulk-shared/compare/v1.31.0...v1.31.1) (2025-01-16)
 
 
