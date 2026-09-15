@@ -14,8 +14,6 @@ const jestConfig: JestConfigWithTsJest = {
     // index.ts pulls in lighthouse + other ESM-only packages; stub it to keep tests fast
     '^[.][./]*index\\.js$': '<rootDir>/__mocks__/index-stub.js',
     '^(\\.{1,2}/.*)\\.js$': '$1',
-    // node-expat is a native module that can't be rebuilt for Node 24; stub it for tests
-    '^node-expat$': '<rootDir>/__mocks__/node-expat-stub.js',
   },
   // matcher and its dep escape-string-regexp are ESM-only; transform them to CJS
   transformIgnorePatterns: ['node_modules/(?!(matcher|escape-string-regexp)/)'],
